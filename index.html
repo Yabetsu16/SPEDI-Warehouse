@@ -47,7 +47,7 @@
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="#">Management</a>
+          <a class="nav-link" href="management.html">Management</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" href="#">Summary</a>
@@ -108,9 +108,7 @@
               <h4 class="card-title text-center">Recent Movements</h4>
             </div>
             <div class="card-body">
-              <div class="text-center">
-                <button class="btn btn-danger">Clear</button>
-              </div>
+              <button class="btn btn-sm btn-danger">Clear</button>
               <!-- <div class="container mt-3">
                 <div class="alert alert-warning alert-dismissible fade show" role="alert">
                   No Recent Movements.
@@ -119,8 +117,8 @@
                   </button>
                 </div>                
               </div> -->
-              <table id="dtBasicExample" class="table table-striped table-responsive-md table-bordered table-sm" cellspacing="0"
-                width="100%">
+              <table id="dtBasicExample" class="table table-striped table-responsive-md table-bordered table-sm"
+                cellspacing="0" width="100%">
                 <thead>
                   <tr>
                     <th class="th-sm">Name
@@ -229,6 +227,18 @@
     </div>
   </section>
 
+  <!-- Footer -->
+  <footer class="page-footer font-small elegant-color pt-4">
+
+    <!-- Copyright -->
+    <div class="footer-copyright text-center py-3">© 2020 Copyright:
+      <a href="index.html">SPEDI Warehouse Control</a>
+    </div>
+    <!-- Copyright -->
+
+  </footer>
+  <!-- Footer -->
+
   <!-- jQuery -->
   <script type="text/javascript" src="dist/js/jquery.min.js"></script>
   <!-- Bootstrap tooltips -->
@@ -242,9 +252,9 @@
   <!-- Your custom scripts (optional) -->
   <script type="text/javascript">
     $(document).ready(function () {
-      $('#dtBasicExample').DataTable(
-
-      );
+      $('#dtBasicExample').DataTable({
+        "searching": false
+      });
       $('.dataTables_length').addClass('bs-select');
     });
   </script>
