@@ -6,9 +6,8 @@
     $conn = mysqli_connect($host, $username, $password, $database);
 
     // Check Connection
-    if (mysqli_connect_error()) {
-        echo "Failed to connect to DB: " . mysqli_connect_error();
-        exit();
+    if (!$conn()) {
+        die("Connection failed: " . mysqli_connect_error());
     }
     
 ?>
