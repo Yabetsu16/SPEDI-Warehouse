@@ -508,7 +508,7 @@
                                         <!-- Material input -->
                                         <div class="md-form mt-0">
                                             <input type="text" name="edit_unit_cost" class="form-control validate" 
-                                            id="edit_unit_cost" value="<?php echo $unit_cost ?>" required>
+                                            id="edit_unit_cost" value="<?php echo $unit_cost ?>" step="0.01" min="0" required>
                                             <label for="edit_unit_cost" data-error="wrong" data-success="right">Unit
                                                 Cost</label>
                                         </div>
