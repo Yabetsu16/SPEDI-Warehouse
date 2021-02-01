@@ -68,30 +68,47 @@
         $unit_cost = $_POST['unit_cost'];
         $remarks = $_POST['remarks'];
         $date_added = $_POST['date_added'];
-        $query = "INSERT INTO inventory_tb(item_type, item_name, 
+
+        $query = "SELECT * FROM inventory_tb WHERE item_type = ? AND item_name = ? 
+            AND item_description = ? AND project_name = ?";
+        $stmt = $conn->prepare($query);
+        $stmt->bind_param('ssss', $item_type, $item_name, $item_description, $project_name);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        if (mysqli_num_rows($result) > 0) { ?>
+            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                Item <strong><?php echo $item_name . " - " . $item_type ?> </strong> has duplicate entry.
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+    <?php    } else {
+            $query = "INSERT INTO inventory_tb(item_type, item_name, 
                 item_description, unit, unit_cost, project_name, remarks, date_added) 
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-        $stmt = $conn->prepare($query);
-        $stmt->bind_param(
-            "ssssdsss",
-            $item_type,
-            $item_name,
-            $item_description,
-            $unit,
-            $unit_cost,
-            $project_name,
-            $remarks,
-            $date_added
-        );
+            $stmt = $conn->prepare($query);
+            $stmt->bind_param(
+                "ssssdsss",
+                $item_type,
+                $item_name,
+                $item_description,
+                $unit,
+                $unit_cost,
+                $project_name,
+                $remarks,
+                $date_added
+            );
 
-        $stmt->execute();
-        $result = $stmt->get_result();
+            $stmt->execute();
+            $result = $stmt->get_result();
 
-        $query = "INSERT INTO count_tb (inventory_id) VALUES 
+            $query = "INSERT INTO count_tb (inventory_id) VALUES 
                 ((SELECT inventory_id FROM inventory_tb WHERE inventory_id = LAST_INSERT_ID()));";
-        $stmt = $conn->prepare($query);
-        $stmt->execute();
-        $result = $stmt->get_result();
+            $stmt = $conn->prepare($query);
+            $stmt->execute();
+            $result = $stmt->get_result();
+        }
     }
     ?>
 
@@ -166,9 +183,9 @@
                                     ?>
                                             <tr class="text-center">
                                                 <td>
-                                                    <button type="button" class="btn btn-sm btn-success" data-toggle="modal" data-target="<?php echo $id ?>EditItemModal">Edit</button>
-                                                    <button type="button" class="btn btn-sm btn-danger" data-toggle="modal" data-target="<?php echo $id ?>ModalConfirmDelete">Delete</button>
-                                                    <button type="button" class="btn btn-sm btn-info" data-toggle="modal" data-target="<?php echo $id ?>DetailsModal">Details</button>
+                                                    <button type="button" class="btn btn-sm btn-success" data-toggle="modal" data-target="#EditItemModal<?php echo $id ?>">Edit</button>
+                                                    <button type="button" class="btn btn-sm btn-danger" data-toggle="modal" data-target="#ModalConfirmDelete<?php echo $id ?>">Delete</button>
+                                                    <button type="button" class="btn btn-sm btn-info" data-toggle="modal" data-target="#DetailsModal<?php echo $id ?>">Details</button>
                                                 </td>
                                                 <td><?php echo $project_name ?></td>
                                                 <td><?php echo $item_type ?></td>
@@ -378,11 +395,11 @@
             $balance = $quantity - $issued + $returned;
     ?>
             <!-- Modal Edit Item -->
-            <div class="modal fade" id="<?php echo $id ?>EditItemModal" tabindex="-1" role="dialog" aria-labelledby="<?php echo $id ?>EditItemModal" aria-hidden="true">
+            <div class="modal fade" id="EditItemModal<?php echo $id ?>" tabindex="-1" role="dialog" aria-labelledby="EditItemModal<?php echo $id ?>" aria-hidden="true">
                 <div class="modal-dialog modal-lg" role="document">
                     <div class="modal-content">
                         <div class="modal-header elegant-color text-white d-flex justify-content-center">
-                            <h1 class="modal-title">Edit "item_name" Item</h1>
+                            <h1 class="modal-title">Edit <?php echo $item_name ?> Item</h1>
                         </div>
                         <div class="modal-body">
                             <!-- Material form grid -->
@@ -394,11 +411,46 @@
                                         <!-- Material input -->
                                         <div class="md-form mt-0">
                                             <select name="edit_item_type" class="browser-default custom-select">
-                                                <option selected>Select Item Type</option>
-                                                <option value="Materials">Materials</option>
-                                                <option value="Tools">Tools</option>
-                                                <option value="Safety">Safety</option>
-                                                <option value="Admin">Admin</option>
+                                                <?php
+                                                $recent_type = $item_type;
+                                                if ($recent_type == "Materials") { ?>
+                                                    <option value="<?php echo $item_type ?>" selected>Recent: <?php echo $item_type ?></option>
+                                                    <option value="Tools">Tools</option>
+                                                    <option value="Safety">Safety</option>
+                                                    <option value="Admin">Admin</option>
+                                                <?php
+                                                }
+                                                ?>
+
+                                                <?php
+                                                if ($recent_type == "Tools") { ?>
+                                                    <option value="<?php echo $item_type ?>" selected>Recent: <?php echo $item_type ?></option>
+                                                    <option value="Materials">Materials</option>
+                                                    <option value="Safety">Safety</option>
+                                                    <option value="Admin">Admin</option>
+                                                <?php
+                                                }
+                                                ?>
+
+                                                <?php
+                                                if ($recent_type == "Safety") { ?>
+                                                    <option value="<?php echo $item_type ?>" selected>Recent: <?php echo $item_type ?></option>
+                                                    <option value="Materials">Materials</option>
+                                                    <option value="Tools">Tools</option>
+                                                    <option value="Admin">Admin</option>
+                                                <?php
+                                                }
+                                                ?>
+
+                                                <?php
+                                                if ($recent_type == "Admin") { ?>
+                                                    <option value="<?php echo $item_type ?>" selected>Recent: <?php echo $item_type ?></option>
+                                                    <option value="Materials">Materials</option>
+                                                    <option value="Tools">Tools</option>
+                                                    <option value="Safety">Safety</option>
+                                                <?php
+                                                }
+                                                ?>
                                             </select>
                                         </div>
                                     </div>
@@ -408,7 +460,8 @@
                                     <div class="col-6">
                                         <!-- Material input -->
                                         <div class="md-form mt-0">
-                                            <input type="text" name="edit_project_name" class="form-control validate" id="edit_project_name" required>
+                                            <input type="text" name="edit_project_name" class="form-control validate" 
+                                            id="edit_project_name" value="<?php echo $project_name ?>" required>
                                             <label for="edit_project_name" data-error="wrong" data-success="right">Project
                                                 Name</label>
                                         </div>
@@ -419,7 +472,8 @@
                                     <div class="col-6">
                                         <!-- Material input -->
                                         <div class="md-form mt-0">
-                                            <input type="text" name="edit_item_name" class="form-control validate" id="edit_item_name" required>
+                                            <input type="text" name="edit_item_name" class="form-control validate" 
+                                            id="edit_item_name" value="<?php echo $item_name ?>" required>
                                             <label for="edit_item_name" data-error="wrong" data-success="right">Item
                                                 Name</label>
                                         </div>
@@ -430,7 +484,8 @@
                                     <div class="col-12">
                                         <!-- Material input -->
                                         <div class="md-form mt-0">
-                                            <input type="text" name="edit_item_description" class="form-control validate" id="edit_item_description" required>
+                                            <input type="text" name="edit_item_description" class="form-control validate"
+                                             id="edit_item_description" value="<?php echo $item_description ?>" required>
                                             <label for="edit_item_description" data-error="wrong" data-success="right">Item
                                                 Description</label>
                                         </div>
@@ -441,7 +496,8 @@
                                     <div class="col-6">
                                         <!-- Material input -->
                                         <div class="md-form mt-0">
-                                            <input type="text" name="edit_quantity_type" class="form-control validate" id="edit_quantity_type" required>
+                                            <input type="text" name="edit_quantity_type" class="form-control validate" 
+                                            id="edit_quantity_type" value="<?php echo $unit ?>" required>
                                             <label for="edit_quantity_type" data-error="wrong" data-success="right">Unit</label>
                                         </div>
                                     </div>
@@ -451,7 +507,8 @@
                                     <div class="col-6">
                                         <!-- Material input -->
                                         <div class="md-form mt-0">
-                                            <input type="text" name="edit_unit_cost" class="form-control validate" id="edit_unit_cost" required>
+                                            <input type="text" name="edit_unit_cost" class="form-control validate" 
+                                            id="edit_unit_cost" value="<?php echo $unit_cost ?>" step="0.01" min="0" required>
                                             <label for="edit_unit_cost" data-error="wrong" data-success="right">Unit
                                                 Cost</label>
                                         </div>
@@ -462,7 +519,8 @@
                                     <div class="col-12">
                                         <!-- Material input -->
                                         <div class="md-form mt-0">
-                                            <input type="text" name="edit_remarks" class="form-control validate" id="edit_remarks" required>
+                                            <input type="text" name="edit_remarks" class="form-control validate" 
+                                            id="edit_remarks" value="<?php echo $remarks ?>" required>
                                             <label for="edit_remarks" data-error="wrong" data-success="right">Remarks</label>
                                         </div>
                                     </div>
@@ -472,7 +530,8 @@
                                     <div class="col-12">
                                         <!-- Material input -->
                                         <div class="md-form">
-                                            <input type="date" name="edit_date_added" class="form-control validate" id="edit_date_added">
+                                            <input type="date" name="edit_date_added" class="form-control validate" 
+                                            id="edit_date_added" value="<?php echo $date_added ?>" required>
                                             <label for="edit_date_added" data-error="wrong" data-success="right">Date
                                                 Added</label>
                                         </div>
@@ -493,7 +552,7 @@
             <!-- /.Modal Edit Item -->
 
             <!-- Modal Confirm Delete -->
-            <div class="modal fade" id="<?php echo $id ?>ModalConfirmDelete" tabindex="-1" role="dialog" aria-labelledby="numModalConfirmDelete" aria-hidden="true">
+            <div class="modal fade" id="ModalConfirmDelete<?php echo $id ?>" tabindex="-1" role="dialog" aria-labelledby="ModalConfirmDelete<?php echo $id ?>" aria-hidden="true">
                 <div class="modal-dialog modal-md modal-notify modal-danger" role="document">
                     <!--Content-->
                     <div class="modal-content text-center">
@@ -524,7 +583,7 @@
             <!-- Modal Confirm Delete -->
 
             <!-- Modal Item Details -->
-            <div class="modal fade" id="<?php echo $id ?>DetailsModal" tabindex="-1" role="dialog" aria-labelledby="<?php echo $id ?>DetailsModal" aria-hidden="true">
+            <div class="modal fade" id="DetailsModal<?php echo $id ?>" tabindex="-1" role="dialog" aria-labelledby="DetailsModal<?php echo $id ?>" aria-hidden="true">
                 <div class="modal-dialog modal-lg" role="document">
                     <div class="modal-content">
                         <div class="modal-header elegant-color text-white d-flex justify-content-center">
