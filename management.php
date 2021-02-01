@@ -104,43 +104,73 @@
                                     </tr>
                                 </thead>
                                 <tbody>
+                                    <?php 
+                                        // SELECT all from inventory table
+                                        $query = "SELECT inventory_tb.*, count_tb.quantity, 
+                                        count_tb.issued, count_tb.returned FROM inventory_tb INNER JOIN count_tb 
+                                        ON count_tb.inventory_id = inventory_tb.inventory_id;";
+                                        
+                                        $result = mysqli_query($conn, $query);
+
+                                        if (mysqli_num_rows($result) > 0) {
+                                            // Display data of each row
+                                            while ($row = mysqli_fetch_assoc($result)) {
+                                                $id = $row['inventory_id'];
+                                                $item_type = $row['item_type'];
+                                                $item_name = $row['item_name'];
+                                                $item_description = $row['item_description'];
+                                                $unit = $row['unit'];
+                                                $unit_cost = $row['unit_cost'];
+                                                $project_name = $row['project_name'];
+                                                $remarks = $row['remarks'];
+                                                $date_added = $row['date_added'];
+                                                $quantity = $row['quantity'];
+                                                $issued = $row['issued'];
+                                                $returned = $row['returned'];
+                                                $balance = $quantity - $issued + $returned;
+                                    ?>
                                     <tr class="text-center">
                                         <td>
                                             <button type="button" class="btn btn-sm btn-success" data-toggle="modal"
-                                                data-target="#numEditItemModal">Edit</button>
+                                                data-target="<?php echo $id ?>EditItemModal">Edit</button>
                                             <button type="button" class="btn btn-sm btn-danger" data-toggle="modal"
-                                                data-target="#numModalConfirmDelete">Delete</button>
+                                                data-target="<?php echo $id ?>ModalConfirmDelete">Delete</button>
                                             <button type="button" class="btn btn-sm btn-info" data-toggle="modal"
-                                                data-target="#numDetailsModal">Details</button>
+                                                data-target="<?php echo $id ?>DetailsModal">Details</button>
                                         </td>
-                                        <td>Sample Project</td>
-                                        <td>Construction</td>
-                                        <td>Cement</td>
-                                        <td>Sack</td>
+                                        <td><?php echo $project_name ?></td>
+                                        <td><?php echo $item_type ?></td>
+                                        <td><?php echo $item_name ?></td>
+                                        <td><?php echo $unit ?></td>
                                         <form action="" method="post">
+                                            <input type="hidden" name="inventory_id" value="<?php echo $id ?>">
                                             <td>
                                                 <div class="md-form input-group mb-3">
-                                                    <input type="number" name="quantity" value="0"
+                                                    <input type="number" name="quantity" value="<?php echo $quantity ?>"
                                                         class="form-control text-center">
                                                 </div>
                                             </td>
                                             <td>
                                                 <div class="md-form input-group mb-3">
-                                                    <input type="number" name="quantity" value="0"
+                                                    <input type="number" name="issued" value="<?php echo $issued ?>"
                                                         class="form-control text-center">
                                                 </div>
                                             </td>
                                             <td>
                                                 <div class="md-form input-group mb-3">
-                                                    <input type="number" name="quantity" value="0"
+                                                    <input type="number" name="returned" value="<?php echo $returned ?>"
                                                         class="form-control text-center">
                                                 </div>
                                             </td>
                                             <td><button type="submit" name="count_submit" class="btn btn-sm btn-primary">Submit</button></td>
                                         </form>
-                                        <td>0</td>
-                                        <td>02/01/2021</td>
+                                        <td><?php echo $balance ?></td>
+                                        <td><?php echo $date_added?></td>
                                     </tr>
+                                <?php 
+                                    }
+                                }
+                                ?>
                                 </tbody>
                                 <tfoot>
                                     <tr class="text-center">
@@ -300,9 +330,33 @@
         </div>
     </div>
     <!-- /.Modal Add Item -->
+    <?php 
+        // SELECT all from inventory table
+        $query = "SELECT inventory_tb.*, count_tb.quantity, 
+        count_tb.issued, count_tb.returned FROM inventory_tb INNER JOIN count_tb 
+        ON count_tb.inventory_id = inventory_tb.inventory_id;";
+        
+        $result = mysqli_query($conn, $query);
 
+        if (mysqli_num_rows($result) > 0) {
+            // Display data of each row
+            while ($row = mysqli_fetch_assoc($result)) {
+                $id = $row['inventory_id'];
+                $item_type = $row['item_type'];
+                $item_name = $row['item_name'];
+                $item_description = $row['item_description'];
+                $unit = $row['unit'];
+                $unit_cost = $row['unit_cost'];
+                $project_name = $row['project_name'];
+                $remarks = $row['remarks'];
+                $date_added = $row['date_added'];
+                $quantity = $row['quantity'];
+                $issued = $row['issued'];
+                $returned = $row['returned'];
+                $balance = $quantity - $issued + $returned;
+    ?>
     <!-- Modal Edit Item -->
-    <div class="modal fade" id="numEditItemModal" tabindex="-1" role="dialog" aria-labelledby="numEditItemModal"
+    <div class="modal fade" id="<?php echo $id ?>EditItemModal" tabindex="-1" role="dialog" aria-labelledby="<?php echo $id ?>EditItemModal"
         aria-hidden="true">
         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
@@ -425,7 +479,7 @@
     <!-- /.Modal Edit Item -->
 
     <!-- Modal Confirm Delete -->
-    <div class="modal fade" id="numModalConfirmDelete" tabindex="-1" role="dialog"
+    <div class="modal fade" id="<?php echo $id ?>ModalConfirmDelete" tabindex="-1" role="dialog"
         aria-labelledby="numModalConfirmDelete" aria-hidden="true">
         <div class="modal-dialog modal-md modal-notify modal-danger" role="document">
             <!--Content-->
@@ -457,7 +511,7 @@
     <!-- Modal Confirm Delete -->
 
     <!-- Modal Item Details -->
-    <div class="modal fade" id="numDetailsModal" tabindex="-1" role="dialog" aria-labelledby="numDetailsModal"
+    <div class="modal fade" id="<?php echo $id ?>DetailsModal" tabindex="-1" role="dialog" aria-labelledby="<?php echo $id ?>DetailsModal"
         aria-hidden="true">
         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
@@ -511,6 +565,10 @@
         </div>
     </div>
     <!-- /.Modal Item Details -->
+    <?php 
+        }
+    }
+    ?>
 
 
     <!-- Footer -->
