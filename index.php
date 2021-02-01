@@ -1,6 +1,6 @@
+<?php require "config/connectdb.php"; ?>
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -28,7 +28,7 @@
   <nav class="navbar navbar-expand-lg navbar-dark elegant-color">
 
     <!-- Navbar brand -->
-    <a class="navbar-brand" href="index.html">Warehouse Control</a>
+    <a class="navbar-brand" href="index.php">Warehouse Control</a>
 
     <!-- Collapse button -->
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#spediNavBar"
@@ -42,15 +42,15 @@
       <!-- Links -->
       <ul class="navbar-nav mr-auto">
         <li class="nav-item active">
-          <a class="nav-link" href="index.html">Dashboard
+          <a class="nav-link" href="index.php">Dashboard
             <span class="sr-only">(current)</span>
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="management.html">Management</a>
+          <a class="nav-link" href="management.php">Management</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="summary.html">Summary</a>
+          <a class="nav-link" href="summary.php">Summary</a>
         </li>
       </ul>
       <!-- Links -->
