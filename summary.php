@@ -1,3 +1,4 @@
+<?php require "config/connectdb.php"; ?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -41,14 +42,14 @@
             <!-- Links -->
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item">
-                    <a class="nav-link" href="index.html">Dashboard</a>
+                    <a class="nav-link" href="index.php">Dashboard</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="management.html">Management
+                    <a class="nav-link" href="management.php">Management
                     </a>
                 </li>
                 <li class="nav-item active">
-                    <a class="nav-link" href="summary.html">Summary
+                    <a class="nav-link" href="summary.php">Summary
                         <span class="sr-only">(current)</span>
                     </a>
                 </li>
