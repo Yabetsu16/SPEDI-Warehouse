@@ -68,30 +68,47 @@
         $unit_cost = $_POST['unit_cost'];
         $remarks = $_POST['remarks'];
         $date_added = $_POST['date_added'];
-        $query = "INSERT INTO inventory_tb(item_type, item_name, 
+
+        $query = "SELECT * FROM inventory_tb WHERE item_type = ? AND item_name = ? 
+            AND item_description = ? AND project_name = ?";
+        $stmt = $conn->prepare($query);
+        $stmt->bind_param('ssss', $item_type, $item_name, $item_description, $project_name);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        if (mysqli_num_rows($result) > 0) { ?>
+            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                Item <strong><?php echo $item_name . " - " . $item_type ?> </strong> has duplicate entry.
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+    <?php    } else {
+            $query = "INSERT INTO inventory_tb(item_type, item_name, 
                 item_description, unit, unit_cost, project_name, remarks, date_added) 
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-        $stmt = $conn->prepare($query);
-        $stmt->bind_param(
-            "ssssdsss",
-            $item_type,
-            $item_name,
-            $item_description,
-            $unit,
-            $unit_cost,
-            $project_name,
-            $remarks,
-            $date_added
-        );
+            $stmt = $conn->prepare($query);
+            $stmt->bind_param(
+                "ssssdsss",
+                $item_type,
+                $item_name,
+                $item_description,
+                $unit,
+                $unit_cost,
+                $project_name,
+                $remarks,
+                $date_added
+            );
 
-        $stmt->execute();
-        $result = $stmt->get_result();
+            $stmt->execute();
+            $result = $stmt->get_result();
 
-        $query = "INSERT INTO count_tb (inventory_id) VALUES 
+            $query = "INSERT INTO count_tb (inventory_id) VALUES 
                 ((SELECT inventory_id FROM inventory_tb WHERE inventory_id = LAST_INSERT_ID()));";
-        $stmt = $conn->prepare($query);
-        $stmt->execute();
-        $result = $stmt->get_result();
+            $stmt = $conn->prepare($query);
+            $stmt->execute();
+            $result = $stmt->get_result();
+        }
     }
     ?>
 
