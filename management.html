@@ -78,12 +78,16 @@
                             <table id="dtBasicExample" class="table table-striped table-responsive-md btn-table"
                                 cellspacing="0" width="100%">
                                 <thead>
-                                    <tr>
+                                    <tr class="text-center">
                                         <th class="th-sm">Actions
                                         </th>
-                                        <th class="th-sm">Name
+                                        <th class="th-sm">Project Name
                                         </th>
-                                        <th class="th-sm">Description
+                                        <th class="th-sm">Item Type
+                                        </th>
+                                        <th class="th-sm">Item Name
+                                        </th>
+                                        <th class="th-sm">Unit
                                         </th>
                                         <th class="th-sm">Quantity
                                         </th>
@@ -91,10 +95,16 @@
                                         </th>
                                         <th class="th-sm">Returned
                                         </th>
+                                        <th class="th-sm">
+                                        </th>
+                                        <th class="th-sm">Balance
+                                        </th>
+                                        <th class="th-sm">Date Added
+                                        </th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr>
+                                    <tr class="text-center">
                                         <td>
                                             <button type="button" class="btn btn-sm btn-success" data-toggle="modal"
                                                 data-target="#numEditItemModal">Edit</button>
@@ -103,174 +113,58 @@
                                             <button type="button" class="btn btn-sm btn-info" data-toggle="modal"
                                                 data-target="#numDetailsModal">Details</button>
                                         </td>
+                                        <td>Sample Project</td>
+                                        <td>Construction</td>
                                         <td>Cement</td>
-                                        <td>Sack of Cement</td>
-                                        <td>5</td>
+                                        <td>Sack</td>
+                                        <form action="" method="post">
+                                            <td>
+                                                <div class="md-form input-group mb-3">
+                                                    <input type="number" name="quantity" value="0"
+                                                        class="form-control text-center">
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="md-form input-group mb-3">
+                                                    <input type="number" name="quantity" value="0"
+                                                        class="form-control text-center">
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="md-form input-group mb-3">
+                                                    <input type="number" name="quantity" value="0"
+                                                        class="form-control text-center">
+                                                </div>
+                                            </td>
+                                            <td><button type="submit" name="count_submit" class="btn btn-sm btn-primary">Submit</button></td>
+                                        </form>
                                         <td>0</td>
-                                        <td>0</td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <button type="button" class="btn btn-sm btn-success" data-toggle="modal"
-                                                data-target="#numEditItemModal">Edit</button>
-                                            <button type="button" class="btn btn-sm btn-danger" data-toggle="modal"
-                                                data-target="#numModalConfirmDelete">Delete</button>
-                                            <button type="button" class="btn btn-sm btn-info" data-toggle="modal"
-                                                data-target="#numDetailsModal">Details</button>
-                                        </td>
-                                        <td>Cement</td>
-                                        <td>Sack of Cement</td>
-                                        <td>5</td>
-                                        <td>0</td>
-                                        <td>0</td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <button type="button" class="btn btn-sm btn-success" data-toggle="modal"
-                                                data-target="#numEditItemModal">Edit</button>
-                                            <button type="button" class="btn btn-sm btn-danger" data-toggle="modal"
-                                                data-target="#numModalConfirmDelete">Delete</button>
-                                            <button type="button" class="btn btn-sm btn-info" data-toggle="modal"
-                                                data-target="#numDetailsModal">Details</button>
-                                        </td>
-                                        <td>Cement</td>
-                                        <td>Sack of Cement</td>
-                                        <td>5</td>
-                                        <td>0</td>
-                                        <td>0</td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <button type="button" class="btn btn-sm btn-success" data-toggle="modal"
-                                                data-target="#numEditItemModal">Edit</button>
-                                            <button type="button" class="btn btn-sm btn-danger" data-toggle="modal"
-                                                data-target="#numModalConfirmDelete">Delete</button>
-                                            <button type="button" class="btn btn-sm btn-info" data-toggle="modal"
-                                                data-target="#numDetailsModal">Details</button>
-                                        </td>
-                                        <td>Cement</td>
-                                        <td>Sack of Cement</td>
-                                        <td>5</td>
-                                        <td>0</td>
-                                        <td>0</td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <button type="button" class="btn btn-sm btn-success" data-toggle="modal"
-                                                data-target="#numEditItemModal">Edit</button>
-                                            <button type="button" class="btn btn-sm btn-danger" data-toggle="modal"
-                                                data-target="#numModalConfirmDelete">Delete</button>
-                                            <button type="button" class="btn btn-sm btn-info" data-toggle="modal"
-                                                data-target="#numDetailsModal">Details</button>
-                                        </td>
-                                        <td>Cement</td>
-                                        <td>Sack of Cement</td>
-                                        <td>5</td>
-                                        <td>0</td>
-                                        <td>0</td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <button type="button" class="btn btn-sm btn-success" data-toggle="modal"
-                                                data-target="#numEditItemModal">Edit</button>
-                                            <button type="button" class="btn btn-sm btn-danger" data-toggle="modal"
-                                                data-target="#numModalConfirmDelete">Delete</button>
-                                            <button type="button" class="btn btn-sm btn-info" data-toggle="modal"
-                                                data-target="#numDetailsModal">Details</button>
-                                        </td>
-                                        <td>Cement</td>
-                                        <td>Sack of Cement</td>
-                                        <td>5</td>
-                                        <td>0</td>
-                                        <td>0</td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <button type="button" class="btn btn-sm btn-success" data-toggle="modal"
-                                                data-target="#numEditItemModal">Edit</button>
-                                            <button type="button" class="btn btn-sm btn-danger" data-toggle="modal"
-                                                data-target="#numModalConfirmDelete">Delete</button>
-                                            <button type="button" class="btn btn-sm btn-info" data-toggle="modal"
-                                                data-target="#numDetailsModal">Details</button>
-                                        </td>
-                                        <td>Cement</td>
-                                        <td>Sack of Cement</td>
-                                        <td>5</td>
-                                        <td>0</td>
-                                        <td>0</td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <button type="button" class="btn btn-sm btn-success" data-toggle="modal"
-                                                data-target="#numEditItemModal">Edit</button>
-                                            <button type="button" class="btn btn-sm btn-danger" data-toggle="modal"
-                                                data-target="#numModalConfirmDelete">Delete</button>
-                                            <button type="button" class="btn btn-sm btn-info" data-toggle="modal"
-                                                data-target="#numDetailsModal">Details</button>
-                                        </td>
-                                        <td>Cement</td>
-                                        <td>Sack of Cement</td>
-                                        <td>5</td>
-                                        <td>0</td>
-                                        <td>0</td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <button type="button" class="btn btn-sm btn-success" data-toggle="modal"
-                                                data-target="#numEditItemModal">Edit</button>
-                                            <button type="button" class="btn btn-sm btn-danger" data-toggle="modal"
-                                                data-target="#numModalConfirmDelete">Delete</button>
-                                            <button type="button" class="btn btn-sm btn-info" data-toggle="modal"
-                                                data-target="#numDetailsModal">Details</button>
-                                        </td>
-                                        <td>Cement</td>
-                                        <td>Sack of Cement</td>
-                                        <td>5</td>
-                                        <td>0</td>
-                                        <td>0</td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <button type="button" class="btn btn-sm btn-success" data-toggle="modal"
-                                                data-target="#numEditItemModal">Edit</button>
-                                            <button type="button" class="btn btn-sm btn-danger" data-toggle="modal"
-                                                data-target="#numModalConfirmDelete">Delete</button>
-                                            <button type="button" class="btn btn-sm btn-info" data-toggle="modal"
-                                                data-target="#numDetailsModal">Details</button>
-                                        </td>
-                                        <td>Cement</td>
-                                        <td>Sack of Cement</td>
-                                        <td>5</td>
-                                        <td>0</td>
-                                        <td>0</td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <button type="button" class="btn btn-sm btn-success" data-toggle="modal"
-                                                data-target="#numEditItemModal">Edit</button>
-                                            <button type="button" class="btn btn-sm btn-danger" data-toggle="modal"
-                                                data-target="#numModalConfirmDelete">Delete</button>
-                                            <button type="button" class="btn btn-sm btn-info" data-toggle="modal"
-                                                data-target="#numDetailsModal">Details</button>
-                                        </td>
-                                        <td>Cement</td>
-                                        <td>Sack of Cement</td>
-                                        <td>5</td>
-                                        <td>0</td>
-                                        <td>0</td>
+                                        <td>02/01/2021</td>
                                     </tr>
                                 </tbody>
                                 <tfoot>
-                                    <tr>
-                                        <th>Name
+                                    <tr class="text-center">
+                                        <th class="th-sm">Actions
                                         </th>
-                                        <th>Description
+                                        <th class="th-sm">Project Name
                                         </th>
-                                        <th>Quantity
+                                        <th class="th-sm">Item Type
                                         </th>
-                                        <th>Issued
+                                        <th class="th-sm">Item Name
                                         </th>
-                                        <th>Returned
+                                        <th class="th-sm">Unit
+                                        </th>
+                                        <th class="th-sm">Quantity
+                                        </th>
+                                        <th class="th-sm">Issued
+                                        </th>
+                                        <th class="th-sm">Returned
+                                        </th>
+                                        <th class="th-sm">
+                                        </th>
+                                        <th class="th-sm">Balance
+                                        </th>
+                                        <th class="th-sm">Date Added
                                         </th>
                                     </tr>
                                 </tfoot>
@@ -302,7 +196,7 @@
                         <!-- Grid row -->
                         <div class="row">
                             <!-- Grid column -->
-                            <div class="col-6">
+                            <div class="col-12">
                                 <!-- Material input -->
                                 <div class="md-form mt-0">
                                     <select name="item_type" class="browser-default custom-select">
@@ -312,6 +206,18 @@
                                         <option value="Safety">Safety</option>
                                         <option value="Admin">Admin</option>
                                     </select>
+                                </div>
+                            </div>
+                            <!-- Grid column -->
+
+                            <!-- Grid column -->
+                            <div class="col-6">
+                                <!-- Material input -->
+                                <div class="md-form mt-0">
+                                    <input type="text" name="project_name" class="form-control validate"
+                                        id="project_name" required>
+                                    <label for="project_name" data-error="wrong" data-success="right">Project
+                                        Name</label>
                                 </div>
                             </div>
                             <!-- Grid column -->
@@ -343,9 +249,9 @@
                             <div class="col-6">
                                 <!-- Material input -->
                                 <div class="md-form mt-0">
-                                    <input type="number" name="quantity" class="form-control validate" id="quantity"
-                                        min="0">
-                                    <label for="quantity" data-error="wrong" data-success="right">Quantity</label>
+                                    <input type="text" name="quantity_type" class="form-control validate"
+                                        id="quantity_type" required>
+                                    <label for="quantity_type" data-error="wrong" data-success="right">Unit</label>
                                 </div>
                             </div>
                             <!-- Grid column -->
@@ -354,10 +260,9 @@
                             <div class="col-6">
                                 <!-- Material input -->
                                 <div class="md-form mt-0">
-                                    <input type="text" name="quantity_type" class="form-control validate"
-                                        id="quantity_type" required>
-                                    <label for="quantity_type" data-error="wrong" data-success="right">Quantity
-                                        Type</label>
+                                    <input type="text" name="unit_cost" class="form-control validate" id="unit_cost"
+                                        required>
+                                    <label for="unit_cost" data-error="wrong" data-success="right">Unit Cost</label>
                                 </div>
                             </div>
                             <!-- Grid column -->
@@ -369,6 +274,16 @@
                                     <input type="text" name="remarks" class="form-control validate" id="remarks"
                                         required>
                                     <label for="remarks" data-error="wrong" data-success="right">Remarks</label>
+                                </div>
+                            </div>
+                            <!-- Grid column -->
+
+                            <!-- Grid column -->
+                            <div class="col-12">
+                                <!-- Material input -->
+                                <div class="md-form">
+                                    <input type="date" name="date_added" class="form-control validate" id="date_added">
+                                    <label for="date_added" data-error="wrong" data-success="right">Date Added</label>
                                 </div>
                             </div>
                             <!-- Grid column -->
@@ -400,16 +315,28 @@
                         <!-- Grid row -->
                         <div class="row">
                             <!-- Grid column -->
-                            <div class="col-6">
+                            <div class="col-12">
                                 <!-- Material input -->
                                 <div class="md-form mt-0">
                                     <select name="edit_item_type" class="browser-default custom-select">
-                                        <option value="recent" selected>Recent: Type</option>
+                                        <option selected>Select Item Type</option>
                                         <option value="Materials">Materials</option>
                                         <option value="Tools">Tools</option>
                                         <option value="Safety">Safety</option>
                                         <option value="Admin">Admin</option>
                                     </select>
+                                </div>
+                            </div>
+                            <!-- Grid column -->
+
+                            <!-- Grid column -->
+                            <div class="col-6">
+                                <!-- Material input -->
+                                <div class="md-form mt-0">
+                                    <input type="text" name="edit_project_name" class="form-control validate"
+                                        id="edit_project_name" required>
+                                    <label for="edit_project_name" data-error="wrong" data-success="right">Project
+                                        Name</label>
                                 </div>
                             </div>
                             <!-- Grid column -->
@@ -442,9 +369,9 @@
                             <div class="col-6">
                                 <!-- Material input -->
                                 <div class="md-form mt-0">
-                                    <input type="number" name="edit_quantity" class="form-control validate"
-                                        id="edit_quantity" min="0">
-                                    <label for="quedit_antity" data-error="wrong" data-success="right">Quantity</label>
+                                    <input type="text" name="edit_quantity_type" class="form-control validate"
+                                        id="edit_quantity_type" required>
+                                    <label for="edit_quantity_type" data-error="wrong" data-success="right">Unit</label>
                                 </div>
                             </div>
                             <!-- Grid column -->
@@ -453,10 +380,10 @@
                             <div class="col-6">
                                 <!-- Material input -->
                                 <div class="md-form mt-0">
-                                    <input type="text" name="edit_quantity_type" class="form-control validate"
-                                        id="edit_quantity_type" required>
-                                    <label for="edit_quantity_type" data-error="wrong" data-success="right">Quantity
-                                        Type</label>
+                                    <input type="text" name="edit_unit_cost" class="form-control validate"
+                                        id="edit_unit_cost" required>
+                                    <label for="edit_unit_cost" data-error="wrong" data-success="right">Unit
+                                        Cost</label>
                                 </div>
                             </div>
                             <!-- Grid column -->
@@ -468,6 +395,18 @@
                                     <input type="text" name="edit_remarks" class="form-control validate"
                                         id="edit_remarks" required>
                                     <label for="edit_remarks" data-error="wrong" data-success="right">Remarks</label>
+                                </div>
+                            </div>
+                            <!-- Grid column -->
+
+                            <!-- Grid column -->
+                            <div class="col-12">
+                                <!-- Material input -->
+                                <div class="md-form">
+                                    <input type="date" name="edit_date_added" class="form-control validate"
+                                        id="edit_date_added">
+                                    <label for="edit_date_added" data-error="wrong" data-success="right">Date
+                                        Added</label>
                                 </div>
                             </div>
                             <!-- Grid column -->
@@ -530,28 +469,6 @@
                     <!-- Grid row -->
                     <div class="row">
                         <!-- Grid column -->
-                        <div class="col-6">
-                            <!-- Material input -->
-                            <div class="md-form mt-0">
-                                <input type="text" name="item_type" class="form-control disabled" id="item_type"
-                                    value="Sample">
-                                <label for="item_type">Item Type</label>
-                            </div>
-                        </div>
-                        <!-- Grid column -->
-
-                        <!-- Grid column -->
-                        <div class="col-6">
-                            <!-- Material input -->
-                            <div class="md-form mt-0">
-                                <input type="text" name="item_name" class="form-control disabled" id="item_name"
-                                    value="Sample">
-                                <label for="item_name">Item Name</label>
-                            </div>
-                        </div>
-                        <!-- Grid column -->
-
-                        <!-- Grid column -->
                         <div class="col-12">
                             <!-- Material input -->
                             <div class="md-form mt-0">
@@ -563,23 +480,12 @@
                         <!-- Grid column -->
 
                         <!-- Grid column -->
-                        <div class="col-6">
+                        <div class="col-12">
                             <!-- Material input -->
                             <div class="md-form mt-0">
-                                <input type="number" name="quantity" class="form-control disabled" id="quantity" min="0"
-                                    value="5">
-                                <label for="quantity">Quantity</label>
-                            </div>
-                        </div>
-                        <!-- Grid column -->
-
-                        <!-- Grid column -->
-                        <div class="col-6">
-                            <!-- Material input -->
-                            <div class="md-form mt-0">
-                                <input type="text" name="quantity_type" class="form-control disabled" id="quantity_type"
+                                <input type="text" name="unit_cost" class="form-control disabled" id="unit_cost"
                                     value="Sample">
-                                <label for="quantity_type">Unit</label>
+                                <label for="unit_cost">Unit Cost</label>
                             </div>
                         </div>
                         <!-- Grid column -->
