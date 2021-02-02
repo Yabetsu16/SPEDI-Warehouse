@@ -126,6 +126,7 @@
         $date_added = $_POST['date_added'];
         $date_issued = $_POST['date_issued'];
         $date_returned = $_POST['date_returned'];
+        $balance = $quantity - $issued + $returned;
 
         $query = "UPDATE count_tb SET quantity = ?, issued = ?, returned = ?, 
         date_added = ?, date_issued = ?, date_returned = ? WHERE inventory_id = ?";
@@ -134,10 +135,11 @@
         $stmt->execute();
         $result = $stmt->get_result();
 
-        $query = "INSERT INTO movement_tb (inventory_id, quantity, issued, returned, 
-        date_added, date_issued, date_returned) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        $query = "INSERT INTO movement_tb (inventory_id, quantity, issued, returned, balance,
+        date_added, date_issued, date_returned) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         $stmt = $conn->prepare($query);
-        $stmt->bind_param("iiiisss", $inventory_id, $quantity, $issued, $returned, $date_added, $date_issued, $date_returned);
+        $stmt->bind_param("iiiiisss", $inventory_id, $quantity, $issued, $returned, $balance,
+        $date_added, $date_issued, $date_returned);
         $stmt->execute();
         $result = $stmt->get_result();
 
@@ -241,30 +243,31 @@
                                                 <form action="#" method="post">
                                                     <input type="hidden" name="inventory_id" value="<?php echo $id ?>">
                                                     <input type="hidden" name="count_id" value="<?php echo $count_id ?>">
+                                                    <input type="hidden" name="balance" value="<?php echo $balance ?>">
                                                     <td>
                                                         <div class="md-form input-group">
-                                                            <input type="number" name="quantity" min="0" value="<?php echo $quantity ?>" class="form-control text-center">
+                                                            <input type="number" name="quantity" min="0" value="<?php echo $balance ?>"class="form-control text-center">
                                                         </div>
                                                         <div class="md-form input-group">
-                                                            <input type="date" name="date_added" value="<?php echo $date_added ?>" class="form-control text-center" id="date_added">
+                                                            <input type="date" name="date_added" class="form-control text-center" id="date_added">
                                                             <label for="date_added">Date Added</label>
                                                         </div>
                                                     </td>
                                                     <td>
                                                         <div class="md-form input-group">
-                                                            <input type="number" name="issued" min="0" value="<?php echo $issued ?>" class="form-control text-center">
+                                                            <input type="number" name="issued" min="0" value="0" class="form-control text-center">
                                                         </div>
                                                         <div class="md-form input-group">
-                                                            <input type="date" name="date_issued" value="<?php echo $date_issued ?>" class="form-control text-center" id="date_issued">
+                                                            <input type="date" name="date_issued" class="form-control text-center" id="date_issued">
                                                             <label for="date_issued">Date Issued</label>
                                                         </div>
                                                     </td>
                                                     <td>
                                                         <div class="md-form input-group">
-                                                            <input type="number" name="returned" min="0" value="<?php echo $returned ?>" class="form-control text-center">
+                                                            <input type="number" name="returned" min="0" value="0" class="form-control text-center">
                                                         </div>
                                                         <div class="md-form input-group">
-                                                            <input type="date" name="date_returned" value="<?php echo $date_returned ?>" class="form-control text-center" id="date_returned">
+                                                            <input type="date" name="date_returned" class="form-control text-center" id="date_returned">
                                                             <label for="date_returned">Date Returned</label>
                                                         </div>
                                                     </td>
@@ -663,7 +666,7 @@
                 <div class="modal-dialog modal-fluid" role="document">
                     <div class="modal-content">
                         <div class="modal-header elegant-color text-white d-flex justify-content-center">
-                            <h1 class="modal-title"><?php echo $item_name ?> Details</h1>
+                            <h1 class="modal-title text-center"><?php echo $item_type ?> Item <?php echo $item_name ?>'s Movement from Project <?php echo $project_name ?></h1>
                         </div>
                         <div class="modal-body">
                             <!-- Material form grid -->
@@ -671,7 +674,7 @@
                             <div class="row">
                                 <!-- Grid column -->
                                 <div class="col-12">
-                                    <table id="dtBasicExample" class="table table-striped table-responsive-lg btn-table" cellspacing="0" width="100%">
+                                    <table id="dtMovement" class="table table-striped table-responsive-lg btn-table" cellspacing="0" width="100%">
                                         <thead>
                                             <tr class="text-center">
                                                 <th class="th-sm">Quantity
@@ -708,7 +711,7 @@
                                                     $date_issued = $row['date_issued'];
                                                     $returned = $row['returned'];
                                                     $date_returned = $row['date_returned'];
-                                                    $balance = $quantity - $issued + $returned;
+                                                    $balance = $row['balance'];
                                             ?>
                                                     <tr class="text-center">
                                                         <td><?php echo $quantity ?></td>
@@ -788,6 +791,12 @@
     <script type="text/javascript">
         $(document).ready(function() {
             $('#dtBasicExample').DataTable({});
+            $('.dataTables_length').addClass('bs-select');
+        });
+    </script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('#dtMovement').DataTable({});
             $('.dataTables_length').addClass('bs-select');
         });
     </script>
