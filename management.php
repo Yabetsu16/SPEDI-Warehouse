@@ -67,7 +67,6 @@
         $unit = $_POST['unit'];
         $unit_cost = $_POST['unit_cost'];
         $remarks = $_POST['remarks'];
-        $date_added = $_POST['date_added'];
 
         $query = "SELECT * FROM inventory_tb WHERE item_type = ? AND item_name = ? 
             AND item_description = ? AND project_name = ?";
@@ -85,19 +84,18 @@
             </div>
     <?php    } else {
             $query = "INSERT INTO inventory_tb(item_type, item_name, 
-                item_description, unit, unit_cost, project_name, remarks, date_added) 
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+                item_description, unit, unit_cost, project_name, remarks) 
+                VALUES (?, ?, ?, ?, ?, ?, ?)";
             $stmt = $conn->prepare($query);
             $stmt->bind_param(
-                "ssssdsss",
+                "ssssdss",
                 $item_type,
                 $item_name,
                 $item_description,
                 $unit,
                 $unit_cost,
                 $project_name,
-                $remarks,
-                $date_added
+                $remarks
             );
 
             $stmt->execute();
@@ -125,18 +123,21 @@
         $quantity = $_POST['quantity'];
         $issued = $_POST['issued'];
         $returned = $_POST['returned'];
+        $date_added = $_POST['date_added'];
         $date_issued = $_POST['date_issued'];
         $date_returned = $_POST['date_returned'];
 
-        $query = "UPDATE count_tb SET quantity = ?, issued = ?, returned = ?, date_issued = ?, date_returned = ? WHERE inventory_id = ?";
+        $query = "UPDATE count_tb SET quantity = ?, issued = ?, returned = ?, 
+        date_added = ?, date_issued = ?, date_returned = ? WHERE inventory_id = ?";
         $stmt = $conn->prepare($query);
-        $stmt->bind_param("iiissi", $quantity, $issued, $returned, $date_issued, $date_returned, $inventory_id);
+        $stmt->bind_param("iiisssi", $quantity, $issued, $returned, $date_added, $date_issued, $date_returned, $inventory_id);
         $stmt->execute();
         $result = $stmt->get_result();
 
-        $query = "INSERT INTO movement_tb (inventory_id, count_id) VALUES (?, ?)";
+        $query = "INSERT INTO movement_tb (inventory_id, quantity, issued, returned, 
+        date_added, date_issued, date_returned) VALUES (?, ?, ?, ?, ?, ?, ?)";
         $stmt = $conn->prepare($query);
-        $stmt->bind_param("ii", $inventory_id, $count_id);
+        $stmt->bind_param("iiiisss", $inventory_id, $quantity, $issued, $returned, $date_added, $date_issued, $date_returned);
         $stmt->execute();
         $result = $stmt->get_result();
 
@@ -193,15 +194,14 @@
                                         </th>
                                         <th class="th-sm">Balance
                                         </th>
-                                        <th class="th-sm">Date Added
-                                        </th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <?php
                                     // SELECT all from inventory table
                                     $query = "SELECT inventory_tb.*, count_tb.count_id, count_tb.quantity, 
-                                    count_tb.issued, count_tb.returned, count_tb.date_issued, count_tb.date_returned 
+                                    count_tb.issued, count_tb.returned, count_tb.date_added, 
+                                    count_tb.date_issued, count_tb.date_returned 
                                     FROM inventory_tb INNER JOIN count_tb 
                                         ON count_tb.inventory_id = inventory_tb.inventory_id;";
 
@@ -242,8 +242,12 @@
                                                     <input type="hidden" name="inventory_id" value="<?php echo $id ?>">
                                                     <input type="hidden" name="count_id" value="<?php echo $count_id ?>">
                                                     <td>
-                                                        <div class="md-form input-group mb-3">
+                                                        <div class="md-form input-group">
                                                             <input type="number" name="quantity" min="0" value="<?php echo $quantity ?>" class="form-control text-center">
+                                                        </div>
+                                                        <div class="md-form input-group">
+                                                            <input type="date" name="date_added" value="<?php echo $date_added ?>" class="form-control text-center" id="date_added">
+                                                            <label for="date_added">Date Added</label>
                                                         </div>
                                                     </td>
                                                     <td>
@@ -267,7 +271,6 @@
                                                     <td><button type="submit" name="count_submit" class="btn btn-sm btn-primary">Submit</button></td>
                                                 </form>
                                                 <td><?php echo $balance ?></td>
-                                                <td><?php echo $date_added ?></td>
                                             </tr>
                                     <?php
                                         }
@@ -295,8 +298,6 @@
                                         <th class="th-sm">
                                         </th>
                                         <th class="th-sm">Balance
-                                        </th>
-                                        <th class="th-sm">Date Added
                                         </th>
                                     </tr>
                                 </tfoot>
@@ -402,16 +403,6 @@
                                 </div>
                             </div>
                             <!-- Grid column -->
-
-                            <!-- Grid column -->
-                            <div class="col-12">
-                                <!-- Material input -->
-                                <div class="md-form">
-                                    <input type="date" name="date_added" class="form-control validate" id="date_added">
-                                    <label for="date_added" data-error="wrong" data-success="right">Date Added</label>
-                                </div>
-                            </div>
-                            <!-- Grid column -->
                         </div>
                         <!-- Grid row -->
                         <div class="text-center">
@@ -427,9 +418,7 @@
     <!-- /.Modal Add Item -->
     <?php
     // SELECT all from inventory table
-    $query = "SELECT inventory_tb.*, count_tb.quantity, 
-        count_tb.issued, count_tb.returned FROM inventory_tb INNER JOIN count_tb 
-        ON count_tb.inventory_id = inventory_tb.inventory_id;";
+    $query = "SELECT * FROM inventory_tb";
 
     $result = mysqli_query($conn, $query);
 
@@ -444,10 +433,6 @@
             $unit_cost = $row['unit_cost'];
             $project_name = $row['project_name'];
             $remarks = $row['remarks'];
-            $date_added = $row['date_added'];
-            $quantity = $row['quantity'];
-            $issued = $row['issued'];
-            $returned = $row['returned'];
             $balance = $quantity - $issued + $returned;
     ?>
             <!-- Modal Edit Item -->
@@ -575,17 +560,6 @@
                                         </div>
                                     </div>
                                     <!-- Grid column -->
-
-                                    <!-- Grid column -->
-                                    <div class="col-12">
-                                        <!-- Material input -->
-                                        <div class="md-form">
-                                            <input type="date" name="edit_date_added" class="form-control validate" id="edit_date_added" value="<?php echo $date_added ?>" required>
-                                            <label for="edit_date_added" data-error="wrong" data-success="right">Date
-                                                Added</label>
-                                        </div>
-                                    </div>
-                                    <!-- Grid column -->
                                 </div>
                                 <!-- Grid row -->
                                 <div class="text-center">
@@ -683,6 +657,105 @@
                 </div>
             </div>
             <!-- /.Modal Item Details -->
+
+            <!-- Modal Movement -->
+            <div class="modal fade" id="MovementModal<?php echo $id ?>" tabindex="-1" role="dialog" aria-labelledby="MovementModal<?php echo $id ?>" aria-hidden="true">
+                <div class="modal-dialog modal-fluid" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header elegant-color text-white d-flex justify-content-center">
+                            <h1 class="modal-title"><?php echo $item_name ?> Details</h1>
+                        </div>
+                        <div class="modal-body">
+                            <!-- Material form grid -->
+                            <!-- Grid row -->
+                            <div class="row">
+                                <!-- Grid column -->
+                                <div class="col-12">
+                                    <table id="dtBasicExample" class="table table-striped table-responsive-lg btn-table" cellspacing="0" width="100%">
+                                        <thead>
+                                            <tr class="text-center">
+                                                <th class="th-sm">Quantity
+                                                </th>
+                                                <th class="th-sm">Date Added
+                                                </th>
+                                                <th class="th-sm">Issued
+                                                </th>
+                                                <th class="th-sm">Date Issued
+                                                </th>
+                                                <th class="th-sm">Returned
+                                                </th>
+                                                <th class="th-sm">Date Returned
+                                                </th>
+                                                <th class="th-sm">Balance
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <?php
+                                            // SELECT all from inventory table
+                                            $query = "SELECT inventory_tb.*, movement_tb.*
+                                            FROM inventory_tb INNER JOIN movement_tb 
+                                            ON movement_tb.inventory_id = inventory_tb.inventory_id;";
+
+                                            $result = mysqli_query($conn, $query);
+
+                                            if (mysqli_num_rows($result) > 0) {
+                                                // Display data of each row
+                                                while ($row = mysqli_fetch_assoc($result)) {
+                                                    $quantity = $row['quantity'];
+                                                    $date_added = $row['date_added'];
+                                                    $issued = $row['issued'];
+                                                    $date_issued = $row['date_issued'];
+                                                    $returned = $row['returned'];
+                                                    $date_returned = $row['date_returned'];
+                                                    $balance = $quantity - $issued + $returned;
+                                            ?>
+                                                    <tr class="text-center">
+                                                        <td><?php echo $quantity ?></td>
+                                                        <td><?php echo $date_added ?></td>
+                                                        <td><?php echo $issued ?></td>
+                                                        <td><?php echo $date_issued ?></td>
+                                                        <td><?php echo $returned ?></td>
+                                                        <td><?php echo $date_returned ?></td>
+                                                        <td><?php echo $balance ?></td>
+                                                    </tr>
+                                            <?php
+                                                }
+                                            }
+                                            ?>
+                                        </tbody>
+                                        <tfoot>
+                                            <tr class="text-center">
+                                                <th class="th-sm">Quantity
+                                                </th>
+                                                <th class="th-sm">Date Added
+                                                </th>
+                                                <th class="th-sm">Issued
+                                                </th>
+                                                <th class="th-sm">Date Issued
+                                                </th>
+                                                <th class="th-sm">Returned
+                                                </th>
+                                                <th class="th-sm">Date Returned
+                                                </th>
+                                                <th class="th-sm">Balance
+                                                </th>
+                                            </tr>
+                                        </tfoot>
+                                    </table>
+                                </div>
+                                <!-- Grid column -->
+                            </div>
+                            <!-- Grid row -->
+                            <div class="text-center">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            </div>
+                            <!-- Material form grid -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- /.Modal Movement -->
     <?php
         }
     }
