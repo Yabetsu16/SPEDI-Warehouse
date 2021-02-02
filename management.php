@@ -460,8 +460,7 @@
                                     <div class="col-6">
                                         <!-- Material input -->
                                         <div class="md-form mt-0">
-                                            <input type="text" name="edit_project_name" class="form-control validate" 
-                                            id="edit_project_name" value="<?php echo $project_name ?>" required>
+                                            <input type="text" name="edit_project_name" class="form-control validate" id="edit_project_name" value="<?php echo $project_name ?>" required>
                                             <label for="edit_project_name" data-error="wrong" data-success="right">Project
                                                 Name</label>
                                         </div>
@@ -472,8 +471,7 @@
                                     <div class="col-6">
                                         <!-- Material input -->
                                         <div class="md-form mt-0">
-                                            <input type="text" name="edit_item_name" class="form-control validate" 
-                                            id="edit_item_name" value="<?php echo $item_name ?>" required>
+                                            <input type="text" name="edit_item_name" class="form-control validate" id="edit_item_name" value="<?php echo $item_name ?>" required>
                                             <label for="edit_item_name" data-error="wrong" data-success="right">Item
                                                 Name</label>
                                         </div>
@@ -484,8 +482,7 @@
                                     <div class="col-12">
                                         <!-- Material input -->
                                         <div class="md-form mt-0">
-                                            <input type="text" name="edit_item_description" class="form-control validate"
-                                             id="edit_item_description" value="<?php echo $item_description ?>" required>
+                                            <input type="text" name="edit_item_description" class="form-control validate" id="edit_item_description" value="<?php echo $item_description ?>" required>
                                             <label for="edit_item_description" data-error="wrong" data-success="right">Item
                                                 Description</label>
                                         </div>
@@ -496,8 +493,7 @@
                                     <div class="col-6">
                                         <!-- Material input -->
                                         <div class="md-form mt-0">
-                                            <input type="text" name="edit_quantity_type" class="form-control validate" 
-                                            id="edit_quantity_type" value="<?php echo $unit ?>" required>
+                                            <input type="text" name="edit_quantity_type" class="form-control validate" id="edit_quantity_type" value="<?php echo $unit ?>" required>
                                             <label for="edit_quantity_type" data-error="wrong" data-success="right">Unit</label>
                                         </div>
                                     </div>
@@ -507,8 +503,7 @@
                                     <div class="col-6">
                                         <!-- Material input -->
                                         <div class="md-form mt-0">
-                                            <input type="text" name="edit_unit_cost" class="form-control validate" 
-                                            id="edit_unit_cost" value="<?php echo $unit_cost ?>" step="0.01" min="0" required>
+                                            <input type="text" name="edit_unit_cost" class="form-control validate" id="edit_unit_cost" value="<?php echo $unit_cost ?>" step="0.01" min="0" required>
                                             <label for="edit_unit_cost" data-error="wrong" data-success="right">Unit
                                                 Cost</label>
                                         </div>
@@ -519,8 +514,7 @@
                                     <div class="col-12">
                                         <!-- Material input -->
                                         <div class="md-form mt-0">
-                                            <input type="text" name="edit_remarks" class="form-control validate" 
-                                            id="edit_remarks" value="<?php echo $remarks ?>" required>
+                                            <input type="text" name="edit_remarks" class="form-control validate" id="edit_remarks" value="<?php echo $remarks ?>" required>
                                             <label for="edit_remarks" data-error="wrong" data-success="right">Remarks</label>
                                         </div>
                                     </div>
@@ -530,8 +524,7 @@
                                     <div class="col-12">
                                         <!-- Material input -->
                                         <div class="md-form">
-                                            <input type="date" name="edit_date_added" class="form-control validate" 
-                                            id="edit_date_added" value="<?php echo $date_added ?>" required>
+                                            <input type="date" name="edit_date_added" class="form-control validate" id="edit_date_added" value="<?php echo $date_added ?>" required>
                                             <label for="edit_date_added" data-error="wrong" data-success="right">Date
                                                 Added</label>
                                         </div>
@@ -540,6 +533,7 @@
                                 </div>
                                 <!-- Grid row -->
                                 <div class="text-center">
+                                    <input type="hidden" name="inventory_id" value="<?php echo $inventory_id ?>">
                                     <button type="submit" name="edit_item" class="btn btn-primary">Save</button>
                                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                                 </div>
@@ -563,7 +557,7 @@
 
                         <!--Body-->
                         <div class="modal-body">
-                            <h4>Do you want to delete "item_name"?</h4>
+                            <h4>Do you want to delete <?php echo $item_name ?>?</h4>
                             <i class="fas fa-times fa-4x animated rotateIn"></i>
 
                         </div>
@@ -571,10 +565,10 @@
                         <!--Footer-->
                         <div class="modal-footer flex-center">
                             <form action="#" method="post">
+                                <input type="hidden" name="inventory_id" value="<?php echo $id ?>">
                                 <button type="submit" class="btn btn-danger" name="confirmDelete">Yes</button>
                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
                             </form>
-
                         </div>
                     </div>
                     <!--/.Content-->
@@ -584,10 +578,10 @@
 
             <!-- Modal Item Details -->
             <div class="modal fade" id="DetailsModal<?php echo $id ?>" tabindex="-1" role="dialog" aria-labelledby="DetailsModal<?php echo $id ?>" aria-hidden="true">
-                <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-dialog modal-md" role="document">
                     <div class="modal-content">
                         <div class="modal-header elegant-color text-white d-flex justify-content-center">
-                            <h1 class="modal-title">"item_name" Details</h1>
+                            <h1 class="modal-title"><?php echo $item_name ?> Details</h1>
                         </div>
                         <div class="modal-body">
                             <!-- Material form grid -->
@@ -597,7 +591,7 @@
                                 <div class="col-12">
                                     <!-- Material input -->
                                     <div class="md-form mt-0">
-                                        <input type="text" name="item_description" class="form-control disabled" id="item_description" value="Sample">
+                                        <input type="text" name="item_description" class="form-control disabled" id="item_description" value="<?php echo $item_description ?>">
                                         <label for="item_description">Item Description</label>
                                     </div>
                                 </div>
@@ -607,7 +601,7 @@
                                 <div class="col-12">
                                     <!-- Material input -->
                                     <div class="md-form mt-0">
-                                        <input type="text" name="unit_cost" class="form-control disabled" id="unit_cost" value="Sample">
+                                        <input type="text" name="unit_cost" class="form-control disabled" id="unit_cost" value="<?php echo $unit_cost ?>">
                                         <label for="unit_cost">Unit Cost</label>
                                     </div>
                                 </div>
@@ -617,7 +611,7 @@
                                 <div class="col-12">
                                     <!-- Material input -->
                                     <div class="md-form mt-0">
-                                        <input type="text" name="remarks" class="form-control disabled" id="remarks" value="Sample">
+                                        <input type="text" name="remarks" class="form-control disabled" id="remarks" value="<?php echo $remarks ?>">
                                         <label for="remarks">Remarks</label>
                                     </div>
                                 </div>
