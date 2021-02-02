@@ -108,6 +108,48 @@
             $stmt = $conn->prepare($query);
             $stmt->execute();
             $result = $stmt->get_result();
+
+            $query = "INSERT INTO recent_tb (inventory_id) VALUES 
+                ((SELECT inventory_id FROM inventory_tb WHERE inventory_id = LAST_INSERT_ID()));";
+            $stmt = $conn->prepare($query);
+            $stmt->execute();
+            $result = $stmt->get_result();
+        }
+    }
+    ?>
+
+    <?php
+    if (isset($_POST['count_submit'])) {
+        $inventory_id = $_POST['inventory_id'];
+        $count_id = $_POST['count_id'];
+        $quantity = $_POST['quantity'];
+        $issued = $_POST['issued'];
+        $returned = $_POST['returned'];
+        $date_issued = $_POST['date_issued'];
+        $date_returned = $_POST['date_returned'];
+
+        $query = "UPDATE count_tb SET quantity = ?, issued = ?, returned = ?, date_issued = ?, date_returned = ? WHERE inventory_id = ?";
+        $stmt = $conn->prepare($query);
+        $stmt->bind_param("iiissi", $quantity, $issued, $returned, $date_issued, $date_returned, $inventory_id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        $query = "INSERT INTO movement_tb (inventory_id, count_id) VALUES (?, ?)";
+        $stmt = $conn->prepare($query);
+        $stmt->bind_param("ii", $inventory_id, $count_id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        if (!$result) { ?>
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                Count updated.
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+    <?php
+        } else {
+            echo "Failed to update count table: " . mysqli_error($conn);
         }
     }
     ?>
@@ -158,8 +200,9 @@
                                 <tbody>
                                     <?php
                                     // SELECT all from inventory table
-                                    $query = "SELECT inventory_tb.*, count_tb.quantity, 
-                                        count_tb.issued, count_tb.returned FROM inventory_tb INNER JOIN count_tb 
+                                    $query = "SELECT inventory_tb.*, count_tb.count_id, count_tb.quantity, 
+                                    count_tb.issued, count_tb.returned, count_tb.date_issued, count_tb.date_returned 
+                                    FROM inventory_tb INNER JOIN count_tb 
                                         ON count_tb.inventory_id = inventory_tb.inventory_id;";
 
                                     $result = mysqli_query($conn, $query);
@@ -168,6 +211,7 @@
                                         // Display data of each row
                                         while ($row = mysqli_fetch_assoc($result)) {
                                             $id = $row['inventory_id'];
+                                            $count_id = $row['count_id'];
                                             $item_type = $row['item_type'];
                                             $item_name = $row['item_name'];
                                             $item_description = $row['item_description'];
@@ -178,7 +222,9 @@
                                             $date_added = $row['date_added'];
                                             $quantity = $row['quantity'];
                                             $issued = $row['issued'];
+                                            $date_issued = $row['date_issued'];
                                             $returned = $row['returned'];
+                                            $date_returned = $row['date_returned'];
                                             $balance = $quantity - $issued + $returned;
                                     ?>
                                             <tr class="text-center">
@@ -186,26 +232,36 @@
                                                     <button type="button" class="btn btn-sm btn-success" data-toggle="modal" data-target="#EditItemModal<?php echo $id ?>">Edit</button>
                                                     <button type="button" class="btn btn-sm btn-danger" data-toggle="modal" data-target="#ModalConfirmDelete<?php echo $id ?>">Delete</button>
                                                     <button type="button" class="btn btn-sm btn-info" data-toggle="modal" data-target="#DetailsModal<?php echo $id ?>">Details</button>
+                                                    <button type="button" class="btn btn-sm btn-primary btn-block" data-toggle="modal" data-target="#MovementModal<?php echo $id ?>">Movement</button>
                                                 </td>
                                                 <td><?php echo $project_name ?></td>
                                                 <td><?php echo $item_type ?></td>
                                                 <td><?php echo $item_name ?></td>
                                                 <td><?php echo $unit ?></td>
-                                                <form action="" method="post">
+                                                <form action="#" method="post">
                                                     <input type="hidden" name="inventory_id" value="<?php echo $id ?>">
+                                                    <input type="hidden" name="count_id" value="<?php echo $count_id ?>">
                                                     <td>
                                                         <div class="md-form input-group mb-3">
-                                                            <input type="number" name="quantity" value="<?php echo $quantity ?>" class="form-control text-center">
+                                                            <input type="number" name="quantity" min="0" value="<?php echo $quantity ?>" class="form-control text-center">
                                                         </div>
                                                     </td>
                                                     <td>
-                                                        <div class="md-form input-group mb-3">
-                                                            <input type="number" name="issued" value="<?php echo $issued ?>" class="form-control text-center">
+                                                        <div class="md-form input-group">
+                                                            <input type="number" name="issued" min="0" value="<?php echo $issued ?>" class="form-control text-center">
+                                                        </div>
+                                                        <div class="md-form input-group">
+                                                            <input type="date" name="date_issued" value="<?php echo $date_issued ?>" class="form-control text-center" id="date_issued">
+                                                            <label for="date_issued">Date Issued</label>
                                                         </div>
                                                     </td>
                                                     <td>
-                                                        <div class="md-form input-group mb-3">
-                                                            <input type="number" name="returned" value="<?php echo $returned ?>" class="form-control text-center">
+                                                        <div class="md-form input-group">
+                                                            <input type="number" name="returned" min="0" value="<?php echo $returned ?>" class="form-control text-center">
+                                                        </div>
+                                                        <div class="md-form input-group">
+                                                            <input type="date" name="date_returned" value="<?php echo $date_returned ?>" class="form-control text-center" id="date_returned">
+                                                            <label for="date_returned">Date Returned</label>
                                                         </div>
                                                     </td>
                                                     <td><button type="submit" name="count_submit" class="btn btn-sm btn-primary">Submit</button></td>
