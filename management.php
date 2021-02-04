@@ -82,7 +82,7 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-    <?php    } else {
+            <?php    } else {
             $query = "INSERT INTO inventory_tb(item_type, item_name, 
                 item_description, unit, unit_cost, project_name, remarks) 
                 VALUES (?, ?, ?, ?, ?, ?, ?)";
@@ -97,21 +97,34 @@
                 $project_name,
                 $remarks
             );
-
-            $stmt->execute();
-            $result = $stmt->get_result();
+            if ($stmt->execute()) { ?>
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <?php echo $item_name ?> Added.
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            <?php
+            } else { ?>
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    Failed to Add <?php echo $item_name ?> <br>
+                    <?php echo $conn->error ?>
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+    <?php
+            }
 
             $query = "INSERT INTO count_tb (inventory_id) VALUES 
                 ((SELECT inventory_id FROM inventory_tb WHERE inventory_id = LAST_INSERT_ID()));";
             $stmt = $conn->prepare($query);
             $stmt->execute();
-            $result = $stmt->get_result();
 
             $query = "INSERT INTO recent_tb (inventory_id) VALUES 
                 ((SELECT inventory_id FROM inventory_tb WHERE inventory_id = LAST_INSERT_ID()));";
             $stmt = $conn->prepare($query);
             $stmt->execute();
-            $result = $stmt->get_result();
         }
     }
     ?>
@@ -119,6 +132,7 @@
     <?php
     if (isset($_POST['count_submit'])) {
         $inventory_id = $_POST['inventory_id'];
+        $item_name = $_POST['item_name'];
         $count_id = $_POST['count_id'];
         $quantity = $_POST['quantity'];
         $issued = $_POST['issued'];
@@ -138,21 +152,80 @@
         $query = "INSERT INTO movement_tb (inventory_id, quantity, issued, returned, balance,
         date_added, date_issued, date_returned) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         $stmt = $conn->prepare($query);
-        $stmt->bind_param("iiiiisss", $inventory_id, $quantity, $issued, $returned, $balance,
-        $date_added, $date_issued, $date_returned);
-        $stmt->execute();
-        $result = $stmt->get_result();
+        $stmt->bind_param(
+            "iiiiisss",
+            $inventory_id,
+            $quantity,
+            $issued,
+            $returned,
+            $balance,
+            $date_added,
+            $date_issued,
+            $date_returned
+        );
 
-        if (!$result) { ?>
+        if ($stmt->execute()) { ?>
             <div class="alert alert-success alert-dismissible fade show" role="alert">
-                Count updated.
+                <?php echo $item_name ?> Count Updated.
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        <?php
+        } else { ?>
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                Failed to Update <?php echo $item_name ?> Count <br>
+                <?php echo $conn->error ?>
                 <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
     <?php
-        } else {
-            echo "Failed to update count table: " . mysqli_error($conn);
+        }
+    }
+    ?>
+
+    <?php
+    if (isset($_POST['edit_item'])) {
+        $inventory_id = $_POST['inventory_id'];
+        $item_type = $_POST['edit_item_type'];
+        $project_name = $_POST['edit_project_name'];
+        $item_name = $_POST['edit_item_name'];
+        $item_description = $_POST['edit_item_description'];
+        $unit = $_POST['edit_unit'];
+        $unit_cost = $_POST['edit_unit_cost'];
+        $remarks = $_POST['edit_remarks'];
+
+        $query = "UPDATE inventory_tb SET item_type = ?, item_name = ?,
+        item_description = ?, unit = ?, unit_cost = ?, remarks = ?";
+        $stmt = $conn->prepare($query);
+
+        $stmt->bind_param(
+            "ssssds",
+            $item_type,
+            $item_name,
+            $item_description,
+            $unit,
+            $unit_cost,
+            $remarks
+        );
+        if ($stmt->execute()) { ?>
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <?php echo $item_name ?> Editted.
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        <?php
+        } else { ?>
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                Failed to Edit <?php echo $item_name ?> <br>
+                <?php echo $conn->error ?>
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+    <?php
         }
     }
     ?>
@@ -241,12 +314,13 @@
                                                 <td><?php echo $item_name ?></td>
                                                 <td><?php echo $unit ?></td>
                                                 <form action="#" method="post">
+                                                    <input type="hidden" name="item_name" value="<?php echo $item_name ?>">
                                                     <input type="hidden" name="inventory_id" value="<?php echo $id ?>">
                                                     <input type="hidden" name="count_id" value="<?php echo $count_id ?>">
                                                     <input type="hidden" name="balance" value="<?php echo $balance ?>">
                                                     <td>
                                                         <div class="md-form input-group">
-                                                            <input type="number" name="quantity" min="0" value="<?php echo $balance ?>"class="form-control text-center">
+                                                            <input type="number" name="quantity" min="0" value="<?php echo $balance ?>" class="form-control text-center">
                                                         </div>
                                                         <div class="md-form input-group">
                                                             <input type="date" name="date_added" class="form-control text-center" id="date_added">
@@ -537,8 +611,8 @@
                                     <div class="col-6">
                                         <!-- Material input -->
                                         <div class="md-form mt-0">
-                                            <input type="text" name="edit_quantity_type" class="form-control validate" id="edit_quantity_type" value="<?php echo $unit ?>" required>
-                                            <label for="edit_quantity_type" data-error="wrong" data-success="right">Unit</label>
+                                            <input type="text" name="edit_unit" class="form-control validate" id="edit_unit" value="<?php echo $unit ?>" required>
+                                            <label for="edit_unit" data-error="wrong" data-success="right">Unit</label>
                                         </div>
                                     </div>
                                     <!-- Grid column -->
@@ -677,6 +751,8 @@
                                     <table id="dtMovement" class="table table-striped table-responsive-lg btn-table" cellspacing="0" width="100%">
                                         <thead>
                                             <tr class="text-center">
+                                                <th class="th-sm">ID
+                                                </th>
                                                 <th class="th-sm">Quantity
                                                 </th>
                                                 <th class="th-sm">Date Added
@@ -705,6 +781,7 @@
                                             if (mysqli_num_rows($result) > 0) {
                                                 // Display data of each row
                                                 while ($row = mysqli_fetch_assoc($result)) {
+                                                    $id = $row['movement_id'];
                                                     $quantity = $row['quantity'];
                                                     $date_added = $row['date_added'];
                                                     $issued = $row['issued'];
@@ -714,6 +791,7 @@
                                                     $balance = $row['balance'];
                                             ?>
                                                     <tr class="text-center">
+                                                        <td>Movement <?php echo $id ?></td>
                                                         <td><?php echo $quantity ?></td>
                                                         <td><?php echo $date_added ?></td>
                                                         <td><?php echo $issued ?></td>
@@ -729,6 +807,8 @@
                                         </tbody>
                                         <tfoot>
                                             <tr class="text-center">
+                                                <th class="th-sm">ID
+                                                </th>
                                                 <th class="th-sm">Quantity
                                                 </th>
                                                 <th class="th-sm">Date Added
