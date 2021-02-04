@@ -196,22 +196,54 @@
         $unit_cost = $_POST['edit_unit_cost'];
         $remarks = $_POST['edit_remarks'];
 
-        $query = "UPDATE inventory_tb SET item_type = ?, item_name = ?,
-        item_description = ?, unit = ?, unit_cost = ?, remarks = ?";
+        $query = "UPDATE inventory_tb SET item_type = ?, item_name = ?, project_name = ?,
+        item_description = ?, unit = ?, unit_cost = ?, remarks = ?
+        WHERE inventory_id = ?";
         $stmt = $conn->prepare($query);
 
         $stmt->bind_param(
-            "ssssds",
+            "sssssdsi",
             $item_type,
             $item_name,
+            $project_name,
             $item_description,
             $unit,
             $unit_cost,
-            $remarks
+            $remarks,
+            $inventory_id
         );
         if ($stmt->execute()) { ?>
             <div class="alert alert-success alert-dismissible fade show" role="alert">
                 <?php echo $item_name ?> Editted.
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        <?php
+        } else { ?>
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                Failed to Edit <?php echo $item_name ?> <br>
+                <?php echo $conn->error ?>
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+    <?php
+        }
+    }
+    ?>
+
+    <?php
+    if (isset($_POST['delete_item'])) {
+        $inventory_id = $_POST['inventory_id'];
+        $item_name = $_POST['item_name'];
+
+        $query = "DELETE FROM inventory_tb WHERE inventory_id = ?";
+        $stmt = $conn->prepare($query);
+        $stmt->bind_param('i', $inventory_id);
+        if ($stmt->execute()) { ?>
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <?php echo $item_name ?> Deleted.
                 <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -502,7 +534,7 @@
     if (mysqli_num_rows($result) > 0) {
         // Display data of each row
         while ($row = mysqli_fetch_assoc($result)) {
-            $id = $row['inventory_id'];
+            $inventory_id = $row['inventory_id'];
             $item_type = $row['item_type'];
             $item_name = $row['item_name'];
             $item_description = $row['item_description'];
@@ -512,8 +544,8 @@
             $remarks = $row['remarks'];
             $balance = $quantity - $issued + $returned;
     ?>
-            <!-- Modal Edit Item -->
-            <div class="modal fade" id="EditItemModal<?php echo $id ?>" tabindex="-1" role="dialog" aria-labelledby="EditItemModal<?php echo $id ?>" aria-hidden="true">
+            <!-- Modal Edit Item <?php echo $inventory_id ?> -->
+            <div class="modal fade" id="EditItemModal<?php echo $inventory_id ?>" tabindex="-1" role="dialog" aria-labelledby="EditItemModal<?php echo $inventory_id ?>" aria-hidden="true">
                 <div class="modal-dialog modal-lg" role="document">
                     <div class="modal-content">
                         <div class="modal-header elegant-color text-white d-flex justify-content-center">
@@ -650,10 +682,10 @@
                     </div>
                 </div>
             </div>
-            <!-- /.Modal Edit Item -->
+            <!-- /.Modal Edit Item <?php echo $inventory_id ?> -->
 
-            <!-- Modal Confirm Delete -->
-            <div class="modal fade" id="ModalConfirmDelete<?php echo $id ?>" tabindex="-1" role="dialog" aria-labelledby="ModalConfirmDelete<?php echo $id ?>" aria-hidden="true">
+            <!-- Modal Confirm Delete <?php echo $inventory_id ?> -->
+            <div class="modal fade" id="ModalConfirmDelete<?php echo $inventory_id ?>" tabindex="-1" role="dialog" aria-labelledby="ModalConfirmDelete<?php echo $inventory_id ?>" aria-hidden="true">
                 <div class="modal-dialog modal-md modal-notify modal-danger" role="document">
                     <!--Content-->
                     <div class="modal-content text-center">
@@ -672,8 +704,9 @@
                         <!--Footer-->
                         <div class="modal-footer flex-center">
                             <form action="#" method="post">
+                                <input type="hidden" name="item_name" value="<?php echo $item_name ?>">
                                 <input type="hidden" name="inventory_id" value="<?php echo $id ?>">
-                                <button type="submit" class="btn btn-danger" name="confirmDelete">Yes</button>
+                                <button type="submit" class="btn btn-danger" name="delete_item">Yes</button>
                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
                             </form>
                         </div>
@@ -681,10 +714,10 @@
                     <!--/.Content-->
                 </div>
             </div>
-            <!-- Modal Confirm Delete -->
+            <!-- Modal Confirm Delete <?php echo $inventory_id ?> -->
 
-            <!-- Modal Item Details -->
-            <div class="modal fade" id="DetailsModal<?php echo $id ?>" tabindex="-1" role="dialog" aria-labelledby="DetailsModal<?php echo $id ?>" aria-hidden="true">
+            <!-- Modal Item Details <?php echo $inventory_id ?> -->
+            <div class="modal fade" id="DetailsModal<?php echo $inventory_id ?>" tabindex="-1" role="dialog" aria-labelledby="DetailsModal<?php echo $inventory_id ?>" aria-hidden="true">
                 <div class="modal-dialog modal-md" role="document">
                     <div class="modal-content">
                         <div class="modal-header elegant-color text-white d-flex justify-content-center">
@@ -733,14 +766,14 @@
                     </div>
                 </div>
             </div>
-            <!-- /.Modal Item Details -->
+            <!-- /.Modal Item Details <?php echo $inventory_id ?> -->
 
-            <!-- Modal Movement -->
-            <div class="modal fade" id="MovementModal<?php echo $id ?>" tabindex="-1" role="dialog" aria-labelledby="MovementModal<?php echo $id ?>" aria-hidden="true">
+            <!-- Modal Movement <?php echo $inventory_id ?> -->
+            <div class="modal fade" id="MovementModal<?php echo $inventory_id ?>" tabindex="-1" role="dialog" aria-labelledby="MovementModal<?php echo $inventory_id ?>" aria-hidden="true">
                 <div class="modal-dialog modal-fluid" role="document">
                     <div class="modal-content">
                         <div class="modal-header elegant-color text-white d-flex justify-content-center">
-                            <h1 class="modal-title text-center"><?php echo $item_type ?> Item <?php echo $item_name ?>'s Movement from Project <?php echo $project_name ?></h1>
+                            <h1 class="modal-title text-center"><?php echo $item_type ?> Item <?php echo $item_name ?>'s Movement for Project <?php echo $project_name ?></h1>
                         </div>
                         <div class="modal-body">
                             <!-- Material form grid -->
@@ -772,16 +805,17 @@
                                         <tbody>
                                             <?php
                                             // SELECT all from inventory table
-                                            $query = "SELECT inventory_tb.*, movement_tb.*
+                                            $query_movement = "SELECT inventory_tb.*, movement_tb.*
                                             FROM inventory_tb INNER JOIN movement_tb 
-                                            ON movement_tb.inventory_id = inventory_tb.inventory_id;";
+                                            ON movement_tb.inventory_id = inventory_tb.inventory_id
+                                            WHERE inventory_tb.inventory_id = $inventory_id;";
 
-                                            $result = mysqli_query($conn, $query);
+                                            $result_movement = mysqli_query($conn, $query_movement);
 
-                                            if (mysqli_num_rows($result) > 0) {
+                                            if (mysqli_num_rows($result_movement) > 0) {
                                                 // Display data of each row
-                                                while ($row = mysqli_fetch_assoc($result)) {
-                                                    $id = $row['movement_id'];
+                                                while ($row = mysqli_fetch_assoc($result_movement)) {
+                                                    $movement_id = $row['movement_id'];
                                                     $quantity = $row['quantity'];
                                                     $date_added = $row['date_added'];
                                                     $issued = $row['issued'];
@@ -791,7 +825,7 @@
                                                     $balance = $row['balance'];
                                             ?>
                                                     <tr class="text-center">
-                                                        <td>Movement <?php echo $id ?></td>
+                                                        <td>Movement <?php echo $movement_id ?></td>
                                                         <td><?php echo $quantity ?></td>
                                                         <td><?php echo $date_added ?></td>
                                                         <td><?php echo $issued ?></td>
@@ -800,9 +834,20 @@
                                                         <td><?php echo $date_returned ?></td>
                                                         <td><?php echo $balance ?></td>
                                                     </tr>
-                                            <?php
+                                                <?php
                                                 }
-                                            }
+                                            } else { ?>
+                                                <tr>
+                                                    <td>No Movement Data</td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td></td>
+                                                </tr>
+                                            <?php }
                                             ?>
                                         </tbody>
                                         <tfoot>
@@ -838,7 +883,7 @@
                     </div>
                 </div>
             </div>
-            <!-- /.Modal Movement -->
+            <!-- /.Modal Movement <?php echo $inventory_id ?> -->
     <?php
         }
     }
