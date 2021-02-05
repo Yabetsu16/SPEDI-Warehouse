@@ -144,12 +144,14 @@
         $date_added = $_POST['date_added'];
         $date_issued = $_POST['date_issued'];
         $date_returned = $_POST['date_returned'];
-        $balance = $quantity - $issued + $returned;
+        $balance = $_POST['balance'];
+        $total_balance = ($balance + $quantity) - $issued + $returned;
 
-        $query = "UPDATE count_tb SET quantity = ?, issued = ?, returned = ?, 
+        $query = "UPDATE count_tb SET quantity = ?, issued = ?, returned = ?, balance = ?,
         date_added = ?, date_issued = ?, date_returned = ? WHERE inventory_id = ?";
         $stmt = $conn->prepare($query);
-        $stmt->bind_param("iiisssi", $quantity, $issued, $returned, $date_added, $date_issued, $date_returned, $inventory_id);
+        $stmt->bind_param("iiiisssi", $quantity, $issued, $returned, $total_balance,
+        $date_added, $date_issued, $date_returned, $inventory_id);
         $stmt->execute();
         $result = $stmt->get_result();
 
@@ -162,7 +164,7 @@
             $quantity,
             $issued,
             $returned,
-            $balance,
+            $total_balance,
             $date_added,
             $date_issued,
             $date_returned
@@ -295,6 +297,8 @@
                                         </th>
                                         <th class="th-sm">Unit
                                         </th>
+                                        <th class="th-sm">Balance
+                                        </th>
                                         <th class="th-sm">Quantity
                                         </th>
                                         <th class="th-sm">Issued
@@ -302,8 +306,6 @@
                                         <th class="th-sm">Returned
                                         </th>
                                         <th class="th-sm">
-                                        </th>
-                                        <th class="th-sm">Balance
                                         </th>
                                     </tr>
                                 </thead>
@@ -357,15 +359,16 @@
                                                             $date_issued = $row['date_issued'];
                                                             $returned = $row['returned'];
                                                             $date_returned = $row['date_returned'];
-                                                            $balance = $quantity - $issued + $returned;
+                                                            $balance = $row['balance'];
                                                     ?>
                                                             <input type="hidden" name="item_name" value="<?php echo $item_name ?>">
                                                             <input type="hidden" name="inventory_id" value="<?php echo $inventory_id ?>">
                                                             <input type="hidden" name="count_id" value="<?php echo $count_id ?>">
                                                             <input type="hidden" name="balance" value="<?php echo $balance ?>">
+                                                            <td><?php echo $balance ?></td>
                                                             <td>
                                                                 <div class="md-form input-group">
-                                                                    <input type="number" name="quantity" min="0" value="<?php echo $balance ?>" class="form-control text-center">
+                                                                    <input type="number" name="quantity" min="0" value="0" class="form-control text-center">
                                                                 </div>
                                                                 <div class="md-form input-group">
                                                                     <input type="date" name="date_added" class="form-control text-center" id="date_added">
@@ -394,7 +397,6 @@
                                                     <?php }
                                                     } ?>
                                                 </form>
-                                                <td><?php echo $balance ?></td>
                                             </tr>
                                     <?php
                                         }
@@ -413,6 +415,8 @@
                                         </th>
                                         <th class="th-sm">Unit
                                         </th>
+                                        <th class="th-sm">Balance
+                                        </th>
                                         <th class="th-sm">Quantity
                                         </th>
                                         <th class="th-sm">Issued
@@ -420,8 +424,6 @@
                                         <th class="th-sm">Returned
                                         </th>
                                         <th class="th-sm">
-                                        </th>
-                                        <th class="th-sm">Balance
                                         </th>
                                     </tr>
                                 </tfoot>
