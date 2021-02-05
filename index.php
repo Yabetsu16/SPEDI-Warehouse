@@ -47,7 +47,10 @@
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="management.php">Management</a>
+          <a class="nav-link" href="project_management.php">Project Management</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="item_management.php">Item Management</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" href="summary.php">Summary</a>

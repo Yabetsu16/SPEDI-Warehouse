@@ -31,8 +31,7 @@
         <a class="navbar-brand" href="index.html">Warehouse Control</a>
 
         <!-- Collapse button -->
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#spediNavBar"
-            aria-controls="spediNavBar" aria-expanded="false" aria-label="Toggle navigation">
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#spediNavBar" aria-controls="spediNavBar" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
 
@@ -45,8 +44,10 @@
                     <a class="nav-link" href="index.php">Dashboard</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="management.php">Management
-                    </a>
+                    <a class="nav-link" href="project_management.php">Project Management</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="item_management.php">Item Management</a>
                 </li>
                 <li class="nav-item active">
                     <a class="nav-link" href="summary.php">Summary
@@ -72,12 +73,10 @@
                         <div class="card-body">
                             <div class="float-right">
                                 <br>
-                                <button type="button" class="btn btn-sm btn-primary" data-toggle="modal"
-                                    data-target="#exportModal">Export to Excel</button>
+                                <button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#exportModal">Export to Excel</button>
                             </div>
                             <br>
-                            <table id="dtBasicExample" class="table table-striped table-responsive-md btn-table"
-                                cellspacing="0" width="100%">
+                            <table id="dtBasicExample" class="table table-striped table-responsive-md btn-table" cellspacing="0" width="100%">
                                 <thead>
                                     <tr class="text-center">
                                         <th class="th-sm">Project Name
@@ -171,8 +170,7 @@
     <!-- /.Summary -->
 
     <!-- Export Modal -->
-    <div class="modal fade" id="exportModal" tabindex="-1" role="dialog" aria-labelledby="exportModal"
-        aria-hidden="true">
+    <div class="modal fade" id="exportModal" tabindex="-1" role="dialog" aria-labelledby="exportModal" aria-hidden="true">
         <div class="modal-dialog modal-md" role="document">
             <div class="modal-content">
                 <div class="modal-header elegant-color text-white d-flex justify-content-center">
@@ -236,9 +234,8 @@
     <script type="text/javascript" src="dist/js/addons/datatables.min.js"></script>
     <!-- Your custom scripts (optional) -->
     <script type="text/javascript">
-        $(document).ready(function () {
-            $('#dtBasicExample').DataTable({
-            });
+        $(document).ready(function() {
+            $('#dtBasicExample').DataTable({});
             $('.dataTables_length').addClass('bs-select');
         });
     </script>
