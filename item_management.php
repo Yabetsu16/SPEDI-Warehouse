@@ -147,57 +147,69 @@
         $balance = $_POST['balance'];
         $total_balance = ($balance + $quantity) - $issued + $returned;
 
-        $query = "UPDATE count_tb SET quantity = ?, issued = ?, returned = ?, balance = ?,
+        if ($quantity == 0 && $issued == 0 && $returned == 0) { ?>
+            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                Input required
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <?php
+        } else {
+            $query = "UPDATE count_tb SET quantity = ?, issued = ?, returned = ?, balance = ?,
         date_added = ?, date_issued = ?, date_returned = ? WHERE inventory_id = ?";
-        $stmt = $conn->prepare($query);
-        $stmt->bind_param(
-            "iiiisssi",
-            $quantity,
-            $issued,
-            $returned,
-            $total_balance,
-            $date_added,
-            $date_issued,
-            $date_returned,
-            $inventory_id
-        );
-        $stmt->execute();
-        $result = $stmt->get_result();
+            $stmt = $conn->prepare($query);
+            $stmt->bind_param(
+                "iiiisssi",
+                $quantity,
+                $issued,
+                $returned,
+                $total_balance,
+                $date_added,
+                $date_issued,
+                $date_returned,
+                $inventory_id
+            );
+            $stmt->execute();
+            $result = $stmt->get_result();
 
-        $query = "INSERT INTO movement_tb (inventory_id, quantity, issued, returned, balance,
+            $query = "INSERT INTO movement_tb (inventory_id, quantity, issued, returned, balance,
         date_added, date_issued, date_returned) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-        $stmt = $conn->prepare($query);
-        $stmt->bind_param(
-            "iiiiisss",
-            $inventory_id,
-            $quantity,
-            $issued,
-            $returned,
-            $total_balance,
-            $date_added,
-            $date_issued,
-            $date_returned
-        );
+            $stmt = $conn->prepare($query);
+            $stmt->bind_param(
+                "iiiiisss",
+                $inventory_id,
+                $quantity,
+                $issued,
+                $returned,
+                $total_balance,
+                $date_added,
+                $date_issued,
+                $date_returned
+            );
 
-        if ($stmt->execute()) { ?>
-            <div class="alert alert-success alert-dismissible fade show" role="alert">
-                <?php echo $item_name ?> Count Updated.
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-        <?php
-        } else { ?>
-            <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                Failed to Update <?php echo $item_name ?> Count <br>
-                <?php echo $conn->error ?>
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
+            if ($stmt->execute()) { ?>
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <?php echo $item_name ?> Count Updated.
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            <?php
+            } else { ?>
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    Failed to Update <?php echo $item_name ?> Count <br>
+                    <?php echo $conn->error ?>
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
     <?php
+            }
         }
     }
+
+
     ?>
 
     <?php
@@ -350,7 +362,7 @@
                                                 <td><?php echo $item_type ?></td>
                                                 <td><?php echo $item_name ?></td>
                                                 <td><?php echo $unit ?></td>
-                                                <form action="#" method="post">
+                                                <form action="" method="post">
                                                     <?php
                                                     $query_count = "SELECT inventory_tb.*, count_tb.* FROM inventory_tb
                                                         INNER JOIN count_tb ON count_tb.inventory_id = inventory_tb.inventory_id
