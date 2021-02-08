@@ -150,8 +150,17 @@
         $query = "UPDATE count_tb SET quantity = ?, issued = ?, returned = ?, balance = ?,
         date_added = ?, date_issued = ?, date_returned = ? WHERE inventory_id = ?";
         $stmt = $conn->prepare($query);
-        $stmt->bind_param("iiiisssi", $quantity, $issued, $returned, $total_balance,
-        $date_added, $date_issued, $date_returned, $inventory_id);
+        $stmt->bind_param(
+            "iiiisssi",
+            $quantity,
+            $issued,
+            $returned,
+            $total_balance,
+            $date_added,
+            $date_issued,
+            $date_returned,
+            $inventory_id
+        );
         $stmt->execute();
         $result = $stmt->get_result();
 
@@ -284,7 +293,7 @@
                                     item</button>
                             </div>
                             <br>
-                            <table id="dtBasicExample" class="table table-striped table-responsive-xl btn-table table-sm" cellspacing="0" width="100%">
+                            <table id="dtBasicExample" class="table table-striped table-responsive-lg btn-table table-sm" cellspacing="0" width="100%">
                                 <thead>
                                     <tr class="text-center">
                                         <th class="th-sm">Actions
@@ -344,7 +353,8 @@
                                                 <form action="#" method="post">
                                                     <?php
                                                     $query_count = "SELECT inventory_tb.*, count_tb.* FROM inventory_tb
-                                                        INNER JOIN count_tb ON count_tb.inventory_id = inventory_tb.inventory_id;";
+                                                        INNER JOIN count_tb ON count_tb.inventory_id = inventory_tb.inventory_id
+                                                        WHERE inventory_tb.inventory_id = $inventory_id;";
 
                                                     $result_count = mysqli_query($conn, $query_count);
 
@@ -556,14 +566,14 @@
     <!-- /.Modal Add Item -->
     <?php
     // SELECT all from inventory table and project table
-    $query = "SELECT inventory_tb.*, project_tb.* FROM inventory_tb 
+    $query_inventory = "SELECT inventory_tb.*, project_tb.* FROM inventory_tb 
     INNER JOIN project_tb ON project_tb.project_id = inventory_tb.project_id";
 
-    $result = mysqli_query($conn, $query);
+    $result_inventory = mysqli_query($conn, $query_inventory);
 
-    if (mysqli_num_rows($result) > 0) {
+    if (mysqli_num_rows($result_inventory) > 0) {
         // Display data of each row
-        while ($row = mysqli_fetch_assoc($result)) {
+        while ($row = mysqli_fetch_assoc($result_inventory)) {
             $inventory_id = $row['inventory_id'];
             $project_id = $row['project_id'];
             $item_type = $row['item_type'];
@@ -650,12 +660,11 @@
                                                     $project_name = $row['project_name'];
                                                     $location = $row['location'];
                                                 ?>
-                                                    <option value="<?php echo $project_id ?>" 
-                                                    selected>Recent: <?php echo $project_name ?> in <?php echo $location ?></option>
+                                                    <option value="<?php echo $project_id ?>" selected>Recent: <?php echo $project_name ?> in <?php echo $location ?></option>
                                                 <?php
                                                 }
                                                 ?>
-                                                
+
                                                 <?php
                                                 $query = "SELECT * FROM project_tb WHERE project_id <> $project_id";
                                                 $result = mysqli_query($conn, $query);
