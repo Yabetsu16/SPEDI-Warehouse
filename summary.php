@@ -60,6 +60,23 @@
         <!-- Collapsible content -->
     </nav>
     <!--/.Navbar-->
+    <?php
+    if (isset($_POST['export_type'])) {
+        $item_type = $_POST['item_type'];
+
+        if ($item_type == "All") {
+            header("Location: export_all.php");
+        } else if ($item_type == "Materials") {
+            header("Location: export_materials.php");
+        } else if ($item_type == "Tools") {
+            header("Location: export_tools.php");
+        } else if ($item_type == "Safety") {
+            header("Location: export_safety.php");
+        } else if ($item_type == "Admin") {
+            header("Location: export_admin.php");
+        }
+    }
+    ?>
 
     <!-- Summary -->
     <section id="summary" class="mt-3">
@@ -76,9 +93,11 @@
                                 <button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#exportModal">Export to Excel</button>
                             </div>
                             <br>
-                            <table id="dtBasicExample" class="table table-striped table-responsive-md btn-table" cellspacing="0" width="100%">
+                            <table id="dtBasicExample" class="table table-striped table-responsive-md btn-table" cellspacing="0" width="100%" data-ordering="false">
                                 <thead>
                                     <tr class="text-center">
+                                        <th class="th-sm">Timestamp
+                                        </th>
                                         <th class="th-sm">Project Name
                                         </th>
                                         <th class="th-sm">Item Type
@@ -94,48 +113,48 @@
                                         <th class="th-sm">Returned
                                         </th>
                                         <th class="th-sm">Balance
-                                        </th>
-                                        <th class="th-sm">Date Added
                                         </th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr class="text-center">
-                                        <td>Sample Project</td>
-                                        <td>Construction</td>
-                                        <td>Cement</td>
-                                        <td>Sack</td>
-                                        <td>0</td>
-                                        <td>0</td>
-                                        <td>0</td>
-                                        <td>0</td>
-                                        <td>02/01/2021</td>
-                                    </tr>
-                                    <tr class="text-center">
-                                        <td>Sample Project</td>
-                                        <td>Construction</td>
-                                        <td>Cement</td>
-                                        <td>Sack</td>
-                                        <td>0</td>
-                                        <td>0</td>
-                                        <td>0</td>
-                                        <td>0</td>
-                                        <td>02/01/2021</td>
-                                    </tr>
-                                    <tr class="text-center">
-                                        <td>Sample Project</td>
-                                        <td>Construction</td>
-                                        <td>Cement</td>
-                                        <td>Sack</td>
-                                        <td>0</td>
-                                        <td>0</td>
-                                        <td>0</td>
-                                        <td>0</td>
-                                        <td>02/01/2021</td>
-                                    </tr>
+                                    <?php
+                                    $query = "SELECT * FROM movement_tb 
+                                    INNER JOIN inventory_tb ON inventory_tb.inventory_id = movement_tb.inventory_id
+                                    INNER JOIN project_tb ON project_tb.project_id = inventory_tb.project_id
+                                    ORDER BY inventory_tb.inventory_id;";
+                                    $stmt = $conn->prepare($query);
+                                    $stmt->execute();
+                                    $result = $stmt->get_result();
+                                    while ($row = $result->fetch_assoc()) {
+                                        $project_name = $row['project_name'];
+                                        $item_type = $row['item_type'];
+                                        $item_name = $row['item_name'];
+                                        $unit = $row['unit'];
+                                        $quantity = $row['quantity'];
+                                        $issued = $row['issued'];
+                                        $returned = $row['returned'];
+                                        $balance = $row['balance'];
+                                        $date_movement = $row['date_movement'];
+                                    ?>
+                                        <tr class="text-center">
+                                            <td><?php echo $date_movement ?></td>
+                                            <td><?php echo $project_name ?></td>
+                                            <td><?php echo $item_type ?></td>
+                                            <td><?php echo $item_name ?></td>
+                                            <td><?php echo $unit ?></td>
+                                            <td><?php echo $quantity ?></td>
+                                            <td><?php echo $issued ?></td>
+                                            <td><?php echo $returned ?></td>
+                                            <td><?php echo $balance ?></td>
+                                        </tr>
+                                    <?php
+                                    }
+                                    ?>
                                 </tbody>
                                 <tfoot>
                                     <tr class="text-center">
+                                        <th class="th-sm">Timestamp
+                                        </th>
                                         <th class="th-sm">Project Name
                                         </th>
                                         <th class="th-sm">Item Type
@@ -151,8 +170,6 @@
                                         <th class="th-sm">Returned
                                         </th>
                                         <th class="th-sm">Balance
-                                        </th>
-                                        <th class="th-sm">Date Added
                                         </th>
                                     </tr>
                                 </tfoot>
