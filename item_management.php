@@ -356,7 +356,7 @@
                                     item</button>
                             </div>
                             <br>
-                            <table id="dtBasicExample" class="table table-striped table-responsive-lg btn-table table-sm" cellspacing="0" width="100%">
+                            <table id="dtBasicExample" class="table table-striped table-responsive-xl btn-table table-sm" cellspacing="0" width="100%">
                                 <thead>
                                     <tr class="text-center">
                                         <th class="th-sm">Actions

@@ -60,8 +60,8 @@ if (mysqli_num_rows($result) > 0) {
 ';
     }
     $output .= '</table>';
-    header('Content-Type: application/xls');
     header('Content-Disposition: attachment; filename=' . $filename . $file_ending);
+    header('Content-Type: application/vnd.ms-excel');
     echo $output;
 }
 else {
