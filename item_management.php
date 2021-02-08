@@ -158,6 +158,14 @@
                 </button>
             </div>
         <?php
+        } else if ($quantity == 0 && $date_added <> "") { ?>
+            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                Quantity Input required.
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        <?php
         } else if ($quantity > 0 && $date_added == "") { ?>
             <div class="alert alert-warning alert-dismissible fade show" role="alert">
                 Date Added Input required.
@@ -174,9 +182,25 @@
                 </button>
             </div>
         <?php
+        } else if ($issued == 0 && $date_issued <> "") { ?>
+            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                Issued Input required.
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        <?php
         } else if ($returned > 0 && $date_returned == "") { ?>
             <div class="alert alert-warning alert-dismissible fade show" role="alert">
                 Date Returned Input required.
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        <?php
+        } else if ($returned == 0 && $date_returned <> "") { ?>
+            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                Returned Input required.
                 <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
