@@ -147,57 +147,120 @@
         $balance = $_POST['balance'];
         $total_balance = ($balance + $quantity) - $issued + $returned;
 
-        $query = "UPDATE count_tb SET quantity = ?, issued = ?, returned = ?, balance = ?,
-        date_added = ?, date_issued = ?, date_returned = ? WHERE inventory_id = ?";
-        $stmt = $conn->prepare($query);
-        $stmt->bind_param(
-            "iiiisssi",
-            $quantity,
-            $issued,
-            $returned,
-            $total_balance,
-            $date_added,
-            $date_issued,
-            $date_returned,
-            $inventory_id
-        );
-        $stmt->execute();
-        $result = $stmt->get_result();
-
-        $query = "INSERT INTO movement_tb (inventory_id, quantity, issued, returned, balance,
-        date_added, date_issued, date_returned) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-        $stmt = $conn->prepare($query);
-        $stmt->bind_param(
-            "iiiiisss",
-            $inventory_id,
-            $quantity,
-            $issued,
-            $returned,
-            $total_balance,
-            $date_added,
-            $date_issued,
-            $date_returned
-        );
-
-        if ($stmt->execute()) { ?>
-            <div class="alert alert-success alert-dismissible fade show" role="alert">
-                <?php echo $item_name ?> Count Updated.
+        if (
+            $quantity == 0 && $issued == 0 && $returned == 0
+            && $date_added == "" && $date_issued == "" && $date_returned == ""
+        ) { ?>
+            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                Input required.
                 <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
         <?php
-        } else { ?>
-            <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                Failed to Update <?php echo $item_name ?> Count <br>
-                <?php echo $conn->error ?>
+        } else if ($quantity == 0 && $date_added <> "") { ?>
+            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                Quantity Input required.
                 <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
+        <?php
+        } else if ($quantity > 0 && $date_added == "") { ?>
+            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                Date Added Input required.
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        <?php
+        } else if ($issued > 0 && $date_issued == "") { ?>
+            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                Date Issued Input required.
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        <?php
+        } else if ($issued == 0 && $date_issued <> "") { ?>
+            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                Issued Input required.
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        <?php
+        } else if ($returned > 0 && $date_returned == "") { ?>
+            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                Date Returned Input required.
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        <?php
+        } else if ($returned == 0 && $date_returned <> "") { ?>
+            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                Returned Input required.
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <?php
+        } else {
+            $query = "UPDATE count_tb SET quantity = ?, issued = ?, returned = ?, balance = ?,
+        date_added = ?, date_issued = ?, date_returned = ? WHERE inventory_id = ?";
+            $stmt = $conn->prepare($query);
+            $stmt->bind_param(
+                "iiiisssi",
+                $quantity,
+                $issued,
+                $returned,
+                $total_balance,
+                $date_added,
+                $date_issued,
+                $date_returned,
+                $inventory_id
+            );
+            $stmt->execute();
+            $result = $stmt->get_result();
+
+            $query = "INSERT INTO movement_tb (inventory_id, quantity, issued, returned, balance,
+        date_added, date_issued, date_returned) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+            $stmt = $conn->prepare($query);
+            $stmt->bind_param(
+                "iiiiisss",
+                $inventory_id,
+                $quantity,
+                $issued,
+                $returned,
+                $total_balance,
+                $date_added,
+                $date_issued,
+                $date_returned
+            );
+
+            if ($stmt->execute()) { ?>
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <?php echo $item_name ?> Count Updated.
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            <?php
+            } else { ?>
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    Failed to Update <?php echo $item_name ?> Count <br>
+                    <?php echo $conn->error ?>
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
     <?php
+            }
         }
     }
+
+
     ?>
 
     <?php
@@ -350,7 +413,7 @@
                                                 <td><?php echo $item_type ?></td>
                                                 <td><?php echo $item_name ?></td>
                                                 <td><?php echo $unit ?></td>
-                                                <form action="#" method="post">
+                                                <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
                                                     <?php
                                                     $query_count = "SELECT inventory_tb.*, count_tb.* FROM inventory_tb
                                                         INNER JOIN count_tb ON count_tb.inventory_id = inventory_tb.inventory_id
