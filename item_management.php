@@ -147,9 +147,36 @@
         $balance = $_POST['balance'];
         $total_balance = ($balance + $quantity) - $issued + $returned;
 
-        if ($quantity == 0 && $issued == 0 && $returned == 0) { ?>
+        if (
+            $quantity == 0 && $issued == 0 && $returned == 0
+            && $date_added == "" && $date_issued == "" && $date_returned == ""
+        ) { ?>
             <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                Input required
+                Input required.
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        <?php
+        } else if ($quantity > 0 && $date_added == "") { ?>
+            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                Date Added Input required.
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        <?php
+        } else if ($issued > 0 && $date_issued == "") { ?>
+            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                Date Issued Input required.
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        <?php
+        } else if ($returned > 0 && $date_returned == "") { ?>
+            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                Date Returned Input required.
                 <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -362,7 +389,7 @@
                                                 <td><?php echo $item_type ?></td>
                                                 <td><?php echo $item_name ?></td>
                                                 <td><?php echo $unit ?></td>
-                                                <form action="" method="post">
+                                                <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
                                                     <?php
                                                     $query_count = "SELECT inventory_tb.*, count_tb.* FROM inventory_tb
                                                         INNER JOIN count_tb ON count_tb.inventory_id = inventory_tb.inventory_id
