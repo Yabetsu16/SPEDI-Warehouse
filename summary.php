@@ -60,6 +60,23 @@
         <!-- Collapsible content -->
     </nav>
     <!--/.Navbar-->
+    <?php
+    if (isset($_POST['export_type'])) {
+        $item_type = $_POST['item_type'];
+
+        if ($item_type == "All") {
+            header("Location: export_all.php");
+        } else if ($item_type == "Materials") {
+            header("Location: export_materials.php");
+        } else if ($item_type == "Tools") {
+            header("Location: export_tools.php");
+        } else if ($item_type == "Safety") {
+            header("Location: export_safety.php");
+        } else if ($item_type == "Admin") {
+            header("Location: export_admin.php");
+        }
+    }
+    ?>
 
     <!-- Summary -->
     <section id="summary" class="mt-3">
@@ -76,8 +93,7 @@
                                 <button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#exportModal">Export to Excel</button>
                             </div>
                             <br>
-                            <table id="dtBasicExample" class="table table-striped table-responsive-md btn-table" cellspacing="0" width="100%"
-                            data-ordering="false">
+                            <table id="dtBasicExample" class="table table-striped table-responsive-md btn-table" cellspacing="0" width="100%" data-ordering="false">
                                 <thead>
                                     <tr class="text-center">
                                         <th class="th-sm">Timestamp
