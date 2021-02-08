@@ -1,6 +1,7 @@
 <?php require "config/connectdb.php"; ?>
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -31,8 +32,7 @@
     <a class="navbar-brand" href="index.php">Warehouse Control</a>
 
     <!-- Collapse button -->
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#spediNavBar"
-      aria-controls="spediNavBar" aria-expanded="false" aria-label="Toggle navigation">
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#spediNavBar" aria-controls="spediNavBar" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
 
@@ -72,7 +72,18 @@
               <h4 class="card-title">Total Material Items</h4>
             </div>
             <div class="card-body text-center">
-              <p class="h1">0</p>
+              <?php
+              $query = "SELECT COUNT(item_type) FROM inventory_tb WHERE item_type = 'Materials'";
+              $stmt = $conn->prepare($query);
+              $stmt->execute();
+              $result = $stmt->get_result();
+              while ($row = $result->fetch_assoc()) {
+                $count = $row['COUNT(item_type)'];
+              ?>
+                <p class="h1-responsive"><?php echo $count ?></p>
+              <?php
+              }
+              ?>
             </div>
           </div>
         </div>
@@ -82,7 +93,18 @@
               <h4 class="card-title">Total Tool Items</h4>
             </div>
             <div class="card-body text-center">
-              <p class="h1">0</p>
+              <?php
+              $query = "SELECT COUNT(item_type) FROM inventory_tb WHERE item_type = 'Tools'";
+              $stmt = $conn->prepare($query);
+              $stmt->execute();
+              $result = $stmt->get_result();
+              while ($row = $result->fetch_assoc()) {
+                $count = $row['COUNT(item_type)'];
+              ?>
+                <p class="h1-responsive"><?php echo $count ?></p>
+              <?php
+              }
+              ?>
             </div>
           </div>
         </div>
@@ -92,7 +114,18 @@
               <h4 class="card-title">Total Safety Items</h4>
             </div>
             <div class="card-body text-center">
-              <p class="h1">0</p>
+              <?php
+              $query = "SELECT COUNT(item_type) FROM inventory_tb WHERE item_type = 'Safety'";
+              $stmt = $conn->prepare($query);
+              $stmt->execute();
+              $result = $stmt->get_result();
+              while ($row = $result->fetch_assoc()) {
+                $count = $row['COUNT(item_type)'];
+              ?>
+                <p class="h1-responsive"><?php echo $count ?></p>
+              <?php
+              }
+              ?>
             </div>
           </div>
         </div>
@@ -102,89 +135,137 @@
               <h4 class="card-title">Total Admin Items</h4>
             </div>
             <div class="card-body text-center">
-              <p class="h1">0</p>
+              <?php
+              $query = "SELECT COUNT(item_type) FROM inventory_tb WHERE item_type = 'Admin'";
+              $stmt = $conn->prepare($query);
+              $stmt->execute();
+              $result = $stmt->get_result();
+              while ($row = $result->fetch_assoc()) {
+                $count = $row['COUNT(item_type)'];
+              ?>
+                <p class="h1-responsive"><?php echo $count ?></p>
+              <?php
+              }
+              ?>
             </div>
           </div>
         </div>
-        <div class="col-lg-3 col-xl-4"></div>
-        <div class="col-sm-12 col-lg-6 col-xl-4 mt-3">
+        <div class="col-sm-12 col-lg-6 col-xl-6 mt-3">
           <div class="card">
-            <div class="card-header text-center stylish-color text-white">
+            <div class="card-header text-center primary-color-dark text-white">
+              <h4 class="card-title">Projects</h4>
+            </div>
+            <div class="card-body text-center">
+              <?php
+              $query = "SELECT COUNT(project_name) FROM project_tb";
+              $stmt = $conn->prepare($query);
+              $stmt->execute();
+              $result = $stmt->get_result();
+              while ($row = $result->fetch_assoc()) {
+                $count = $row['COUNT(project_name)'];
+              ?>
+                <p class="h1-responsive"><?php echo $count ?></p>
+              <?php
+              }
+              ?>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-12 col-lg-6 col-xl-6 mt-3">
+          <div class="card">
+            <div class="card-header text-center info-color-dark text-white">
               <h4 class="card-title">Overall Total Items</h4>
             </div>
             <div class="card-body text-center">
-              <p class="h1">0</p>
+              <?php
+              $query = "SELECT COUNT(item_name) FROM inventory_tb";
+              $stmt = $conn->prepare($query);
+              $stmt->execute();
+              $result = $stmt->get_result();
+              while ($row = $result->fetch_assoc()) {
+                $count = $row['COUNT(item_name)'];
+              ?>
+                <p class="h1-responsive"><?php echo $count ?></p>
+              <?php
+              }
+              ?>
             </div>
           </div>
         </div>
-        <div class="col-lg-3 col-xl-4"></div>
       </div>
     </div>
   </section>
   <!-- /. Warehouse Counter -->
 
-  <!-- Recent Movements -->
+  <!-- Recent Items -->
+  <?php 
+    if (isset($_POST['clear_recent'])) {
+      $query = "TRUNCATE TABLE recent_tb";
+      $stmt = $conn->prepare($query);
+      $stmt->execute();
+    }
+  ?>
   <section id="recent_movements" class="mt-3 mb-5">
     <div class="container-fluid">
       <div class="row">
         <div class="col-12">
           <div class="card">
             <div class="card-header elegant-color text-white">
-              <h4 class="card-title text-center">Recent Movements</h4>
+              <h4 class="card-title text-center">Recently Added Items</h4>
             </div>
             <div class="card-body">
               <div class="float-right">
                 <br>
-                <form action="" method="post">
+                <form action="#" method="post">
                   <button class="btn btn-sm btn-danger" type="submit" name="clear_recent">Clear</button>
                 </form>
               </div>
               <br>
-
-              <!-- <div class="container mt-3">
-                <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                  No Recent Movements.
-                  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                  </button>
-                </div>                
-              </div> -->
-              <table id="dtBasicExample" class="table table-striped table-responsive-md table-bordered table-sm text-center"
-                cellspacing="0" width="100%">
+              <table id="dtBasicExample" class="table table-striped table-responsive-md table-bordered table-sm text-center" cellspacing="0" width="100%">
                 <thead>
                   <tr>
-                    <th class="th-sm">Name
+                    <th class="th-sm">Item Type
+                    </th>
+                    <th class="th-sm">Item Name
                     </th>
                     <th class="th-sm">Description
                     </th>
-                    <th class="th-sm">Balance
+                    <th class="th-sm">Project Name
                     </th>
                   </tr>
                 </thead>
                 <tbody>
-                  <tr>
-                    <td>Cement</td>
-                    <td>Sack of Cement</td>
-                    <td class="red lighten-2">5</td>
-                  </tr>
-                  <tr>
-                    <td>Cement</td>
-                    <td>Sack of Cement</td>
-                    <td class="light-green lighten-2">5</td>
-                  </tr>
-                  <tr>
-                    <td>Cement</td>
-                    <td>Sack of Cement</td>
-                    <td>5</td>
-                  </tr>
+                  <?php
+                  $query = "SELECT * FROM recent_tb INNER JOIN inventory_tb ON inventory_tb.inventory_id = recent_tb.inventory_id
+                  INNER JOIN project_tb ON project_tb.project_id = inventory_tb.project_id";
+                  $stmt = $conn->prepare($query);
+                  $stmt->execute();
+                  $result = $stmt->get_result();
+                  while ($row = $result->fetch_assoc()) {
+                    $item_type = $row['item_type'];
+                    $item_name = $row['item_name'];
+                    $item_description = $row['item_description'];
+                    $project_name = $row['project_name'];
+                  ?>
+                    <tr>
+                      <td><?php echo $item_type ?></td>
+                      <td><?php echo $item_name ?></td>
+                      <td><?php echo $item_description ?></td>
+                      <td><?php echo $project_name ?></td>
+                    </tr>
+                  <?php
+                  }
+                  ?>
                 </tbody>
                 <tfoot>
                   <tr>
-                    <th>Name
+                    <th class="th-sm">Item Type
                     </th>
-                    <th>Description
+                    <th class="th-sm">Item Name
                     </th>
-                    <th>Balance
+                    <th class="th-sm">Description
+                    </th>
+                    <th class="th-sm">Project Name
                     </th>
                   </tr>
                 </tfoot>
@@ -195,7 +276,7 @@
       </div>
     </div>
   </section>
-  <!-- /.Recent Movements-->
+  <!-- /.Recent Items-->
   <br>
   <br>
 
@@ -223,7 +304,7 @@
   <script type="text/javascript" src="dist/js/addons/datatables.min.js"></script>
   <!-- Your custom scripts (optional) -->
   <script type="text/javascript">
-    $(document).ready(function () {
+    $(document).ready(function() {
       $('#dtBasicExample').DataTable({
         "searching": false
       });
