@@ -923,7 +923,7 @@
                             <div class="row">
                                 <!-- Grid column -->
                                 <div class="col-12">
-                                    <table id="dtMovement" class="table table-striped table-responsive-lg btn-table" cellspacing="0" width="100%">
+                                    <table id="dtMovement<?php echo $inventory_id ?>" class="table table-striped table-responsive-lg btn-table" cellspacing="0" width="100%">
                                         <thead>
                                             <tr class="text-center">
                                                 <th class="th-sm">Timestamp
@@ -966,9 +966,10 @@
                                                     $date_returned = $row['date_returned'];
                                                     $balance = $row['balance'];
                                                     $date_movement = $row['date_movement'];
+                                                    $converted_date_movement = date_create($date_movement);
                                             ?>
                                                     <tr class="text-center">
-                                                        <td><?php echo $date_movement ?></td>
+                                                        <td><?php echo date_format($converted_date_movement,"Y-m-d h:i A") ?></td>
                                                         <td><?php echo $quantity ?></td>
                                                         <td><?php echo $date_added ?></td>
                                                         <td><?php echo $issued ?></td>
@@ -1064,15 +1065,30 @@
             $('.dataTables_length').addClass('bs-select');
         });
     </script>
+    <?php 
+    // SELECT all from inventory table and project table
+    $query_inventory = "SELECT inventory_tb.*, project_tb.* FROM inventory_tb 
+    INNER JOIN project_tb ON project_tb.project_id = inventory_tb.project_id";
+
+    $result_inventory = mysqli_query($conn, $query_inventory);
+
+    if (mysqli_num_rows($result_inventory) > 0) {
+        // Display data of each row
+        while ($row = mysqli_fetch_assoc($result_inventory)) {
+            $inventory_id = $row['inventory_id'];
+    ?>
     <script type="text/javascript">
         $(document).ready(function() {
-            $('#dtMovement').DataTable({
+            $('#dtMovement<?php echo $inventory_id ?>').DataTable({
                 "lengthMenu": [[5, 10, 20, -1], [5, 10, 20, "All"]]
             });
             $('.dataTables_length').addClass('bs-select');
         });
     </script>
-
+<?php 
+        }
+    }
+?>
 </body>
 
 </html>
