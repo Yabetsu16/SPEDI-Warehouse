@@ -1,70 +1,50 @@
 <?php require "config/connectdb.php"; ?>
 
 <?php
-$filename = "Tools Inventory Summary Report " . date("d-M-Y");  //your_file_name
-$file_ending = ".xls";   //file_extention
+$filename = "Tools Inventory Summary Report " . date("M-d-Y");  //your_file_name
+$file_format = ".csv";   //file_extention
 
-$query = "SELECT * FROM movement_tb 
+$query = "SELECT
+project_tb.project_name AS 'Project Name',
+inventory_tb.item_name AS 'Item Name',
+inventory_tb.unit AS 'Unit',
+inventory_tb.unit_cost AS 'Cost',
+movement_tb.quantity AS 'Quantity',
+movement_tb.date_added AS 'Date Added',
+movement_tb.issued AS 'Issued',
+movement_tb.date_issued AS 'Date Issued',
+movement_tb.returned AS 'Returned',
+movement_tb.date_returned AS 'Date Returned',
+movement_tb.balance AS 'Balance'
+FROM movement_tb 
 INNER JOIN inventory_tb ON inventory_tb.inventory_id = movement_tb.inventory_id
 INNER JOIN project_tb ON project_tb.project_id = inventory_tb.project_id
 WHERE inventory_tb.item_type = 'Tools'
-ORDER BY inventory_tb.inventory_id;";
-$result = mysqli_query($conn, $query);
-if (mysqli_num_rows($result) > 0) {
-    $output = '
-        <table class="table" bordered="1">  
-       <tr>  
-            <th >Timestamp
-            </th>
-            <th >Project Name
-            </th>
-            <th >Item Type
-            </th>
-            <th >Item Name
-            </th>
-            <th >Unit
-            </th>
-            <th >Quantity
-            </th>
-            <th >Issued
-            </th>
-            <th >Returned
-            </th>
-            <th >Balance
-            </th>
-       </tr>
-';
-    while ($row = mysqli_fetch_array($result)) {
-        $project_name = $row['project_name'];
-        $item_type = $row['item_type'];
-        $item_name = $row['item_name'];
-        $unit = $row['unit'];
-        $quantity = $row['quantity'];
-        $issued = $row['issued'];
-        $returned = $row['returned'];
-        $balance = $row['balance'];
-        $date_movement = $row['date_movement'];
+ORDER BY inventory_tb.inventory_id, movement_tb.date_movement;";
 
-        $output .= '
-        <tr>
-                                <td> ' . $date_movement . '</td>
-                                <td> ' . $project_name . '</td>
-                                <td> ' . $item_type . '</td>
-                                <td> ' . $item_name . '</td>
-                                <td> ' . $unit . '</td>
-                                <td> ' . $quantity . '</td>
-                                <td> ' . $issued . '</td>
-                                <td> ' . $returned . '</td>
-                                <td> ' . $balance . '</td>
-                            </tr>
-';
-    }
-    $output .= '</table>';
-    header('Content-Disposition: attachment; filename=' . $filename . $file_ending);
-    header('Content-Type: application/vnd.ms-excel');
-    echo $output;
+$result = mysqli_query($conn, $query);
+$number_of_fields = mysqli_num_fields($result);
+$headers = array();
+for ($i = 0; $i < $number_of_fields; $i++) {
+    $headers[] = mysqli_field_name($result, $i);
 }
-else {
-    echo "No data";
+$fp = fopen('php://output', 'w');
+if ($fp && $result) {
+    header('Content-Type: text/csv');
+    header('Content-Disposition: attachment; filename=' . $filename . $file_format);
+    header('Pragma: no-cache');
+    header('Expires: 0');
+    fputcsv($fp, $headers);
+
+    while ($row = $result->fetch_array(MYSQLI_NUM)) {
+        fputcsv($fp, array_values($row));
+    }
+    die;
+}
+
+function mysqli_field_name($result, $field_offset)
+{
+    $properties = mysqli_fetch_field_direct($result, $field_offset);
+    return is_object($properties) ? $properties->name : null;
 }
 ?>

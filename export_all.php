@@ -1,7 +1,7 @@
 <?php require "config/connectdb.php"; ?>
 
 <?php
-$filename = "All Inventory Summary Report " . date("d-M-Y");  //your_file_name
+$filename = "All Inventory Summary Report " . date("M-d-Y");  //your_file_name
 $file_format = ".csv";   //file_extention
 
 $query = "SELECT
