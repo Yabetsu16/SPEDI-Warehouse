@@ -135,9 +135,10 @@
                                         $returned = $row['returned'];
                                         $balance = $row['balance'];
                                         $date_movement = $row['date_movement'];
+                                        $converted_date_movement = date_create($date_movement);
                                     ?>
                                         <tr class="text-center">
-                                            <td><?php echo $date_movement ?></td>
+                                            <td><?php echo date_format($converted_date_movement, "Y-m-d h:i A") ?></td>
                                             <td><?php echo $project_name ?></td>
                                             <td><?php echo $item_type ?></td>
                                             <td><?php echo $item_name ?></td>
@@ -253,7 +254,10 @@
     <script type="text/javascript">
         $(document).ready(function() {
             $('#dtBasicExample').DataTable({
-                "lengthMenu": [[5, 10, 20, -1], [5, 10, 20, "All"]]
+                "lengthMenu": [
+                    [5, 10, 20, -1],
+                    [5, 10, 20, "All"]
+                ]
             });
             $('.dataTables_length').addClass('bs-select');
         });
