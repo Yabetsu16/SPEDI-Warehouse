@@ -252,7 +252,9 @@
     <!-- Your custom scripts (optional) -->
     <script type="text/javascript">
         $(document).ready(function() {
-            $('#dtBasicExample').DataTable({});
+            $('#dtBasicExample').DataTable({
+                "lengthMenu": [[5, 10, 20, -1], [5, 10, 20, "All"]]
+            });
             $('.dataTables_length').addClass('bs-select');
         });
     </script>
