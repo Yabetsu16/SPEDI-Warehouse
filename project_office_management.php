@@ -45,7 +45,7 @@
                     <a class="nav-link" href="index.php">Dashboard</a>
                 </li>
                 <li class="nav-item active">
-                    <a class="nav-link" href="project_management.php">Project Management
+                    <a class="nav-link" href="project_office_management.php">Project / Office Management
                         <span class="sr-only">(current)</span>
                     </a>
                 </li>
@@ -64,34 +64,34 @@
 
     <?php
     if (isset($_POST['add_project'])) {
-        $project_name = $_POST['project_name'];
+        $project_office_name = $_POST['project_office_name'];
         $location = $_POST['location'];
 
-        $query = "SELECT * FROM project_tb WHERE project_name = ? AND location = ?";
+        $query = "SELECT * FROM project_office_tb WHERE project_office_name = ? AND location = ?";
         $stmt = $conn->prepare($query);
-        $stmt->bind_param('ss', $project_name, $location);
+        $stmt->bind_param('ss', $project_office_name, $location);
         $stmt->execute();
         $result = $stmt->get_result();
 
         if (mysqli_num_rows($result) > 0) { ?>
             <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                Project <strong><?php echo $project_name ?> </strong> has duplicate entry.
+                Project <strong><?php echo $project_office_name ?> </strong> has duplicate entry.
                 <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <?php    } else {
-            $query = "INSERT INTO project_tb(project_name, location) 
+            $query = "INSERT INTO project_office_tb(project_office_name, location) 
                 VALUES (?, ?)";
             $stmt = $conn->prepare($query);
             $stmt->bind_param(
                 "ss",
-                $project_name,
+                $project_office_name,
                 $location
             );
             if ($stmt->execute()) { ?>
                 <div class="alert alert-success alert-dismissible fade show" role="alert">
-                    <?php echo $project_name ?> Added.
+                    <?php echo $project_office_name ?> Added.
                     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -99,7 +99,7 @@
             <?php
             } else { ?>
                 <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                    Failed to Add <?php echo $project_name ?> <br>
+                    Failed to Add <?php echo $project_office_name ?> <br>
                     <?php echo $conn->error ?>
                     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
@@ -114,22 +114,22 @@
     <?php
     if (isset($_POST['edit_project'])) {
         $project_id = $_POST['project_id'];
-        $project_name = $_POST['edit_project_name'];
+        $project_office_name = $_POST['edit_project_name'];
         $location = $_POST['edit_location'];
 
-        $query = "UPDATE project_tb SET project_name = ?,
+        $query = "UPDATE project_office_tb SET project_office_name = ?,
         location = ? WHERE project_id = ?";
         $stmt = $conn->prepare($query);
 
         $stmt->bind_param(
             "ssi",
-            $project_name,
+            $project_office_name,
             $location,
             $project_id
         );
         if ($stmt->execute()) { ?>
             <div class="alert alert-success alert-dismissible fade show" role="alert">
-                <?php echo $project_name ?> Editted.
+                <?php echo $project_office_name ?> Editted.
                 <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -137,7 +137,7 @@
         <?php
         } else { ?>
             <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                Failed to Edit <?php echo $project_name ?> <br>
+                Failed to Edit <?php echo $project_office_name ?> <br>
                 <?php echo $conn->error ?>
                 <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
@@ -151,14 +151,14 @@
     <?php
     if (isset($_POST['delete_project'])) {
         $project_id = $_POST['project_id'];
-        $project_name = $_POST['project_name'];
+        $project_office_name = $_POST['project_office_name'];
 
-        $query = "DELETE FROM project_tb WHERE project_id = ?";
+        $query = "DELETE FROM project_office_tb WHERE project_id = ?";
         $stmt = $conn->prepare($query);
         $stmt->bind_param('i', $project_id);
         if ($stmt->execute()) { ?>
             <div class="alert alert-success alert-dismissible fade show" role="alert">
-                <?php echo $project_name ?> Deleted.
+                <?php echo $project_office_name ?> Deleted.
                 <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -166,7 +166,7 @@
         <?php
         } else { ?>
             <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                Failed to Edit <?php echo $project_name ?> <br>
+                Failed to Edit <?php echo $project_office_name ?> <br>
                 <?php echo $conn->error ?>
                 <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
@@ -198,7 +198,7 @@
                                     <tr class="text-center">
                                         <th class="th-sm">Actions
                                         </th>
-                                        <th class="th-sm">Project Name
+                                        <th class="th-sm">Project / Office
                                         </th>
                                         <th class="th-sm">Location
                                         </th>
@@ -207,7 +207,7 @@
                                 <tbody>
                                     <?php
                                     // SELECT all from inventory table
-                                    $query = "SELECT * FROM project_tb";
+                                    $query = "SELECT * FROM project_office_tb";
 
                                     $result = mysqli_query($conn, $query);
 
@@ -215,7 +215,7 @@
                                         // Display data of each row
                                         while ($row = mysqli_fetch_assoc($result)) {
                                             $project_id = $row['project_id'];
-                                            $project_name = $row['project_name'];
+                                            $project_office_name = $row['project_office_name'];
                                             $location = $row['location'];
                                     ?>
                                             <tr class="text-center">
@@ -223,7 +223,7 @@
                                                     <button type="button" class="btn btn-sm btn-success" data-toggle="modal" data-target="#editProjectModal<?php echo $project_id ?>">Edit</button>
                                                     <button type="button" class="btn btn-sm btn-danger" data-toggle="modal" data-target="#modalConfirmDelete<?php echo $project_id ?>">Delete</button>
                                                 </td>
-                                                <td><?php echo $project_name ?></td>
+                                                <td><?php echo $project_office_name ?></td>
                                                 <td><?php echo $location ?></td>
                                             </tr>
                                     <?php
@@ -235,7 +235,7 @@
                                     <tr class="text-center">
                                         <th class="th-sm">Actions
                                         </th>
-                                        <th class="th-sm">Project Name
+                                        <th class="th-sm">Project / Office
                                         </th>
                                         <th class="th-sm">Location
                                         </th>
@@ -272,8 +272,8 @@
                             <div class="col-12">
                                 <!-- Material input -->
                                 <div class="md-form mt-0">
-                                    <input type="text" name="project_name" class="form-control validate" id="project_name" required>
-                                    <label for="project_name" data-error="wrong" data-success="right">Project
+                                    <input type="text" name="project_office_name" class="form-control validate" id="project_office_name" required>
+                                    <label for="project_office_name" data-error="wrong" data-success="right">Project
                                         Name</label>
                                 </div>
                             </div>
@@ -303,7 +303,7 @@
     <!-- /.Modal Add Item -->
     <?php
     // SELECT all from inventory table
-    $query = "SELECT * FROM project_tb";
+    $query = "SELECT * FROM project_office_tb";
 
     $result = mysqli_query($conn, $query);
 
@@ -311,7 +311,7 @@
         // Display data of each row
         while ($row = mysqli_fetch_assoc($result)) {
             $project_id = $row['project_id'];
-            $project_name = $row['project_name'];
+            $project_office_name = $row['project_office_name'];
             $location = $row['location'];
     ?>
             <!-- Modal Edit Item <?php echo $project_id ?> -->
@@ -319,7 +319,7 @@
                 <div class="modal-dialog modal-md" role="document">
                     <div class="modal-content">
                         <div class="modal-header elegant-color text-white d-flex justify-content-center">
-                            <h1 class="modal-title">Edit <?php echo $project_name ?> Item</h1>
+                            <h1 class="modal-title">Edit <?php echo $project_office_name ?> Item</h1>
                         </div>
                         <div class="modal-body">
                             <!-- Material form grid -->
@@ -331,8 +331,8 @@
                                     <div class="col-12">
                                         <!-- Material input -->
                                         <div class="md-form mt-0">
-                                            <input type="text" name="edit_project_name" class="form-control validate" id="edit_project_name" value="<?php echo $project_name ?>" required>
-                                            <label for="edit_project_name" data-error="wrong" data-success="right">Project Name</label>
+                                            <input type="text" name="edit_project_name" class="form-control validate" id="edit_project_name" value="<?php echo $project_office_name ?>" required>
+                                            <label for="edit_project_name" data-error="wrong" data-success="right">Project / Office</label>
                                         </div>
                                     </div>
                                     <!-- Grid column -->
@@ -374,7 +374,7 @@
 
                         <!--Body-->
                         <div class="modal-body">
-                            <h4>Do you want to delete Project <?php echo $project_name ?>?</h4>
+                            <h4>Do you want to delete Project <?php echo $project_office_name ?>?</h4>
                             <i class="fas fa-times fa-4x animated rotateIn"></i>
 
                         </div>
@@ -382,7 +382,7 @@
                         <!--Footer-->
                         <div class="modal-footer flex-center">
                             <form action="#" method="post">
-                                <input type="hidden" name="project_name" value="<?php echo $project_name ?>">
+                                <input type="hidden" name="project_office_name" value="<?php echo $project_office_name ?>">
                                 <input type="hidden" name="project_id" value="<?php echo $project_id ?>">
                                 <button type="submit" class="btn btn-danger" name="delete_project">Yes</button>
                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
@@ -425,7 +425,10 @@
     <script type="text/javascript">
         $(document).ready(function() {
             $('#dtBasicExample').DataTable({
-                "lengthMenu": [[5, 10, 20, -1], [5, 10, 20, "All"]]
+                "lengthMenu": [
+                    [5, 10, 20, -1],
+                    [5, 10, 20, "All"]
+                ]
             });
             $('.dataTables_length').addClass('bs-select');
         });

@@ -44,7 +44,7 @@
                     <a class="nav-link" href="index.php">Dashboard</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="project_management.php">Project Management</a>
+                    <a class="nav-link" href="project_office_management.php">Project / Office Management</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="item_management.php">Item Management</a>
@@ -98,7 +98,7 @@
                                     <tr class="text-center">
                                         <th class="th-sm">Timestamp
                                         </th>
-                                        <th class="th-sm">Project Name
+                                        <th class="th-sm">Project / Office
                                         </th>
                                         <th class="th-sm">Item Type
                                         </th>
@@ -120,13 +120,13 @@
                                     <?php
                                     $query = "SELECT * FROM movement_tb 
                                     INNER JOIN inventory_tb ON inventory_tb.inventory_id = movement_tb.inventory_id
-                                    INNER JOIN project_tb ON project_tb.project_id = inventory_tb.project_id
+                                    INNER JOIN project_office_tb ON project_office_tb.project_id = inventory_tb.project_id
                                     ORDER BY inventory_tb.inventory_id;";
                                     $stmt = $conn->prepare($query);
                                     $stmt->execute();
                                     $result = $stmt->get_result();
                                     while ($row = $result->fetch_assoc()) {
-                                        $project_name = $row['project_name'];
+                                        $project_office_name = $row['project_office_name'];
                                         $item_type = $row['item_type'];
                                         $item_name = $row['item_name'];
                                         $unit = $row['unit'];
@@ -139,7 +139,7 @@
                                     ?>
                                         <tr class="text-center">
                                             <td><?php echo date_format($converted_date_movement, "Y-m-d h:i A") ?></td>
-                                            <td><?php echo $project_name ?></td>
+                                            <td><?php echo $project_office_name ?></td>
                                             <td><?php echo $item_type ?></td>
                                             <td><?php echo $item_name ?></td>
                                             <td><?php echo $unit ?></td>
@@ -156,7 +156,7 @@
                                     <tr class="text-center">
                                         <th class="th-sm">Timestamp
                                         </th>
-                                        <th class="th-sm">Project Name
+                                        <th class="th-sm">Project / Office
                                         </th>
                                         <th class="th-sm">Item Type
                                         </th>

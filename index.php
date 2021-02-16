@@ -47,7 +47,7 @@
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="project_management.php">Project Management</a>
+          <a class="nav-link" href="project_office_management.php">Project / Office Management</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" href="item_management.php">Item Management</a>
@@ -157,12 +157,12 @@
             </div>
             <div class="card-body text-center">
               <?php
-              $query = "SELECT COUNT(project_name) FROM project_tb";
+              $query = "SELECT COUNT(project_office_name) FROM project_office_tb";
               $stmt = $conn->prepare($query);
               $stmt->execute();
               $result = $stmt->get_result();
               while ($row = $result->fetch_assoc()) {
-                $count = $row['COUNT(project_name)'];
+                $count = $row['COUNT(project_office_name)'];
               ?>
                 <p class="h1-responsive"><?php echo $count ?></p>
               <?php
@@ -230,14 +230,14 @@
                     </th>
                     <th class="th-sm">Description
                     </th>
-                    <th class="th-sm">Project Name
+                    <th class="th-sm">Project / Office
                     </th>
                   </tr>
                 </thead>
                 <tbody>
                   <?php
                   $query = "SELECT * FROM recent_tb INNER JOIN inventory_tb ON inventory_tb.inventory_id = recent_tb.inventory_id
-                  INNER JOIN project_tb ON project_tb.project_id = inventory_tb.project_id";
+                  INNER JOIN project_office_tb ON project_office_tb.project_id = inventory_tb.project_id";
                   $stmt = $conn->prepare($query);
                   $stmt->execute();
                   $result = $stmt->get_result();
@@ -245,13 +245,13 @@
                     $item_type = $row['item_type'];
                     $item_name = $row['item_name'];
                     $item_description = $row['item_description'];
-                    $project_name = $row['project_name'];
+                    $project_office_name = $row['project_office_name'];
                   ?>
                     <tr>
                       <td><?php echo $item_type ?></td>
                       <td><?php echo $item_name ?></td>
                       <td><?php echo $item_description ?></td>
-                      <td><?php echo $project_name ?></td>
+                      <td><?php echo $project_office_name ?></td>
                     </tr>
                   <?php
                   }
@@ -265,7 +265,7 @@
                     </th>
                     <th class="th-sm">Description
                     </th>
-                    <th class="th-sm">Project Name
+                    <th class="th-sm">Project / Office
                     </th>
                   </tr>
                 </tfoot>

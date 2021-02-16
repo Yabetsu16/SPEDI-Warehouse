@@ -45,7 +45,7 @@
                     <a class="nav-link" href="index.php">Dashboard</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="project_management.php">Project Management</a>
+                    <a class="nav-link" href="project_office_management.php">Project / Office Management</a>
                 </li>
                 <li class="nav-item active">
                     <a class="nav-link" href="item_management.php">Item Management
@@ -361,7 +361,7 @@
                                     <tr class="text-center">
                                         <th class="th-sm">Actions
                                         </th>
-                                        <th class="th-sm">Project Name
+                                        <th class="th-sm">Project / Office
                                         </th>
                                         <th class="th-sm">Item Type
                                         </th>
@@ -384,8 +384,8 @@
                                 <tbody>
                                     <?php
                                     // SELECT all from inventory table
-                                    $query = "SELECT inventory_tb.*, project_tb.* FROM inventory_tb
-                                        INNER JOIN project_tb ON project_tb.project_id = inventory_tb.project_id;";
+                                    $query = "SELECT inventory_tb.*, project_office_tb.* FROM inventory_tb
+                                        INNER JOIN project_office_tb ON project_office_tb.project_id = inventory_tb.project_id;";
 
                                     $result = mysqli_query($conn, $query);
 
@@ -399,7 +399,7 @@
                                             $item_description = $row['item_description'];
                                             $unit = $row['unit'];
                                             $unit_cost = $row['unit_cost'];
-                                            $project_name = $row['project_name'];
+                                            $project_office_name = $row['project_office_name'];
                                             $remarks = $row['remarks'];
                                     ?>
                                             <tr class="text-center">
@@ -409,7 +409,7 @@
                                                     <button type="button" class="btn btn-sm btn-info" data-toggle="modal" data-target="#detailsModal<?php echo $inventory_id ?>">Details</button>
                                                     <button type="button" class="btn btn-sm btn-primary btn-block" data-toggle="modal" data-target="#movementModal<?php echo $inventory_id ?>">Movement</button>
                                                 </td>
-                                                <td><?php echo $project_name ?></td>
+                                                <td><?php echo $project_office_name ?></td>
                                                 <td><?php echo $item_type ?></td>
                                                 <td><?php echo $item_name ?></td>
                                                 <td><?php echo $unit ?></td>
@@ -480,7 +480,7 @@
                                     <tr class="text-center">
                                         <th class="th-sm">Actions
                                         </th>
-                                        <th class="th-sm">Project Name
+                                        <th class="th-sm">Project / Office
                                         </th>
                                         <th class="th-sm">Item Type
                                         </th>
@@ -546,16 +546,16 @@
                                 <!-- Material input -->
                                 <div class="md-form mt-0">
                                     <select name="project_id" class="browser-default custom-select">
-                                        <option value="" selected>Select Project</option>
+                                        <option value="" selected>Select Project / Office</option>
                                         <?php
-                                        $query = "SELECT * FROM project_tb";
+                                        $query = "SELECT * FROM project_office_tb";
                                         $result = mysqli_query($conn, $query);
                                         while ($row = mysqli_fetch_array($result)) {
                                             $project_id = $row['project_id'];
-                                            $project_name = $row['project_name'];
+                                            $project_office_name = $row['project_office_name'];
                                             $location = $row['location'];
                                         ?>
-                                            <option value="<?php echo $project_id ?>"><?php echo $project_name ?> in <?php echo $location ?></option>
+                                            <option value="<?php echo $project_id ?>"><?php echo $project_office_name ?> in <?php echo $location ?></option>
                                         <?php
                                         }
                                         ?>
@@ -629,8 +629,8 @@
     <!-- /.Modal Add Item -->
     <?php
     // SELECT all from inventory table and project table
-    $query_inventory = "SELECT inventory_tb.*, project_tb.* FROM inventory_tb 
-    INNER JOIN project_tb ON project_tb.project_id = inventory_tb.project_id";
+    $query_inventory = "SELECT inventory_tb.*, project_office_tb.* FROM inventory_tb 
+    INNER JOIN project_office_tb ON project_office_tb.project_id = inventory_tb.project_id";
 
     $result_inventory = mysqli_query($conn, $query_inventory);
 
@@ -714,29 +714,29 @@
                                         <div class="md-form mt-0">
                                             <select name="edit_project_id" class="browser-default custom-select">
                                                 <?php
-                                                $query_project = "SELECT project_tb.* FROM project_tb 
-                                                    INNER JOIN inventory_tb ON inventory_tb.project_id = project_tb.project_id 
+                                                $query_project = "SELECT project_office_tb.* FROM project_office_tb 
+                                                    INNER JOIN inventory_tb ON inventory_tb.project_id = project_office_tb.project_id 
                                                     WHERE inventory_tb.inventory_id = $inventory_id";
                                                 $result_project = mysqli_query($conn, $query_project);
                                                 while ($row = mysqli_fetch_assoc($result_project)) {
                                                     $project_id = $row['project_id'];
-                                                    $project_name = $row['project_name'];
+                                                    $project_office_name = $row['project_office_name'];
                                                     $location = $row['location'];
                                                 ?>
-                                                    <option value="<?php echo $project_id ?>" selected>Recent: <?php echo $project_name ?> in <?php echo $location ?></option>
+                                                    <option value="<?php echo $project_id ?>" selected>Recent: <?php echo $project_office_name ?> in <?php echo $location ?></option>
                                                 <?php
                                                 }
                                                 ?>
 
                                                 <?php
-                                                $query = "SELECT * FROM project_tb WHERE project_id <> $project_id";
+                                                $query = "SELECT * FROM project_office_tb WHERE project_id <> $project_id";
                                                 $result = mysqli_query($conn, $query);
                                                 while ($row = mysqli_fetch_array($result)) {
                                                     $project_id = $row['project_id'];
-                                                    $project_name = $row['project_name'];
+                                                    $project_office_name = $row['project_office_name'];
                                                     $location = $row['location'];
                                                 ?>
-                                                    <option value="<?php echo $project_id ?>"><?php echo $project_name ?> in <?php echo $location ?></option>
+                                                    <option value="<?php echo $project_id ?>"><?php echo $project_office_name ?> in <?php echo $location ?></option>
                                                 <?php
                                                 }
                                                 ?>
@@ -904,12 +904,12 @@
                             <h1 class="modal-title text-center">
                                 <?php echo $item_type ?> Item <?php echo $item_name ?>'s Movement for
                                 <?php
-                                $query_project = "SELECT project_tb.* FROM project_tb 
-                                    INNER JOIN inventory_tb ON inventory_tb.project_id = project_tb.project_id 
+                                $query_project = "SELECT project_office_tb.* FROM project_office_tb 
+                                    INNER JOIN inventory_tb ON inventory_tb.project_id = project_office_tb.project_id 
                                     WHERE inventory_tb.inventory_id = $inventory_id";
                                 $result_project = mysqli_query($conn, $query_project);
                                 while ($row = mysqli_fetch_assoc($result_project)) {
-                                    $project = $row['project_name'];
+                                    $project = $row['project_office_name'];
                                 ?>
                                     Project <?php echo $project ?>
                                 <?php
@@ -969,7 +969,7 @@
                                                     $converted_date_movement = date_create($date_movement);
                                             ?>
                                                     <tr class="text-center">
-                                                        <td><?php echo date_format($converted_date_movement,"Y-m-d h:i A") ?></td>
+                                                        <td><?php echo date_format($converted_date_movement, "Y-m-d h:i A") ?></td>
                                                         <td><?php echo $quantity ?></td>
                                                         <td><?php echo $date_added ?></td>
                                                         <td><?php echo $issued ?></td>
@@ -1060,15 +1060,18 @@
     <script type="text/javascript">
         $(document).ready(function() {
             $('#dtBasicExample').DataTable({
-                "lengthMenu": [[5, 10, 20, -1], [5, 10, 20, "All"]]
+                "lengthMenu": [
+                    [5, 10, 20, -1],
+                    [5, 10, 20, "All"]
+                ]
             });
             $('.dataTables_length').addClass('bs-select');
         });
     </script>
-    <?php 
+    <?php
     // SELECT all from inventory table and project table
-    $query_inventory = "SELECT inventory_tb.*, project_tb.* FROM inventory_tb 
-    INNER JOIN project_tb ON project_tb.project_id = inventory_tb.project_id";
+    $query_inventory = "SELECT inventory_tb.*, project_office_tb.* FROM inventory_tb 
+    INNER JOIN project_office_tb ON project_office_tb.project_id = inventory_tb.project_id";
 
     $result_inventory = mysqli_query($conn, $query_inventory);
 
@@ -1077,18 +1080,21 @@
         while ($row = mysqli_fetch_assoc($result_inventory)) {
             $inventory_id = $row['inventory_id'];
     ?>
-    <script type="text/javascript">
-        $(document).ready(function() {
-            $('#dtMovement<?php echo $inventory_id ?>').DataTable({
-                "lengthMenu": [[5, 10, 20, -1], [5, 10, 20, "All"]]
-            });
-            $('.dataTables_length').addClass('bs-select');
-        });
-    </script>
-<?php 
+            <script type="text/javascript">
+                $(document).ready(function() {
+                    $('#dtMovement<?php echo $inventory_id ?>').DataTable({
+                        "lengthMenu": [
+                            [5, 10, 20, -1],
+                            [5, 10, 20, "All"]
+                        ]
+                    });
+                    $('.dataTables_length').addClass('bs-select');
+                });
+            </script>
+    <?php
         }
     }
-?>
+    ?>
 </body>
 
 </html>
