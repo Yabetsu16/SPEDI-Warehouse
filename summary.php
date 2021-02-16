@@ -63,17 +63,18 @@
     <?php
     if (isset($_POST['export_type'])) {
         $item_type = $_POST['item_type'];
+        $project_id = $_POST['project_id'];
 
         if ($item_type == "All") {
-            header("Location: export_all.php");
+            header("Location: export_all.php?p=$project_id");
         } else if ($item_type == "Materials") {
-            header("Location: export_materials.php");
+            header("Location: export_materials.php?p=$project_id");
         } else if ($item_type == "Tools") {
-            header("Location: export_tools.php");
+            header("Location: export_tools.php?p=$project_id");
         } else if ($item_type == "Safety") {
-            header("Location: export_safety.php");
+            header("Location: export_safety.php?p=$project_id");
         } else if ($item_type == "Admin") {
-            header("Location: export_admin.php");
+            header("Location: export_admin.php?p=$project_id");
         }
     }
     ?>
@@ -192,7 +193,7 @@
         <div class="modal-dialog modal-md" role="document">
             <div class="modal-content">
                 <div class="modal-header elegant-color text-white d-flex justify-content-center">
-                    <h3 class="modal-title h4-responsive">What type of items should be exported?</h4>
+                    <h3 class="modal-title h4-responsive">Select Project / Office and Item Type</h4>
                 </div>
                 <div class="modal-body">
                     <!-- Material form grid -->
@@ -210,6 +211,29 @@
                                         <option value="Tools">Tools</option>
                                         <option value="Safety">Safety</option>
                                         <option value="Admin">Admin</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <!-- Grid column -->
+                            <!-- Grid column -->
+                            <div class="col-12">
+                                <!-- Material input -->
+                                <div class="md-form mt-0">
+                                    <select name="project_id" class="browser-default custom-select">
+                                        <option value="" selected>Select Project / Office</option>
+                                        <option value="All">All</option>
+                                        <?php
+                                        $query = "SELECT * FROM project_office_tb";
+                                        $result = mysqli_query($conn, $query);
+                                        while ($row = mysqli_fetch_array($result)) {
+                                            $project_id = $row['project_id'];
+                                            $project_office_name = $row['project_office_name'];
+                                            $location = $row['location'];
+                                        ?>
+                                            <option value="<?php echo $project_id ?>"><?php echo $project_office_name ?> in <?php echo $location ?></option>
+                                        <?php
+                                        }
+                                        ?>
                                     </select>
                                 </div>
                             </div>
