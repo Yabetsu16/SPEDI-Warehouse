@@ -111,6 +111,8 @@
                                         </th>
                                         <th class="th-sm">Issued
                                         </th>
+                                        <th class="th-sm">Issued to Project / Office
+                                        </th>
                                         <th class="th-sm">Returned
                                         </th>
                                         <th class="th-sm">Balance
