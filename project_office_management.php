@@ -184,13 +184,13 @@
                 <div class="col-12">
                     <div class="card">
                         <div class="card-header elegant-color text-white text-center">
-                            <h1 class="h1-responsive">Project Management</h1>
+                            <h1 class="h1-responsive">Project / Office Management</h1>
                         </div>
                         <div class="card-body">
                             <div class="float-right">
                                 <br>
                                 <button class="btn btn-sm btn-primary" data-toggle="modal" data-target="#addProjectModal">Add
-                                    project</button>
+                                    project / office</button>
                             </div>
                             <br>
                             <table id="dtBasicExample" class="table table-striped table-responsive-sm btn-table" cellspacing="0" width="100%">
@@ -260,7 +260,7 @@
         <div class="modal-dialog modal-md" role="document">
             <div class="modal-content">
                 <div class="modal-header elegant-color text-white d-flex justify-content-center">
-                    <h1 class="modal-title">Add Project</h1>
+                    <h1 class="modal-title">Add Project / Office</h1>
                 </div>
                 <div class="modal-body">
                     <!-- Material form grid -->
@@ -274,7 +274,7 @@
                                 <div class="md-form mt-0">
                                     <input type="text" name="project_office_name" class="form-control validate" id="project_office_name" required>
                                     <label for="project_office_name" data-error="wrong" data-success="right">Project
-                                        Name</label>
+                                        / Office Name</label>
                                 </div>
                             </div>
                             <!-- Grid column -->
