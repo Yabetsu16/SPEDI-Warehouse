@@ -136,6 +136,7 @@
     <?php
     if (isset($_POST['count_submit'])) {
         $inventory_id = $_POST['inventory_id'];
+        $to_project_office = $_POST['to_project_office'];
         $item_name = $_POST['item_name'];
         $count_id = $_POST['count_id'];
         $quantity = $_POST['quantity'];
@@ -149,7 +150,7 @@
 
         if (
             $quantity == 0 && $issued == 0 && $returned == 0
-            && $date_added == "" && $date_issued == "" && $date_returned == ""
+            && $date_added == "" && $date_issued == "" && $date_returned == "" && $to_project_office == ""
         ) { ?>
             <div class="alert alert-warning alert-dismissible fade show" role="alert">
                 Input required.
@@ -174,7 +175,23 @@
                 </button>
             </div>
         <?php
-        } else if ($issued > 0 && $date_issued == "") { ?>
+        } else if ($issued > 0 && $date_issued == "" && $to_project_office == "") { ?>
+            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                Date Issued Input and Select Project / Office required.
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        <?php
+        } else if ($issued > 0 && $date_issued <> "" && $to_project_office == "") { ?>
+            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                Select Project / Office required.
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        <?php
+        } else if ($issued > 0 && $date_issued == "" && $to_project_office <> "") { ?>
             <div class="alert alert-warning alert-dismissible fade show" role="alert">
                 Date Issued Input required.
                 <button type="button" class="close" data-dismiss="alert" aria-label="Close">
@@ -182,9 +199,25 @@
                 </button>
             </div>
         <?php
-        } else if ($issued == 0 && $date_issued <> "") { ?>
+        } else if ($issued == 0 && $date_issued <> "" && $to_project_office == "") { ?>
+            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                Issued Input and Select Project / Office required.
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        <?php
+        } else if ($issued == 0 && $date_issued <> "" && $to_project_office <> "") { ?>
             <div class="alert alert-warning alert-dismissible fade show" role="alert">
                 Issued Input required.
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        <?php
+        } else if ($issued == 0 && $date_issued == "" && $to_project_office <> "") { ?>
+            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                Issued and Date Issued Input required.
                 <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -225,10 +258,10 @@
             $result = $stmt->get_result();
 
             $query = "INSERT INTO movement_tb (inventory_id, quantity, issued, returned, balance,
-        date_added, date_issued, date_returned) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        date_added, date_issued, date_returned, to_project_office) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
             $stmt = $conn->prepare($query);
             $stmt->bind_param(
-                "iiiiisss",
+                "iiiiissss",
                 $inventory_id,
                 $quantity,
                 $issued,
@@ -236,7 +269,8 @@
                 $total_balance,
                 $date_added,
                 $date_issued,
-                $date_returned
+                $date_returned,
+                $to_project_office
             );
 
             if ($stmt->execute()) { ?>
@@ -456,6 +490,21 @@
                                                                     <input type="date" name="date_issued" class="form-control text-center" id="date_issued">
                                                                     <label for="date_issued">Date Issued</label>
                                                                 </div>
+                                                                <div class="md-form input-group">
+                                                                    <select name="to_project_office" class="browser-default custom-select">
+                                                                        <option value="" selected>Select Project / Office to be issued</option>
+                                                                        <?php
+                                                                        $query = "SELECT * FROM project_office_tb";
+                                                                        $result = mysqli_query($conn, $query);
+                                                                        while ($row = mysqli_fetch_array($result)) {
+                                                                            $project_office_name = $row['project_office_name'];
+                                                                            $location = $row['location'];
+                                                                        ?>
+                                                                            <option value="<?php echo $project_office_name ?>"><?php echo $project_office_name ?> in <?php echo $location ?></option>
+                                                                        <?php
+                                                                        }
+                                                                        ?>
+                                                                </div>
                                                             </td>
                                                             <td>
                                                                 <div class="md-form input-group">
@@ -609,7 +658,7 @@
                             <div class="col-12">
                                 <!-- Material input -->
                                 <div class="md-form mt-0">
-                                    <input type="text" name="remarks" class="form-control validate" id="remarks" required>
+                                    <input type="text" name="remarks" class="form-control validate" id="remarks">
                                     <label for="remarks" data-error="wrong" data-success="right">Remarks</label>
                                 </div>
                             </div>
@@ -792,7 +841,7 @@
                                     <div class="col-12">
                                         <!-- Material input -->
                                         <div class="md-form mt-0">
-                                            <input type="text" name="edit_remarks" class="form-control validate" id="edit_remarks" value="<?php echo $remarks ?>" required>
+                                            <input type="text" name="edit_remarks" class="form-control validate" id="edit_remarks" value="<?php echo $remarks ?>">
                                             <label for="edit_remarks" data-error="wrong" data-success="right">Remarks</label>
                                         </div>
                                     </div>
@@ -934,6 +983,8 @@
                                                 </th>
                                                 <th class="th-sm">Issued
                                                 </th>
+                                                <th class="th-sm">Issued to Project / Office
+                                                </th>
                                                 <th class="th-sm">Date Issued
                                                 </th>
                                                 <th class="th-sm">Returned
@@ -967,12 +1018,14 @@
                                                     $balance = $row['balance'];
                                                     $date_movement = $row['date_movement'];
                                                     $converted_date_movement = date_create($date_movement);
+                                                    $to_project_office = $row['to_project_office'];
                                             ?>
                                                     <tr class="text-center">
                                                         <td><?php echo date_format($converted_date_movement, "Y-m-d h:i A") ?></td>
                                                         <td><?php echo $quantity ?></td>
                                                         <td><?php echo $date_added ?></td>
                                                         <td><?php echo $issued ?></td>
+                                                        <td><?php echo $to_project_office ?></td>
                                                         <td><?php echo $date_issued ?></td>
                                                         <td><?php echo $returned ?></td>
                                                         <td><?php echo $date_returned ?></td>
