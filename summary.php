@@ -201,7 +201,7 @@
                 </div>
                 <div class="modal-body">
                     <!-- Material form grid -->
-                    <form action="#" method="post">
+                    <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" method="post">
                         <!-- Grid row -->
                         <div class="row">
                             <!-- Grid column -->

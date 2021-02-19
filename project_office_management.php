@@ -264,7 +264,7 @@
                 </div>
                 <div class="modal-body">
                     <!-- Material form grid -->
-                    <form action="#" method="post">
+                    <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" method="post">
                         <!-- Grid row -->
                         <div class="row">
 
@@ -323,7 +323,7 @@
                         </div>
                         <div class="modal-body">
                             <!-- Material form grid -->
-                            <form action="#" method="post">
+                            <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" method="post">
                                 <!-- Grid row -->
                                 <div class="row">
 
@@ -381,7 +381,7 @@
 
                         <!--Footer-->
                         <div class="modal-footer flex-center">
-                            <form action="#" method="post">
+                            <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" method="post">
                                 <input type="hidden" name="project_office_name" value="<?php echo $project_office_name ?>">
                                 <input type="hidden" name="project_id" value="<?php echo $project_id ?>">
                                 <button type="submit" class="btn btn-danger" name="delete_project">Yes</button>
