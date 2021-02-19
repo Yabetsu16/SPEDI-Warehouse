@@ -651,7 +651,7 @@
                 </div>
                 <div class="modal-body">
                     <!-- Material form grid -->
-                    <form action="#" method="post">
+                    <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" method="post">
                         <!-- Grid row -->
                         <div class="row">
                             <!-- Grid column -->
@@ -783,7 +783,7 @@
                         </div>
                         <div class="modal-body">
                             <!-- Material form grid -->
-                            <form action="#" method="post">
+                            <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" method="post">
                                 <!-- Grid row -->
                                 <div class="row">
                                     <!-- Grid column -->
@@ -959,9 +959,9 @@
 
                         <!--Footer-->
                         <div class="modal-footer flex-center">
-                            <form action="#" method="post">
+                            <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" method="post">
                                 <input type="hidden" name="item_name" value="<?php echo $item_name ?>">
-                                <input type="hidden" name="inventory_id" value="<?php echo $id ?>">
+                                <input type="hidden" name="inventory_id" value="<?php echo $inventory_id ?>">
                                 <button type="submit" class="btn btn-danger" name="delete_item">Yes</button>
                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
                             </form>
