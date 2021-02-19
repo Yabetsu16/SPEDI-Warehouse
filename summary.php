@@ -139,6 +139,7 @@
                                         $balance = $row['balance'];
                                         $date_movement = $row['date_movement'];
                                         $converted_date_movement = date_create($date_movement);
+                                        $to_project_office = $row['to_project_office'];
                                     ?>
                                         <tr class="text-center">
                                             <td><?php echo date_format($converted_date_movement, "Y-m-d h:i A") ?></td>
@@ -148,6 +149,7 @@
                                             <td><?php echo $unit ?></td>
                                             <td><?php echo $quantity ?></td>
                                             <td><?php echo $issued ?></td>
+                                            <td><?php echo $to_project_office ?></td>
                                             <td><?php echo $returned ?></td>
                                             <td><?php echo $balance ?></td>
                                         </tr>
