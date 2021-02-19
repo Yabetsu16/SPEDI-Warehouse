@@ -153,7 +153,7 @@
         <div class="col-sm-12 col-lg-6 col-xl-6 mt-3">
           <div class="card">
             <div class="card-header text-center primary-color-dark text-white">
-              <h4 class="card-title">Projects</h4>
+              <h4 class="card-title">Projects / Offices</h4>
             </div>
             <div class="card-body text-center">
               <?php
