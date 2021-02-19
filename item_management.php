@@ -175,7 +175,63 @@
                 </button>
             </div>
         <?php
-        } else if ($issued > 0 && $date_issued == "" && $to_project_office == "") { ?>
+        } else if ($issued > 0 && $date_issued <> "" && $to_project_office <> "" && $balance <= 0) { ?>
+            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                Add a Quantity first.
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        <?php
+        } else if ($issued > 0 && $date_issued == "" && $to_project_office <> "" && $balance <= 0) { ?>
+            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                Add a Quantity first.
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        <?php
+        } else if ($issued > 0 && $date_issued <> "" && $to_project_office == "" && $balance <= 0) { ?>
+            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                Add a Quantity first.
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        <?php
+        } else if ($issued > 0 && $date_issued == "" && $to_project_office == "" && $balance <= 0) { ?>
+            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                Add a Quantity first.
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        <?php
+        } else if ($issued == 0 && $date_issued <> "" && $to_project_office <> "" && $balance <= 0) { ?>
+            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                Add a Quantity first.
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        <?php
+        } else if ($issued == 0 && $date_issued == "" && $to_project_office <> "" && $balance <= 0) { ?>
+            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                Add a Quantity first.
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        <?php
+        } else if ($issued == 0 && $date_issued <> "" && $to_project_office == "" && $balance <= 0) { ?>
+            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                Add a Quantity first.
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        <?php
+        } else if ($issued > 0 && $date_issued == "" && $to_project_office == "" && $balance > 0) { ?>
             <div class="alert alert-warning alert-dismissible fade show" role="alert">
                 Date Issued Input and Select Project / Office required.
                 <button type="button" class="close" data-dismiss="alert" aria-label="Close">
@@ -183,7 +239,7 @@
                 </button>
             </div>
         <?php
-        } else if ($issued > 0 && $date_issued <> "" && $to_project_office == "") { ?>
+        } else if ($issued > 0 && $date_issued <> "" && $to_project_office == "" && $balance > 0) { ?>
             <div class="alert alert-warning alert-dismissible fade show" role="alert">
                 Select Project / Office required.
                 <button type="button" class="close" data-dismiss="alert" aria-label="Close">
@@ -191,7 +247,7 @@
                 </button>
             </div>
         <?php
-        } else if ($issued > 0 && $date_issued == "" && $to_project_office <> "") { ?>
+        } else if ($issued > 0 && $date_issued == "" && $to_project_office <> "" && $balance > 0) { ?>
             <div class="alert alert-warning alert-dismissible fade show" role="alert">
                 Date Issued Input required.
                 <button type="button" class="close" data-dismiss="alert" aria-label="Close">
@@ -199,7 +255,7 @@
                 </button>
             </div>
         <?php
-        } else if ($issued == 0 && $date_issued <> "" && $to_project_office == "") { ?>
+        } else if ($issued == 0 && $date_issued <> "" && $to_project_office == "" && $balance > 0) { ?>
             <div class="alert alert-warning alert-dismissible fade show" role="alert">
                 Issued Input and Select Project / Office required.
                 <button type="button" class="close" data-dismiss="alert" aria-label="Close">
@@ -207,7 +263,7 @@
                 </button>
             </div>
         <?php
-        } else if ($issued == 0 && $date_issued <> "" && $to_project_office <> "") { ?>
+        } else if ($issued == 0 && $date_issued <> "" && $to_project_office <> "" && $balance > 0) { ?>
             <div class="alert alert-warning alert-dismissible fade show" role="alert">
                 Issued Input required.
                 <button type="button" class="close" data-dismiss="alert" aria-label="Close">
@@ -215,7 +271,7 @@
                 </button>
             </div>
         <?php
-        } else if ($issued == 0 && $date_issued == "" && $to_project_office <> "") { ?>
+        } else if ($issued == 0 && $date_issued == "" && $to_project_office <> "" && $balance > 0) { ?>
             <div class="alert alert-warning alert-dismissible fade show" role="alert">
                 Issued and Date Issued Input required.
                 <button type="button" class="close" data-dismiss="alert" aria-label="Close">
@@ -223,7 +279,7 @@
                 </button>
             </div>
         <?php
-        } else if ($returned > 0 && $date_returned == "") { ?>
+        } else if ($returned > 0 && $date_returned == "" && $balance > 0) { ?>
             <div class="alert alert-warning alert-dismissible fade show" role="alert">
                 Date Returned Input required.
                 <button type="button" class="close" data-dismiss="alert" aria-label="Close">
@@ -231,7 +287,7 @@
                 </button>
             </div>
         <?php
-        } else if ($returned == 0 && $date_returned <> "") { ?>
+        } else if ($returned == 0 && $date_returned <> "" && $balance > 0) { ?>
             <div class="alert alert-warning alert-dismissible fade show" role="alert">
                 Returned Input required.
                 <button type="button" class="close" data-dismiss="alert" aria-label="Close">
@@ -289,11 +345,10 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-    <?php
+<?php
             }
         }
     }
-
 
     ?>
 
@@ -494,11 +549,11 @@
                                                                     <select name="to_project_office" class="browser-default custom-select">
                                                                         <option value="" selected>Select Project / Office to be issued</option>
                                                                         <?php
-                                                                        $query = "SELECT * FROM project_office_tb";
-                                                                        $result = mysqli_query($conn, $query);
-                                                                        while ($row = mysqli_fetch_array($result)) {
-                                                                            $project_office_name = $row['project_office_name'];
-                                                                            $location = $row['location'];
+                                                                        $query_project_office = "SELECT * FROM project_office_tb";
+                                                                        $result_project_office = mysqli_query($conn, $query_project_office);
+                                                                        while ($row_project_office = mysqli_fetch_array($result_project_office)) {
+                                                                            $project_office_name = $row_project_office['project_office_name'];
+                                                                            $location = $row_project_office['location'];
                                                                         ?>
                                                                             <option value="<?php echo $project_office_name ?>"><?php echo $project_office_name ?> in <?php echo $location ?></option>
                                                                         <?php
