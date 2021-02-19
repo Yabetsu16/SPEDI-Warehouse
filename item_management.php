@@ -294,6 +294,30 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
+        <?php
+        } else if ($returned > 0 && $date_returned == "" && $balance <= 0) { ?>
+            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                Add a Quantity first.
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        <?php
+        } else if ($returned == 0 && $date_returned <> "" && $balance <= 0) { ?>
+            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                Add a Quantity first.
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        <?php
+        } else if ($returned > 0 && $date_returned <> "" && $balance <= 0) { ?>
+            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                Add a Quantity first.
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
             <?php
         } else {
             $query = "UPDATE count_tb SET quantity = ?, issued = ?, returned = ?, balance = ?,
@@ -345,7 +369,7 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-<?php
+    <?php
             }
         }
     }
