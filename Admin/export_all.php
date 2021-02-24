@@ -1,4 +1,4 @@
-<?php require "config/connectdb.php"; ?>
+<?php require "../config/connectdb.php"; ?>
 
 <?php
 $project_id = $_GET['p'];
@@ -9,27 +9,29 @@ if ($project_id != "All") {
     while ($row_project_office = mysqli_fetch_array($result_project_office)) {
         $project_office_name = $row_project_office['project_office_name'];
     }
-    $filename = "Tools Inventory Summary Report for " . $project_office_name . " " . date("M-d-Y");  //your_file_name
+
+    $filename = "All Inventory Summary Report for " . $project_office_name . " " . date("M-d-Y");  //your_file_name
     $file_format = ".csv";   //file_extention
 
     $query = "SELECT
-    project_office_tb.project_office_name AS 'Project / Office',
-    inventory_tb.item_name AS 'Item Name',
-    inventory_tb.unit AS 'Unit',
-    inventory_tb.unit_cost AS 'Cost',
-    movement_tb.quantity AS 'Quantity',
-    movement_tb.date_added AS 'Date Added',
-    movement_tb.issued AS 'Issued',
-    movement_tb.to_project_office AS 'Issued To',
-    movement_tb.date_issued AS 'Date Issued',
-    movement_tb.returned AS 'Returned',
-    movement_tb.date_returned AS 'Date Returned',
-    movement_tb.balance AS 'Balance'
-    FROM movement_tb 
-    INNER JOIN inventory_tb ON inventory_tb.inventory_id = movement_tb.inventory_id
-    INNER JOIN project_office_tb ON project_office_tb.project_id = inventory_tb.project_id
-    WHERE inventory_tb.item_type = 'Tools' AND project_office_tb.project_id = $project_id
-    ORDER BY inventory_tb.inventory_id, movement_tb.date_movement;";
+        project_office_tb.project_office_name AS 'Project / Office',
+        inventory_tb.item_type AS 'Item Type',
+        inventory_tb.item_name AS 'Item Name',
+        inventory_tb.unit AS 'Unit',
+        inventory_tb.unit_cost AS 'Cost',
+        movement_tb.quantity AS 'Quantity',
+        movement_tb.date_added AS 'Date Added',
+        movement_tb.issued AS 'Issued',
+        movement_tb.to_project_office AS 'Issued To',
+        movement_tb.date_issued AS 'Date Issued',
+        movement_tb.returned AS 'Returned',
+        movement_tb.date_returned AS 'Date Returned',
+        movement_tb.balance AS 'Balance'
+        FROM movement_tb 
+        INNER JOIN inventory_tb ON inventory_tb.inventory_id = movement_tb.inventory_id
+        INNER JOIN project_office_tb ON project_office_tb.project_id = inventory_tb.project_id
+        WHERE project_office_tb.project_id = $project_id
+        ORDER BY inventory_tb.inventory_id, movement_tb.date_movement;";
 
     $result = mysqli_query($conn, $query);
     $number_of_fields = mysqli_num_fields($result);
@@ -53,11 +55,12 @@ if ($project_id != "All") {
 }
 
 if ($project_id == "All") {
-    $filename = "Tools Inventory Summary Report for all Projects and Offices " . date("M-d-Y");  //your_file_name
+    $filename = "All Inventory Summary Report for all Projects and Offices " . date("M-d-Y");  //your_file_name
     $file_format = ".csv";   //file_extention
 
     $query = "SELECT
     project_office_tb.project_office_name AS 'Project / Office',
+    inventory_tb.item_type AS 'Item Type',
     inventory_tb.item_name AS 'Item Name',
     inventory_tb.unit AS 'Unit',
     inventory_tb.unit_cost AS 'Cost',
@@ -72,7 +75,6 @@ if ($project_id == "All") {
     FROM movement_tb 
     INNER JOIN inventory_tb ON inventory_tb.inventory_id = movement_tb.inventory_id
     INNER JOIN project_office_tb ON project_office_tb.project_id = inventory_tb.project_id
-    WHERE inventory_tb.item_type = 'Tools'
     ORDER BY inventory_tb.inventory_id, movement_tb.date_movement;";
 
     $result = mysqli_query($conn, $query);
@@ -95,7 +97,6 @@ if ($project_id == "All") {
         die;
     }
 }
-
 
 function mysqli_field_name($result, $field_offset)
 {

@@ -1,4 +1,4 @@
-<?php require "config/connectdb.php"; ?>
+<?php require "../config/connectdb.php"; ?>
 
 <?php
 $project_id = $_GET['p'];
@@ -9,7 +9,8 @@ if ($project_id != "All") {
     while ($row_project_office = mysqli_fetch_array($result_project_office)) {
         $project_office_name = $row_project_office['project_office_name'];
     }
-    $filename = "Safety Inventory Summary Report for " . $project_office_name . " " . date("M-d-Y");  //your_file_name
+
+    $filename = "Materials Inventory Summary Report for " . $project_office_name . " " . date("M-d-Y");  //your_file_name
     $file_format = ".csv";   //file_extention
 
     $query = "SELECT
@@ -28,7 +29,7 @@ if ($project_id != "All") {
     FROM movement_tb 
     INNER JOIN inventory_tb ON inventory_tb.inventory_id = movement_tb.inventory_id
     INNER JOIN project_office_tb ON project_office_tb.project_id = inventory_tb.project_id
-    WHERE inventory_tb.item_type = 'Safety' AND project_office_tb.project_id = $project_id
+    WHERE inventory_tb.item_type = 'Materials' AND project_office_tb.project_id = $project_id
     ORDER BY inventory_tb.inventory_id, movement_tb.date_movement;";
 
     $result = mysqli_query($conn, $query);
@@ -53,7 +54,7 @@ if ($project_id != "All") {
 }
 
 if ($project_id == "All") {
-    $filename = "Safety Inventory Summary Report for all Projects and Offices " . date("M-d-Y");  //your_file_name
+    $filename = "Materials Inventory Summary Report for all Projects and Offices " . date("M-d-Y");  //your_file_name
     $file_format = ".csv";   //file_extention
 
     $query = "SELECT
@@ -72,7 +73,7 @@ if ($project_id == "All") {
     FROM movement_tb 
     INNER JOIN inventory_tb ON inventory_tb.inventory_id = movement_tb.inventory_id
     INNER JOIN project_office_tb ON project_office_tb.project_id = inventory_tb.project_id
-    WHERE inventory_tb.item_type = 'Safety'
+    WHERE inventory_tb.item_type = 'Materials'
     ORDER BY inventory_tb.inventory_id, movement_tb.date_movement;";
 
     $result = mysqli_query($conn, $query);
@@ -95,6 +96,7 @@ if ($project_id == "All") {
         die;
     }
 }
+
 
 function mysqli_field_name($result, $field_offset)
 {

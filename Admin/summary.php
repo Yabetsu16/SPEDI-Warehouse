@@ -1,4 +1,16 @@
-<?php require "config/connectdb.php"; ?>
+<?php require "../config/connectdb.php";
+session_start();
+
+if (isset($_SESSION['id'])) {
+    $accont_id = $_SESSION['id'];
+    $username = $_SESSION['username'];
+    $type = $_SESSION['type'];
+} else {
+    // Redirect them to the login page
+    header("Location: ../");
+}
+
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -14,13 +26,13 @@
     <!-- Google Fonts Roboto -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap">
     <!-- Bootstrap core CSS -->
-    <link rel="stylesheet" href="dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../dist/css/bootstrap.min.css">
     <!-- Material Design Bootstrap -->
-    <link rel="stylesheet" href="dist/css/mdb.min.css">
+    <link rel="stylesheet" href="../dist/css/mdb.min.css">
     <!-- MDBootstrap Datatables  -->
-    <link href="dist/css/addons/datatables.min.css" rel="stylesheet">
+    <link href="../dist/css/addons/datatables.min.css" rel="stylesheet">
     <!-- Your custom styles (optional) -->
-    <link rel="stylesheet" href="dist/css/style.css">
+    <link rel="stylesheet" href="../dist/css/style.css">
 </head>
 
 <body>
@@ -28,7 +40,7 @@
     <nav class="navbar navbar-expand-lg navbar-dark elegant-color">
 
         <!-- Navbar brand -->
-        <a class="navbar-brand" href="index.html">Warehouse Control</a>
+        <a class="navbar-brand" href="index.php">Warehouse Control</a>
 
         <!-- Collapse button -->
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#spediNavBar" aria-controls="spediNavBar" aria-expanded="false" aria-label="Toggle navigation">
@@ -47,7 +59,7 @@
                     <a class="nav-link" href="project_office_management.php">Project / Office Management</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="item_management.php">Item Management</a>
+                    <a class="nav-link" href="item_management.php">Item Management </a>
                 </li>
                 <li class="nav-item active">
                     <a class="nav-link" href="summary.php">Summary
@@ -56,10 +68,22 @@
                 </li>
             </ul>
             <!-- Links -->
+
+            <ul class="navbar-nav ml-auto nav-flex-icons">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle text-capitalize" id="navbarDropdownMenuLink-333" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <?php echo $username ?> <i class="fas fa-user"></i>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-right dropdown-default" aria-labelledby="navbarDropdownMenuLink-333">
+                        <a class="dropdown-item" href="logout.php">Logout</a>
+                    </div>
+                </li>
+            </ul>
         </div>
         <!-- Collapsible content -->
     </nav>
     <!--/.Navbar-->
+
     <?php
     if (isset($_POST['export_type'])) {
         $item_type = $_POST['item_type'];
@@ -201,7 +225,7 @@
                 </div>
                 <div class="modal-body">
                     <!-- Material form grid -->
-                    <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" method="post">
+                    <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
                         <!-- Grid row -->
                         <div class="row">
                             <!-- Grid column -->
@@ -269,15 +293,15 @@
     <!-- Footer -->
 
     <!-- jQuery -->
-    <script type="text/javascript" src="dist/js/jquery.min.js"></script>
+    <script type="text/javascript" src="../dist/js/jquery.min.js"></script>
     <!-- Bootstrap tooltips -->
-    <script type="text/javascript" src="dist/js/popper.min.js"></script>
+    <script type="text/javascript" src="../dist/js/popper.min.js"></script>
     <!-- Bootstrap core JavaScript -->
-    <script type="text/javascript" src="dist/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../dist/js/bootstrap.min.js"></script>
     <!-- MDB core JavaScript -->
-    <script type="text/javascript" src="dist/js/mdb.min.js"></script>
+    <script type="text/javascript" src="../dist/js/mdb.min.js"></script>
     <!-- MDBootstrap Datatables  -->
-    <script type="text/javascript" src="dist/js/addons/datatables.min.js"></script>
+    <script type="text/javascript" src="../dist/js/addons/datatables.min.js"></script>
     <!-- Your custom scripts (optional) -->
     <script type="text/javascript">
         $(document).ready(function() {
