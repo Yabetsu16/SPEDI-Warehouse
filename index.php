@@ -1,316 +1,161 @@
-<?php require "config/connectdb.php"; ?>
+<?php require "config/connectdb.php";
+session_start();
+
+if (isset($_SESSION['id'])) {
+    header('Location: Admin/ ');
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <meta http-equiv="x-ua-compatible" content="ie=edge">
-  <title>SPEDI Warehouse Control</title>
-  <!-- MDB icon -->
-  <link rel="icon" href="img/mdb-favicon.ico" type="image/x-icon">
-  <!-- Font Awesome -->
-  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/all.css">
-  <!-- Google Fonts Roboto -->
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap">
-  <!-- Bootstrap core CSS -->
-  <link rel="stylesheet" href="dist/css/bootstrap.min.css">
-  <!-- Material Design Bootstrap -->
-  <link rel="stylesheet" href="dist/css/mdb.min.css">
-  <!-- MDBootstrap Datatables  -->
-  <link href="dist/css/addons/datatables.min.css" rel="stylesheet">
-  <!-- Your custom styles (optional) -->
-  <link rel="stylesheet" href="dist/css/style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>SPEDI Warehouse Control</title>
+    <!-- MDB icon -->
+    <link rel="icon" href="img/mdb-favicon.ico" type="image/x-icon">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/all.css">
+    <!-- Google Fonts Roboto -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap">
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="dist/css/bootstrap.min.css">
+    <!-- Material Design Bootstrap -->
+    <link rel="stylesheet" href="dist/css/mdb.min.css">
+    <!-- MDBootstrap Datatables  -->
+    <link href="dist/css/addons/datatables.min.css" rel="stylesheet">
+    <!-- Your custom styles (optional) -->
+    <link rel="stylesheet" href="dist/css/style.css">
 </head>
 
 <body>
-
-  <!--Navbar-->
-  <nav class="navbar navbar-expand-lg navbar-dark elegant-color">
-
-    <!-- Navbar brand -->
-    <a class="navbar-brand" href="index.php">Warehouse Control</a>
-
-    <!-- Collapse button -->
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#spediNavBar" aria-controls="spediNavBar" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-
-    <!-- Collapsible content -->
-    <div class="collapse navbar-collapse" id="spediNavBar">
-
-      <!-- Links -->
-      <ul class="navbar-nav mr-auto">
-        <li class="nav-item active">
-          <a class="nav-link" href="index.php">Dashboard
-            <span class="sr-only">(current)</span>
-          </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="project_office_management.php">Project / Office Management</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="item_management.php">Item Management</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="summary.php">Summary</a>
-        </li>
-      </ul>
-      <!-- Links -->
-    </div>
-    <!-- Collapsible content -->
-  </nav>
-  <!--/.Navbar-->
-
-  <!-- Warehouse Counter -->
-  <section id="warehouse_counter" class="mt-3">
     <div class="container-fluid">
-      <div class="row">
-        <div class="col-sm-12 col-lg-6 col-xl-3 mt-3">
-          <div class="card">
-            <div class="card-header text-center elegant-color text-white">
-              <h4 class="card-title">Total Material Items</h4>
-            </div>
-            <div class="card-body text-center">
-              <?php
-              $query = "SELECT COUNT(item_type) FROM inventory_tb WHERE item_type = 'Materials'";
-              $stmt = $conn->prepare($query);
-              $stmt->execute();
-              $result = $stmt->get_result();
-              while ($row = $result->fetch_assoc()) {
-                $count = $row['COUNT(item_type)'];
-              ?>
-                <p class="h1-responsive"><?php echo $count ?></p>
-              <?php
-              }
-              ?>
-            </div>
-          </div>
-        </div>
-        <div class="col-sm-12 col-lg-6 col-xl-3 mt-3">
-          <div class="card">
-            <div class="card-header text-center special-color text-white">
-              <h4 class="card-title">Total Tool Items</h4>
-            </div>
-            <div class="card-body text-center">
-              <?php
-              $query = "SELECT COUNT(item_type) FROM inventory_tb WHERE item_type = 'Tools'";
-              $stmt = $conn->prepare($query);
-              $stmt->execute();
-              $result = $stmt->get_result();
-              while ($row = $result->fetch_assoc()) {
-                $count = $row['COUNT(item_type)'];
-              ?>
-                <p class="h1-responsive"><?php echo $count ?></p>
-              <?php
-              }
-              ?>
-            </div>
-          </div>
-        </div>
-        <div class="col-sm-12 col-lg-6 col-xl-3 mt-3">
-          <div class="card">
-            <div class="card-header text-center unique-color text-white">
-              <h4 class="card-title">Total Safety Items</h4>
-            </div>
-            <div class="card-body text-center">
-              <?php
-              $query = "SELECT COUNT(item_type) FROM inventory_tb WHERE item_type = 'Safety'";
-              $stmt = $conn->prepare($query);
-              $stmt->execute();
-              $result = $stmt->get_result();
-              while ($row = $result->fetch_assoc()) {
-                $count = $row['COUNT(item_type)'];
-              ?>
-                <p class="h1-responsive"><?php echo $count ?></p>
-              <?php
-              }
-              ?>
-            </div>
-          </div>
-        </div>
-        <div class="col-sm-12 col-lg-6 col-xl-3 mt-3">
-          <div class="card">
-            <div class="card-header text-center stylish-color text-white">
-              <h4 class="card-title">Total Admin Items</h4>
-            </div>
-            <div class="card-body text-center">
-              <?php
-              $query = "SELECT COUNT(item_type) FROM inventory_tb WHERE item_type = 'Admin'";
-              $stmt = $conn->prepare($query);
-              $stmt->execute();
-              $result = $stmt->get_result();
-              while ($row = $result->fetch_assoc()) {
-                $count = $row['COUNT(item_type)'];
-              ?>
-                <p class="h1-responsive"><?php echo $count ?></p>
-              <?php
-              }
-              ?>
-            </div>
-          </div>
-        </div>
-        <div class="col-sm-12 col-lg-6 col-xl-6 mt-3">
-          <div class="card">
-            <div class="card-header text-center primary-color-dark text-white">
-              <h4 class="card-title">Projects / Offices</h4>
-            </div>
-            <div class="card-body text-center">
-              <?php
-              $query = "SELECT COUNT(project_office_name) FROM project_office_tb";
-              $stmt = $conn->prepare($query);
-              $stmt->execute();
-              $result = $stmt->get_result();
-              while ($row = $result->fetch_assoc()) {
-                $count = $row['COUNT(project_office_name)'];
-              ?>
-                <p class="h1-responsive"><?php echo $count ?></p>
-              <?php
-              }
-              ?>
-            </div>
-          </div>
-        </div>
-        <div class="col-sm-12 col-lg-6 col-xl-6 mt-3">
-          <div class="card">
-            <div class="card-header text-center info-color-dark text-white">
-              <h4 class="card-title">Overall Total Items</h4>
-            </div>
-            <div class="card-body text-center">
-              <?php
-              $query = "SELECT COUNT(item_name) FROM inventory_tb";
-              $stmt = $conn->prepare($query);
-              $stmt->execute();
-              $result = $stmt->get_result();
-              while ($row = $result->fetch_assoc()) {
-                $count = $row['COUNT(item_name)'];
-              ?>
-                <p class="h1-responsive"><?php echo $count ?></p>
-              <?php
-              }
-              ?>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-  <!-- /. Warehouse Counter -->
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
 
-  <!-- Recent Items -->
-  <?php 
-    if (isset($_POST['clear_recent'])) {
-      $query = "TRUNCATE TABLE recent_tb";
-      $stmt = $conn->prepare($query);
-      $stmt->execute();
-    }
-  ?>
-  <section id="recent_movements" class="mt-3 mb-5">
-    <div class="container-fluid">
-      <div class="row">
-        <div class="col-12">
-          <div class="card">
-            <div class="card-header elegant-color text-white">
-              <h4 class="card-title text-center">Recently Added Items</h4>
-            </div>
-            <div class="card-body">
-              <div class="float-right">
-                <br>
-                <form action="#" method="post">
-                  <button class="btn btn-sm btn-danger" type="submit" name="clear_recent">Clear</button>
+        <div class="row">
+            <div class="col-4"></div>
+            <div class="col-4">
+                <?php
+                if (isset($_POST['login'])) {
+                    $username = $_POST['username'];
+                    $password = $_POST['password'];
+
+                    if ($username == "" && $password == "") { ?>
+                        <div class="alert alert-warning alert-dismissible fade show text-center" role="alert">
+                            Username and password required.
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                    <?php
+                    } else if ($username <> "" && $password == "") { ?>
+                        <div class="alert alert-warning alert-dismissible fade show text-center" role="alert">
+                            Password required.
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                    <?php
+                    } else if ($username == "" && $password <> "") { ?>
+                        <div class="alert alert-warning alert-dismissible fade show text-center" role="alert">
+                            Username required.
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <?php
+                    } else {
+                        $query_login = "SELECT * FROM account_tb WHERE username = ? AND password = ?";
+                        $stmt = $conn->prepare($query_login);
+                        $stmt->bind_param("ss", $username, $password);
+                        $stmt->execute();
+                        $result = $stmt->get_result();
+
+                        if (mysqli_num_rows($result) > 0) {
+                            while ($row = $result->fetch_assoc()) {
+                                $account_id = $row['account_id'];
+                                $username = $row['username'];
+                                session_start();
+                                $_SESSION['id'] = $account_id;
+                                $_SESSION['username'] = $username;
+                                header("Location: Admin/");
+                            }
+                        } else { ?>
+                            <div class="alert alert-warning alert-dismissible fade show text-center" role="alert">
+                                Wrong username or password
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                <?php
+                        }
+                    }
+                }
+                ?>
+                <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post" class="border border-light p-5">
+
+                    <p class="h4 mb-5 text-center">Welcome to SPEDI Warehouse</p>
+
+                    <div class="md-form mb-5">
+                        <input type="text" id="username" name="username" class="form-control">
+                        <label for="username">Username</label>
+                    </div>
+
+                    <div class="input-group md-form mb-5" id="show_hide_password">
+                        <input type="password" id="password" name="password" class="form-control">
+                        <label for="password">Password</label>
+                        <div class="input-group-append">
+                            <button class="btn btn-md btn-outline-primary m-0 px-3 py-2 z-depth-0 waves-effect" type="button" id="button-addon2"><i class="fa fa-eye-slash" aria-hidden="true"></i></button>
+                        </div>
+                    </div>
+
+                    <button class="btn btn-info btn-block my-4" type="submit" name="login">Login</button>
                 </form>
-              </div>
-              <br>
-              <table id="dtBasicExample" class="table table-striped table-responsive-md table-bordered table-sm text-center" cellspacing="0" width="100%">
-                <thead>
-                  <tr>
-                    <th class="th-sm">Item Type
-                    </th>
-                    <th class="th-sm">Item Name
-                    </th>
-                    <th class="th-sm">Description
-                    </th>
-                    <th class="th-sm">Project / Office
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <?php
-                  $query = "SELECT * FROM recent_tb INNER JOIN inventory_tb ON inventory_tb.inventory_id = recent_tb.inventory_id
-                  INNER JOIN project_office_tb ON project_office_tb.project_id = inventory_tb.project_id";
-                  $stmt = $conn->prepare($query);
-                  $stmt->execute();
-                  $result = $stmt->get_result();
-                  while ($row = $result->fetch_assoc()) {
-                    $item_type = $row['item_type'];
-                    $item_name = $row['item_name'];
-                    $item_description = $row['item_description'];
-                    $project_office_name = $row['project_office_name'];
-                  ?>
-                    <tr>
-                      <td><?php echo $item_type ?></td>
-                      <td><?php echo $item_name ?></td>
-                      <td><?php echo $item_description ?></td>
-                      <td><?php echo $project_office_name ?></td>
-                    </tr>
-                  <?php
-                  }
-                  ?>
-                </tbody>
-                <tfoot>
-                  <tr>
-                    <th class="th-sm">Item Type
-                    </th>
-                    <th class="th-sm">Item Name
-                    </th>
-                    <th class="th-sm">Description
-                    </th>
-                    <th class="th-sm">Project / Office
-                    </th>
-                  </tr>
-                </tfoot>
-              </table>
             </div>
-          </div>
+            <div class="col-4"></div>
         </div>
-      </div>
     </div>
-  </section>
-  <!-- /.Recent Items-->
-  <br>
-  <br>
 
-  <!-- Footer -->
-  <footer class="page-footer font-small elegant-color pt-4 mt-3 fixed-bottom">
+    <!-- jQuery -->
+    <script type="text/javascript" src="dist/js/jquery.min.js"></script>
+    <!-- Bootstrap tooltips -->
+    <script type="text/javascript" src="dist/js/popper.min.js"></script>
+    <!-- Bootstrap core JavaScript -->
+    <script type="text/javascript" src="dist/js/bootstrap.min.js"></script>
+    <!-- MDB core JavaScript -->
+    <script type="text/javascript" src="dist/js/mdb.min.js"></script>
+    <!-- MDBootstrap Datatables  -->
+    <script type="text/javascript" src="dist/js/addons/datatables.min.js"></script>
+    <!-- Your custom scripts (optional) -->
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('#dtBasicExample').DataTable({
+                "searching": false
+            });
+            $('.dataTables_length').addClass('bs-select');
+        });
 
-    <!-- Copyright -->
-    <div class="footer-copyright text-center py-3">© 2020 Copyright:
-      <a href="index.html">SPEDI Warehouse Control</a>
-    </div>
-    <!-- Copyright -->
-
-  </footer>
-  <!-- Footer -->
-
-  <!-- jQuery -->
-  <script type="text/javascript" src="dist/js/jquery.min.js"></script>
-  <!-- Bootstrap tooltips -->
-  <script type="text/javascript" src="dist/js/popper.min.js"></script>
-  <!-- Bootstrap core JavaScript -->
-  <script type="text/javascript" src="dist/js/bootstrap.min.js"></script>
-  <!-- MDB core JavaScript -->
-  <script type="text/javascript" src="dist/js/mdb.min.js"></script>
-  <!-- MDBootstrap Datatables  -->
-  <script type="text/javascript" src="dist/js/addons/datatables.min.js"></script>
-  <!-- Your custom scripts (optional) -->
-  <script type="text/javascript">
-    $(document).ready(function() {
-      $('#dtBasicExample').DataTable({
-        "searching": false
-      });
-      $('.dataTables_length').addClass('bs-select');
-    });
-  </script>
+        $(document).ready(function() {
+            $("#show_hide_password button").on('click', function(event) {
+                event.preventDefault();
+                if ($('#show_hide_password input').attr("type") == "text") {
+                    $('#show_hide_password input').attr('type', 'password');
+                    $('#show_hide_password i').addClass("fa-eye-slash");
+                    $('#show_hide_password i').removeClass("fa-eye");
+                } else if ($('#show_hide_password input').attr("type") == "password") {
+                    $('#show_hide_password input').attr('type', 'text');
+                    $('#show_hide_password i').removeClass("fa-eye-slash");
+                    $('#show_hide_password i').addClass("fa-eye");
+                }
+            });
+        });
+    </script>
 
 </body>
 
