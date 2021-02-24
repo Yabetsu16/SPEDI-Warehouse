@@ -75,6 +75,7 @@ if (isset($_SESSION['id'])) {
                         <?php echo $username ?> <i class="fas fa-user"></i>
                     </a>
                     <div class="dropdown-menu dropdown-menu-right dropdown-default" aria-labelledby="navbarDropdownMenuLink-333">
+                        <a class="dropdown-item" data-toggle="modal" data-target="#userModal">User Managerment</a>
                         <a class="dropdown-item" href="logout.php">Logout</a>
                     </div>
                 </li>
@@ -466,6 +467,81 @@ if (isset($_SESSION['id'])) {
             <div class="alert alert-danger alert-dismissible fade show" role="alert">
                 Failed to Edit <?php echo $item_name ?> <br>
                 <?php echo $conn->error ?>
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+    <?php
+        }
+    }
+    ?>
+
+    <?php
+    if (isset($_POST['add_user'])) {
+        $username = $_POST['username'];
+        $password = $_POST['password'];
+
+        $query = "SELECT * FROM account_tb WHERE username = ? AND password = ?";
+        $stmt = $conn->prepare($query);
+        $stmt->bind_param("ss", $username, $password);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        if (mysqli_num_rows($result) > 0) { ?>
+            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                User duplicate.
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <?php
+        } else {
+            $query = "INSERT INTO account_tb (username, password) VALUES (?, ?)";
+            $stmt = $conn->prepare($query);
+            $stmt->bind_param("ss", $username, $password);
+            if ($stmt->execute()) { ?>
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    User <?php echo $username ?> added.
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+    <?php
+            }
+        }
+    }
+    ?>
+
+    <?php
+    if (isset($_POST['edit_user'])) {
+        $username = $_POST['username'];
+        $password = $_POST['password'];
+        $update_account_id = $_POST['update_account_id'];
+
+        $query = "UPDATE account_tb SET username = ?, password = ? WHERE account_id = $update_account_id";
+        $stmt = $conn->prepare($query);
+        $stmt->bind_param("ss", $username, $password);
+        if ($stmt->execute()) { ?>
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                User <?php echo $username ?> updated.
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+    <?php
+        }
+    }
+    ?>
+
+    <?php
+    if (isset($_POST['delete_user'])) {
+        $username = $_POST['username'];
+        $delete_account_id = $_POST['delete_account_id'];
+
+        $query = "DELETE FROM account_tb WHERE account_id = $delete_account_id";
+        $stmt = $conn->prepare($query);
+        if ($stmt->execute()) { ?>
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                User <?php echo $username ?> deleted.
                 <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -1185,6 +1261,224 @@ if (isset($_SESSION['id'])) {
                 </div>
             </div>
             <!-- /.Modal Movement <?php echo $inventory_id ?> -->
+    <?php
+        }
+    }
+    ?>
+
+    <!-- User Modal -->
+    <div class="modal fade" id="userModal" tabindex="-1" role="dialog" aria-labelledby="userModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-fluid" role="document">
+            <div class="modal-content">
+                <div class="modal-header elegant-color text-white d-flex justify-content-center">
+                    <h1 class="modal-title">User Management</h1>
+                </div>
+                <div class="modal-body">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="float-right">
+                                <br>
+                                <button class="btn btn-sm btn-primary" data-toggle="modal" data-target="#addUserModal">Add
+                                    user</button>
+                            </div>
+                            <br>
+                            <table id="dtUserManagement" class="table table-striped table-responsive-lg btn-table" cellspacing="0" width="100%">
+                                <thead>
+                                    <tr class="text-center">
+                                        <th class="th-sm">Actions
+                                        </th>
+                                        <th class="th-sm">Username
+                                        </th>
+                                        <th class="th-sm">Password
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php
+                                    // SELECT all from inventory table
+                                    $query = "SELECT * FROM account_tb";
+
+                                    $result = mysqli_query($conn, $query);
+
+                                    if (mysqli_num_rows($result) > 0) {
+                                        // Display data of each row
+                                        while ($row = mysqli_fetch_assoc($result)) {
+                                            $accont_id = $row['account_id'];
+                                            $username = $row['username'];
+                                            $password = $row['password'];
+                                            //$password = str_repeat("*", strlen($password));
+                                    ?>
+                                            <tr class="text-center">
+                                                <td>
+                                                    <button type="button" class="btn btn-sm btn-success" data-toggle="modal" data-target="#editUserModal<?php echo $accont_id ?>">Edit</button>
+                                                    <button type="button" class="btn btn-sm btn-danger" data-toggle="modal" data-target="#modalUserConfirmDelete<?php echo $accont_id ?>">Delete</button>
+                                                </td>
+                                                <td><?php echo $username ?></td>
+                                                <td><?php echo $password ?></td>
+                                            </tr>
+                                    <?php
+                                        }
+                                    }
+                                    ?>
+                                </tbody>
+                                <tfoot>
+                                    <tr class="text-center">
+                                        <th class="th-sm">Actions
+                                        </th>
+                                        <th class="th-sm">Username
+                                        </th>
+                                        <th class="th-sm">Password
+                                        </th>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="text-center mb-3">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- User Modal -->
+
+    <!-- Modal Add User -->
+    <div class="modal fade" id="addUserModal" tabindex="-1" role="dialog" aria-labelledby="addItemModal" aria-hidden="true">
+        <div class="modal-dialog modal-sm" role="document">
+            <div class="modal-content">
+                <div class="modal-header elegant-color text-white d-flex justify-content-center">
+                    <h1 class="modal-title">Add User</h1>
+                </div>
+                <div class="modal-body">
+                    <!-- Material form grid -->
+                    <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
+                        <!-- Grid row -->
+                        <div class="row">
+                            <!-- Grid column -->
+                            <div class="col-12">
+                                <!-- Material input -->
+                                <div class="md-form mt-0">
+                                    <input type="text" name="username" class="form-control validate" id="username" required>
+                                    <label for="username" data-error="wrong" data-success="right">Username</label>
+                                </div>
+                            </div>
+                            <!-- Grid column -->
+
+                            <!-- Grid column -->
+                            <div class="col-12">
+                                <!-- Material input -->
+                                <div class="md-form mt-0">
+                                    <input type="password" name="password" class="form-control validate" id="password" required>
+                                    <label for="password" data-error="wrong" data-success="right">Password</label>
+                                </div>
+                            </div>
+                            <!-- Grid column -->
+                        </div>
+                        <!-- Grid row -->
+                        <div class="text-center">
+                            <button type="submit" name="add_user" class="btn btn-primary">Add</button>
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        </div>
+                    </form>
+                    <!-- Material form grid -->
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- /.Modal Add User -->
+
+    <?php
+    // SELECT all from account table
+    $query = "SELECT * FROM account_tb";
+
+    $result = mysqli_query($conn, $query);
+
+    if (mysqli_num_rows($result) > 0) {
+        // Display data of each row
+        while ($row = mysqli_fetch_assoc($result)) {
+            $manage_account_id = $row['account_id'];
+            $username = $row['username'];
+            $password = $row['password'];
+            //$password = str_repeat("*", strlen($password));
+    ?>
+            <!-- Modal Edit User <?php echo $manage_account_id ?> -->
+            <div class="modal fade" id="editUserModal<?php echo $manage_account_id ?>" tabindex="-1" role="dialog" aria-labelledby="editItemModal<?php echo $manage_account_id ?>" aria-hidden="true">
+                <div class="modal-dialog modal-sm" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header elegant-color text-white d-flex justify-content-center text-center">
+                            <h1 class="modal-title">Edit <?php echo $username ?> User</h1>
+                        </div>
+                        <div class="modal-body">
+                            <!-- Material form grid -->
+                            <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
+                                <!-- Grid row -->
+                                <div class="row">
+                                    <!-- Grid column -->
+                                    <div class="col-12">
+                                        <!-- Material input -->
+                                        <div class="md-form mt-0">
+                                            <input type="text" name="username" class="form-control validate" id="username" value="<?php echo $username ?>" required>
+                                            <label for="username" data-error="wrong" data-success="right">Username</label>
+                                        </div>
+                                    </div>
+                                    <!-- Grid column -->
+
+                                    <!-- Grid column -->
+                                    <div class="col-12">
+                                        <!-- Material input -->
+                                        <div class="md-form mt-0">
+                                            <input type="password" name="password" class="form-control validate" id="password" value="<?php echo $password ?>" required>
+                                            <label for="password" data-error="wrong" data-success="right">Password</label>
+                                        </div>
+                                    </div>
+                                    <!-- Grid column -->
+                                </div>
+                                <!-- Grid row -->
+                                <div class="text-center">
+                                    <input type="hidden" name="update_account_id" value="<?php echo $manage_account_id ?>">
+                                    <button type="submit" name="edit_user" class="btn btn-primary">Save</button>
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                </div>
+                            </form>
+                            <!-- Material form grid -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- /.Modal Edit User <?php echo $manage_account_id ?> -->
+
+            <!-- Modal User Confirm Delete <?php echo $manage_account_id ?> -->
+            <div class="modal fade" id="modalUserConfirmDelete<?php echo $manage_account_id ?>" tabindex="-1" role="dialog" aria-labelledby="modalUserConfirmDelete<?php echo $manage_account_id ?>" aria-hidden="true">
+                <div class="modal-dialog modal-md modal-notify modal-danger" role="document">
+                    <!--Content-->
+                    <div class="modal-content text-center">
+                        <!--Header-->
+                        <div class="modal-header d-flex justify-content-center">
+                            <p class="heading">Are you sure?</p>
+                        </div>
+
+                        <!--Body-->
+                        <div class="modal-body">
+                            <h4>Do you want to delete <?php echo $username ?>?</h4>
+                            <i class="fas fa-times fa-4x animated rotateIn"></i>
+
+                        </div>
+
+                        <!--Footer-->
+                        <div class="modal-footer flex-center">
+                            <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
+                                <input type="hidden" name="username" value="<?php echo $username ?>">
+                                <input type="hidden" name="delete_account_id" value="<?php echo $manage_account_id ?>">
+                                <button type="submit" class="btn btn-danger" name="delete_user">Yes</button>
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+                            </form>
+                        </div>
+                    </div>
+                    <!--/.Content-->
+                </div>
+            </div>
+            <!-- Modal User Confirm Delete <?php echo $manage_account_id ?> -->
     <?php
         }
     }
