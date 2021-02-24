@@ -1,4 +1,10 @@
-<?php require "config/connectdb.php"; ?>
+<?php require "config/connectdb.php";
+session_start();
+
+if (isset($_SESSION['id'])) {
+    header('Location: Admin/ ');
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -75,15 +81,10 @@
                             while ($row = $result->fetch_assoc()) {
                                 $account_id = $row['account_id'];
                                 $username = $row['username'];
-                                $type = $row['type'];
-
-                                if ($type == 1) {
-                                    session_start();
-                                    $_SESSION['id'] = $account_id;
-                                    $_SESSION['username'] = $username;
-                                    $_SESSION['type'] = "Admin";
-                                    header("Location: Admin/");
-                                }
+                                session_start();
+                                $_SESSION['id'] = $account_id;
+                                $_SESSION['username'] = $username;
+                                header("Location: Admin/");
                             }
                         } else { ?>
                             <div class="alert alert-warning alert-dismissible fade show text-center" role="alert">

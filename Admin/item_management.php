@@ -4,7 +4,6 @@ session_start();
 if (isset($_SESSION['id'])) {
     $accont_id = $_SESSION['id'];
     $username = $_SESSION['username'];
-    $type = $_SESSION['type'];
 } else {
     // Redirect them to the login page
     header("Location: ../");
