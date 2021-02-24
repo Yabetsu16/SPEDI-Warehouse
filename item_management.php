@@ -555,6 +555,7 @@
                                                             <td>
                                                                 <div class="md-form input-group">
                                                                     <input type="number" name="quantity" min="0" value="0" class="form-control text-center">
+                                                                    <label for="issued">Qty added to Inventory</label>
                                                                 </div>
                                                                 <div class="md-form input-group">
                                                                     <input type="date" name="date_added" class="form-control text-center" id="date_added">
@@ -564,14 +565,8 @@
                                                             <td>
                                                                 <div class="md-form input-group">
                                                                     <input type="number" name="issued" min="0" value="0" class="form-control text-center">
-                                                                </div>
-                                                                <div class="md-form input-group">
-                                                                    <input type="date" name="date_issued" class="form-control text-center" id="date_issued">
-                                                                    <label for="date_issued">Date Issued</label>
-                                                                </div>
-                                                                <div class="md-form input-group">
                                                                     <select name="to_project_office" class="browser-default custom-select">
-                                                                        <option value="" selected>Select Project / Office to be issued</option>
+                                                                        <option value="" selected>Issued To Project / Office</option>
                                                                         <?php
                                                                         $query_project_office = "SELECT * FROM project_office_tb";
                                                                         $result_project_office = mysqli_query($conn, $query_project_office);
@@ -583,11 +578,18 @@
                                                                         <?php
                                                                         }
                                                                         ?>
+                                                                    </select>
+                                                                    <label for="issued">Qty and Project / Office to be issued</label>
+                                                                </div>
+                                                                <div class="md-form input-group">
+                                                                            <input type="date" name="date_issued" class="form-control text-center" id="date_issued">
+                                                                            <label for="date_issued">Date Issued</label>
                                                                 </div>
                                                             </td>
                                                             <td>
                                                                 <div class="md-form input-group">
                                                                     <input type="number" name="returned" min="0" value="0" class="form-control text-center">
+                                                                    <label for="issued">Qty returned to inventory</label>
                                                                 </div>
                                                                 <div class="md-form input-group">
                                                                     <input type="date" name="date_returned" class="form-control text-center" id="date_returned">
@@ -651,7 +653,7 @@
                 </div>
                 <div class="modal-body">
                     <!-- Material form grid -->
-                    <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" method="post">
+                    <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
                         <!-- Grid row -->
                         <div class="row">
                             <!-- Grid column -->
@@ -783,7 +785,7 @@
                         </div>
                         <div class="modal-body">
                             <!-- Material form grid -->
-                            <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" method="post">
+                            <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
                                 <!-- Grid row -->
                                 <div class="row">
                                     <!-- Grid column -->
@@ -959,7 +961,7 @@
 
                         <!--Footer-->
                         <div class="modal-footer flex-center">
-                            <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" method="post">
+                            <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
                                 <input type="hidden" name="item_name" value="<?php echo $item_name ?>">
                                 <input type="hidden" name="inventory_id" value="<?php echo $inventory_id ?>">
                                 <button type="submit" class="btn btn-danger" name="delete_item">Yes</button>
