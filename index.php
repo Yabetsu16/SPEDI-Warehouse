@@ -81,10 +81,19 @@ if (isset($_SESSION['id'])) {
                             while ($row = $result->fetch_assoc()) {
                                 $account_id = $row['account_id'];
                                 $username = $row['username'];
+                                $user_type = $row['user_type'];
                                 session_start();
                                 $_SESSION['id'] = $account_id;
                                 $_SESSION['username'] = $username;
-                                header("Location: Superadmin/");
+                                if ($user_type == 1) {
+                                    header("Location: Superadmin/");
+                                }
+                                else if ($user_type == 2) {
+                                    header("Location: Admin/");
+                                }
+                                else if ($user_type == 3) {
+                                    header("Location: Material_Control/");
+                                }
                             }
                         } else { ?>
                             <div class="alert alert-warning alert-dismissible fade show text-center" role="alert">
