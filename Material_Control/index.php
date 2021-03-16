@@ -1,11 +1,12 @@
 <?php require "../config/connectdb.php";
 session_start();
 
-if (isset($_SESSION['id'])) {
+if (isset($_SESSION['id']) && $_SESSION['user_type'] == 3) {
   $accont_id = $_SESSION['id'];
   $username = $_SESSION['username'];
 } else {
   // Redirect them to the login page
+  session_destroy();
   header("Location: ../");
 }
 
@@ -179,7 +180,7 @@ if (isset($_SESSION['id'])) {
               </div>
               <div class="card-body text-center">
                 <?php
-                $query = "SELECT COUNT(item_name) FROM inventory_tb WHERE item_type = 'Materials' OR item_type = 'Tools' OR item_type = 'Safety'";
+                $query = "SELECT COUNT(item_name) FROM inventory_tb";
                 $stmt = $conn->prepare($query);
                 $stmt->execute();
                 $result = $stmt->get_result();
@@ -201,7 +202,7 @@ if (isset($_SESSION['id'])) {
     <!-- Recent Items -->
     <?php
     if (isset($_POST['clear_recent'])) {
-      $query = "DELETE FROM recent_tb WHERE type = 3";
+      $query = "DELETE FROM recent_tb WHERE type = 1";
       $stmt = $conn->prepare($query);
       $stmt->execute();
     }
@@ -217,7 +218,7 @@ if (isset($_SESSION['id'])) {
               <div class="card-body">
                 <div class="float-right">
                   <br>
-                  <form action="#" method="post">
+                  <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
                     <button class="btn btn-sm btn-danger" type="submit" name="clear_recent">Clear</button>
                   </form>
                 </div>
@@ -238,8 +239,7 @@ if (isset($_SESSION['id'])) {
                   <tbody>
                     <?php
                     $query = "SELECT * FROM recent_tb INNER JOIN inventory_tb ON inventory_tb.inventory_id = recent_tb.inventory_id
-                  INNER JOIN project_office_tb ON project_office_tb.project_id = inventory_tb.project_id
-                  WHERE recent_tb.type = 3";
+                  INNER JOIN project_office_tb ON project_office_tb.project_id = inventory_tb.project_id";
                     $stmt = $conn->prepare($query);
                     $stmt->execute();
                     $result = $stmt->get_result();

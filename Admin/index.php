@@ -1,7 +1,7 @@
 <?php require "../config/connectdb.php";
 session_start();
 
-if (isset($_SESSION['id']) && $_SESSION['user_type'] == 1) {
+if (isset($_SESSION['id']) && $_SESSION['user_type'] == 2) {
   $accont_id = $_SESSION['id'];
   $username = $_SESSION['username'];
 } else {
@@ -41,7 +41,7 @@ if (isset($_SESSION['id']) && $_SESSION['user_type'] == 1) {
   <nav class="navbar navbar-expand-lg navbar-dark elegant-color">
 
     <!-- Navbar brand -->
-    <a class="navbar-brand" href="index.php">SPEDI Warehouse Control - Superadmin</a>
+    <a class="navbar-brand" href="index.php">SPEDI Warehouse Control - Admin</a>
 
     <!-- Collapse button -->
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#spediNavBar" aria-controls="spediNavBar" aria-expanded="false" aria-label="Toggle navigation">
@@ -63,9 +63,6 @@ if (isset($_SESSION['id']) && $_SESSION['user_type'] == 1) {
         </li>
         <li class="nav-item">
           <a class="nav-link" href="item_management.php">Item Management</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="user_management.php">User Management</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" href="summary.php">Summary</a>
@@ -92,70 +89,7 @@ if (isset($_SESSION['id']) && $_SESSION['user_type'] == 1) {
   <section id="warehouse_counter" class="mt-3">
     <div class="container-fluid">
       <div class="row">
-        <div class="col-sm-12 col-lg-6 col-xl-3 mt-3">
-          <div class="card">
-            <div class="card-header text-center elegant-color text-white">
-              <h4 class="card-title">Total Material Items</h4>
-            </div>
-            <div class="card-body text-center">
-              <?php
-              $query = "SELECT COUNT(item_type) FROM inventory_tb WHERE item_type = 'Materials'";
-              $stmt = $conn->prepare($query);
-              $stmt->execute();
-              $result = $stmt->get_result();
-              while ($row = $result->fetch_assoc()) {
-                $count = $row['COUNT(item_type)'];
-              ?>
-                <p class="h1-responsive"><?php echo $count ?></p>
-              <?php
-              }
-              ?>
-            </div>
-          </div>
-        </div>
-        <div class="col-sm-12 col-lg-6 col-xl-3 mt-3">
-          <div class="card">
-            <div class="card-header text-center special-color text-white">
-              <h4 class="card-title">Total Tool Items</h4>
-            </div>
-            <div class="card-body text-center">
-              <?php
-              $query = "SELECT COUNT(item_type) FROM inventory_tb WHERE item_type = 'Tools'";
-              $stmt = $conn->prepare($query);
-              $stmt->execute();
-              $result = $stmt->get_result();
-              while ($row = $result->fetch_assoc()) {
-                $count = $row['COUNT(item_type)'];
-              ?>
-                <p class="h1-responsive"><?php echo $count ?></p>
-              <?php
-              }
-              ?>
-            </div>
-          </div>
-        </div>
-        <div class="col-sm-12 col-lg-6 col-xl-3 mt-3">
-          <div class="card">
-            <div class="card-header text-center unique-color text-white">
-              <h4 class="card-title">Total Safety Items</h4>
-            </div>
-            <div class="card-body text-center">
-              <?php
-              $query = "SELECT COUNT(item_type) FROM inventory_tb WHERE item_type = 'Safety'";
-              $stmt = $conn->prepare($query);
-              $stmt->execute();
-              $result = $stmt->get_result();
-              while ($row = $result->fetch_assoc()) {
-                $count = $row['COUNT(item_type)'];
-              ?>
-                <p class="h1-responsive"><?php echo $count ?></p>
-              <?php
-              }
-              ?>
-            </div>
-          </div>
-        </div>
-        <div class="col-sm-12 col-lg-6 col-xl-3 mt-3">
+        <div class="col-sm-12 col-lg-6 mt-3">
           <div class="card">
             <div class="card-header text-center stylish-color text-white">
               <h4 class="card-title">Total Admin Items</h4>
@@ -176,7 +110,7 @@ if (isset($_SESSION['id']) && $_SESSION['user_type'] == 1) {
             </div>
           </div>
         </div>
-        <div class="col-sm-12 col-lg-6 col-xl-6 mt-3">
+        <div class="col-sm-12 col-lg-6 mt-3">
           <div class="card">
             <div class="card-header text-center primary-color-dark text-white">
               <h4 class="card-title">Projects / Offices</h4>
@@ -197,7 +131,7 @@ if (isset($_SESSION['id']) && $_SESSION['user_type'] == 1) {
             </div>
           </div>
         </div>
-        <div class="col-sm-12 col-lg-6 col-xl-6 mt-3">
+        <div class="col-sm-12 col-lg-12 mt-3">
           <div class="card">
             <div class="card-header text-center info-color-dark text-white">
               <h4 class="card-title">Overall Total Items</h4>
@@ -226,7 +160,7 @@ if (isset($_SESSION['id']) && $_SESSION['user_type'] == 1) {
   <!-- Recent Items -->
   <?php
   if (isset($_POST['clear_recent'])) {
-    $query = "TRUNCATE TABLE recent_tb";
+    $query = "DELETE FROM recent_tb WHERE type = 1";
     $stmt = $conn->prepare($query);
     $stmt->execute();
   }

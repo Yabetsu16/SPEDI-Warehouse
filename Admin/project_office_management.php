@@ -40,7 +40,7 @@ if (isset($_SESSION['id'])) {
     <nav class="navbar navbar-expand-lg navbar-dark elegant-color">
 
         <!-- Navbar brand -->
-        <a class="navbar-brand" href="index.php">SPEDI Warehouse Control - Superadmin</a>
+        <a class="navbar-brand" href="index.php">SPEDI Warehouse Control - Admin</a>
 
         <!-- Collapse button -->
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#spediNavBar" aria-controls="spediNavBar" aria-expanded="false" aria-label="Toggle navigation">
@@ -55,16 +55,13 @@ if (isset($_SESSION['id'])) {
                 <li class="nav-item">
                     <a class="nav-link" href="index.php">Dashboard</a>
                 </li>
-                <li class="nav-item">
+                <li class="nav-item active">
                     <a class="nav-link" href="project_office_management.php">Project / Office Management
+                        <span class="sr-only">(current)</span>
                     </a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="item_management.php">Item Management</a>
-                </li>
-                <li class="nav-item active">
-                    <a class="nav-link" href="user_management.php">User Management</a>
-                    <span class="sr-only">(current)</span>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="summary.php">Summary</a>
@@ -88,31 +85,44 @@ if (isset($_SESSION['id'])) {
     <!--/.Navbar-->
 
     <?php
-    if (isset($_POST['add_user'])) {
-        $username = $_POST['username'];
-        $password = $_POST['password'];
-        $user_type = $_POST['user_type'];
+    if (isset($_POST['add_project'])) {
+        $project_office_name = $_POST['project_office_name'];
+        $location = $_POST['location'];
 
-        $query = "SELECT * FROM account_tb WHERE username = ? AND password = ?";
+        $query = "SELECT * FROM project_office_tb WHERE project_office_name = ? AND location = ?";
         $stmt = $conn->prepare($query);
-        $stmt->bind_param("ss", $username, $password);
+        $stmt->bind_param('ss', $project_office_name, $location);
         $stmt->execute();
         $result = $stmt->get_result();
+
         if (mysqli_num_rows($result) > 0) { ?>
             <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                User duplicate.
+                Project <strong><?php echo $project_office_name ?> </strong> has duplicate entry.
                 <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <?php
-        } else {
-            $query = "INSERT INTO account_tb (username, password, user_type) VALUES (?, ?, ?)";
+            <?php    } else {
+            $query = "INSERT INTO project_office_tb(project_office_name, location) 
+                VALUES (?, ?)";
             $stmt = $conn->prepare($query);
-            $stmt->bind_param("ssi", $username, $password, $user_type);
+            $stmt->bind_param(
+                "ss",
+                $project_office_name,
+                $location
+            );
             if ($stmt->execute()) { ?>
                 <div class="alert alert-success alert-dismissible fade show" role="alert">
-                    User <?php echo $username ?> added.
+                    <?php echo $project_office_name ?> Added.
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            <?php
+            } else { ?>
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    Failed to Add <?php echo $project_office_name ?> <br>
+                    <?php echo $conn->error ?>
                     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -124,52 +134,62 @@ if (isset($_SESSION['id'])) {
     ?>
 
     <?php
-    if (isset($_POST['edit_user'])) {
-        $username = $_POST['username'];
-        $password = $_POST['password'];
-        $update_account_id = $_POST['update_account_id'];
-        $user_type = $_POST['user_type'];
+    if (isset($_POST['edit_project'])) {
+        $project_id = $_POST['project_id'];
+        $project_office_name = $_POST['edit_project_name'];
+        $location = $_POST['edit_location'];
 
-        $query = "SELECT * FROM account_tb WHERE username = ? AND password = ?";
+        $query = "UPDATE project_office_tb SET project_office_name = ?,
+        location = ? WHERE project_id = ?";
         $stmt = $conn->prepare($query);
-        $stmt->bind_param("ss", $username, $password);
-        $stmt->execute();
-        $result = $stmt->get_result();
-        if (mysqli_num_rows($result) > 0) { ?>
-            <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                User duplicate.
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <?php
-        } else {
-            $query = "UPDATE account_tb SET username = ?, password = ?, user_type = ? WHERE account_id = $update_account_id";
-            $stmt = $conn->prepare($query);
-            $stmt->bind_param("ssi", $username, $password, $user_type);
-            if ($stmt->execute()) { ?>
-                <div class="alert alert-success alert-dismissible fade show" role="alert">
-                    User <?php echo $username ?> updated.
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-    <?php
-            }
-        }
-    }
-    ?>
 
-    <?php
-    if (isset($_POST['delete_user'])) {
-        $username = $_POST['username'];
-        $delete_account_id = $_POST['delete_account_id'];
-
-        $query = "DELETE FROM account_tb WHERE account_id = $delete_account_id";
-        $stmt = $conn->prepare($query);
+        $stmt->bind_param(
+            "ssi",
+            $project_office_name,
+            $location,
+            $project_id
+        );
         if ($stmt->execute()) { ?>
             <div class="alert alert-success alert-dismissible fade show" role="alert">
-                User <?php echo $username ?> deleted.
+                <?php echo $project_office_name ?> Editted.
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        <?php
+        } else { ?>
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                Failed to Edit <?php echo $project_office_name ?> <br>
+                <?php echo $conn->error ?>
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+    <?php
+        }
+    }
+    ?>
+
+    <?php
+    if (isset($_POST['delete_project'])) {
+        $project_id = $_POST['project_id'];
+        $project_office_name = $_POST['project_office_name'];
+
+        $query = "DELETE FROM project_office_tb WHERE project_id = ?";
+        $stmt = $conn->prepare($query);
+        $stmt->bind_param('i', $project_id);
+        if ($stmt->execute()) { ?>
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <?php echo $project_office_name ?> Deleted.
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        <?php
+        } else { ?>
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                Failed to Edit <?php echo $project_office_name ?> <br>
+                <?php echo $conn->error ?>
                 <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -186,13 +206,13 @@ if (isset($_SESSION['id'])) {
                 <div class="col-12">
                     <div class="card">
                         <div class="card-header elegant-color text-white text-center">
-                            <h1 class="h1-responsive">User Management</h1>
+                            <h1 class="h1-responsive">Project / Office Management</h1>
                         </div>
                         <div class="card-body">
                             <div class="float-right">
                                 <br>
-                                <button class="btn btn-sm btn-primary" data-toggle="modal" data-target="#addUserModal">Add
-                                    User</button>
+                                <button class="btn btn-sm btn-primary" data-toggle="modal" data-target="#addProjectModal">Add
+                                    project / office</button>
                             </div>
                             <br>
                             <table id="dtBasicExample" class="table table-striped table-responsive-sm btn-table" cellspacing="0" width="100%">
@@ -200,45 +220,33 @@ if (isset($_SESSION['id'])) {
                                     <tr class="text-center">
                                         <th class="th-sm">Actions
                                         </th>
-                                        <th class="th-sm">Username
+                                        <th class="th-sm">Project / Office
                                         </th>
-                                        <th class="th-sm">Password
-                                        </th>
-                                        <th class="th-sm">Type
+                                        <th class="th-sm">Location
                                         </th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <?php
                                     // SELECT all from inventory table
-                                    $query = "SELECT * FROM account_tb";
+                                    $query = "SELECT * FROM project_office_tb";
 
                                     $result = mysqli_query($conn, $query);
 
                                     if (mysqli_num_rows($result) > 0) {
                                         // Display data of each row
                                         while ($row = mysqli_fetch_assoc($result)) {
-                                            $account_id = $row['account_id'];
-                                            $username = $row['username'];
-                                            $password = $row['password'];
-                                            $user_type = $row['user_type'];
-
-                                            if ($user_type == 1) {
-                                                $user_type = "Superadmin";
-                                            } else if ($user_type == 2) {
-                                                $user_type = "Admin";
-                                            } else if ($user_type == 3) {
-                                                $user_type = "Materials Control";
-                                            }
+                                            $project_id = $row['project_id'];
+                                            $project_office_name = $row['project_office_name'];
+                                            $location = $row['location'];
                                     ?>
                                             <tr class="text-center">
                                                 <td>
-                                                    <button type="button" class="btn btn-sm btn-success" data-toggle="modal" data-target="#editUserModal<?= $account_id ?>">Edit</button>
-                                                    <button type="button" class="btn btn-sm btn-danger" data-toggle="modal" data-target="#modalUserConfirmDelete<?= $account_id ?>">Delete</button>
+                                                    <button type="button" class="btn btn-sm btn-success" data-toggle="modal" data-target="#editProjectModal<?php echo $project_id ?>">Edit</button>
+                                                    <button type="button" class="btn btn-sm btn-danger" data-toggle="modal" data-target="#modalConfirmDelete<?php echo $project_id ?>">Delete</button>
                                                 </td>
-                                                <td><?= $username ?></td>
-                                                <td><?= $password ?></td>
-                                                <td><?= $user_type ?></td>
+                                                <td><?php echo $project_office_name ?></td>
+                                                <td><?php echo $location ?></td>
                                             </tr>
                                     <?php
                                         }
@@ -249,11 +257,9 @@ if (isset($_SESSION['id'])) {
                                     <tr class="text-center">
                                         <th class="th-sm">Actions
                                         </th>
-                                        <th class="th-sm">Username
+                                        <th class="th-sm">Project / Office
                                         </th>
-                                        <th class="th-sm">Password
-                                        </th>
-                                        <th class="th-sm">Type
+                                        <th class="th-sm">Location
                                         </th>
                                     </tr>
                                 </tfoot>
@@ -261,6 +267,7 @@ if (isset($_SESSION['id'])) {
                         </div>
                     </div>
                 </div>
+
             </div>
         </div>
     </section>
@@ -270,25 +277,26 @@ if (isset($_SESSION['id'])) {
     <br>
     <!-- /.Management -->
 
-
-    <!-- Modal Add User -->
-    <div class="modal fade" id="addUserModal" tabindex="-1" role="dialog" aria-labelledby="addItemModal" aria-hidden="true">
-        <div class="modal-dialog" role="document">
+    <!-- Modal Add Project / Office -->
+    <div class="modal fade" id="addProjectModal" tabindex="-1" role="dialog" aria-labelledby="addProjectModal" aria-hidden="true">
+        <div class="modal-dialog modal-md" role="document">
             <div class="modal-content">
                 <div class="modal-header elegant-color text-white d-flex justify-content-center">
-                    <h1 class="modal-title">Add User</h1>
+                    <h1 class="modal-title">Add Project / Office</h1>
                 </div>
-                <div class="modal-body mt-3">
+                <div class="modal-body">
                     <!-- Material form grid -->
                     <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
                         <!-- Grid row -->
                         <div class="row">
+
                             <!-- Grid column -->
                             <div class="col-12">
                                 <!-- Material input -->
                                 <div class="md-form mt-0">
-                                    <input type="text" name="username" class="form-control validate" id="username" required>
-                                    <label for="username" data-error="wrong" data-success="right">Username</label>
+                                    <input type="text" name="project_office_name" class="form-control validate" id="project_office_name" required>
+                                    <label for="project_office_name" data-error="wrong" data-success="right">Project
+                                        / Office Name</label>
                                 </div>
                             </div>
                             <!-- Grid column -->
@@ -297,29 +305,15 @@ if (isset($_SESSION['id'])) {
                             <div class="col-12">
                                 <!-- Material input -->
                                 <div class="md-form mt-0">
-                                    <input type="password" name="password" class="form-control validate" id="password" required>
-                                    <label for="password" data-error="wrong" data-success="right">Password</label>
-                                </div>
-                            </div>
-                            <!-- Grid column -->
-
-                            <!-- Grid column -->
-                            <div class="col-12">
-                                <!-- Material input -->
-                                <div class="md-form mt-0">
-                                    <select id="user_type" name="user_type" class="browser-default custom-select">
-                                        <option selected>Select User Type</option>
-                                        <option value="1">Superadmin</option>
-                                        <option value="2">Admin</option>
-                                        <option value="3">Materials Control</option>
-                                    </select>
+                                    <input type="text" name="location" class="form-control validate" id="location" required>
+                                    <label for="location" data-error="wrong" data-success="right">Location</label>
                                 </div>
                             </div>
                             <!-- Grid column -->
                         </div>
                         <!-- Grid row -->
                         <div class="text-center">
-                            <button type="submit" name="add_user" class="btn btn-primary">Add</button>
+                            <button type="submit" name="add_project" class="btn btn-primary">Add</button>
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                         </div>
                     </form>
@@ -328,41 +322,39 @@ if (isset($_SESSION['id'])) {
             </div>
         </div>
     </div>
-    <!-- /.Modal Add User -->
-
+    <!-- /.Modal Add Project / Office -->
     <?php
-    // SELECT all from account table
-    $query = "SELECT * FROM account_tb";
+    // SELECT all from inventory table
+    $query = "SELECT * FROM project_office_tb";
 
     $result = mysqli_query($conn, $query);
 
     if (mysqli_num_rows($result) > 0) {
         // Display data of each row
         while ($row = mysqli_fetch_assoc($result)) {
-            $manage_account_id = $row['account_id'];
-            $username = $row['username'];
-            $password = $row['password'];
-            $user_type = $row['user_type'];
-            //$password = str_repeat("*", strlen($password));
+            $project_id = $row['project_id'];
+            $project_office_name = $row['project_office_name'];
+            $location = $row['location'];
     ?>
-            <!-- Modal Edit User <?php echo $manage_account_id ?> -->
-            <div class="modal fade" id="editUserModal<?php echo $manage_account_id ?>" tabindex="-1" role="dialog" aria-labelledby="editItemModal<?php echo $manage_account_id ?>" aria-hidden="true">
-                <div class="modal-dialog" role="document">
+            <!-- Modal Edit Project / Office <?php echo $project_id ?> -->
+            <div class="modal fade" id="editProjectModal<?php echo $project_id ?>" tabindex="-1" role="dialog" aria-labelledby="editProjectModal<?php echo $project_id ?>" aria-hidden="true">
+                <div class="modal-dialog modal-md" role="document">
                     <div class="modal-content">
-                        <div class="modal-header elegant-color text-white d-flex justify-content-center text-center">
-                            <h1 class="modal-title">Edit <?php echo $username ?> User</h1>
+                        <div class="modal-header elegant-color text-white d-flex justify-content-center">
+                            <h1 class="modal-title">Edit <?php echo $project_office_name ?> Item</h1>
                         </div>
                         <div class="modal-body">
                             <!-- Material form grid -->
                             <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
                                 <!-- Grid row -->
                                 <div class="row">
+
                                     <!-- Grid column -->
                                     <div class="col-12">
                                         <!-- Material input -->
                                         <div class="md-form mt-0">
-                                            <input type="text" name="username" class="form-control validate" id="username" value="<?php echo $username ?>" required>
-                                            <label for="username" data-error="wrong" data-success="right">Username</label>
+                                            <input type="text" name="edit_project_name" class="form-control validate" id="edit_project_name" value="<?php echo $project_office_name ?>" required>
+                                            <label for="edit_project_name" data-error="wrong" data-success="right">Project / Office</label>
                                         </div>
                                     </div>
                                     <!-- Grid column -->
@@ -371,45 +363,17 @@ if (isset($_SESSION['id'])) {
                                     <div class="col-12">
                                         <!-- Material input -->
                                         <div class="md-form mt-0">
-                                            <input type="password" name="password" class="form-control validate" id="password" value="<?php echo $password ?>" required>
-                                            <label for="password" data-error="wrong" data-success="right">Password</label>
-                                        </div>
-                                    </div>
-                                    <!-- Grid column -->
-
-                                    <!-- Grid column -->
-                                    <div class="col-12">
-                                        <!-- Material input -->
-                                        <div class="md-form mt-0">
-                                            <select id="user_type" name="user_type" class="browser-default custom-select">
-                                                <?php
-                                                if ($user_type == 1) { ?>
-                                                    <option value="1" selected>Current: Superadmin</option>
-                                                    <option value="2">Admin</option>
-                                                    <option value="3">Materials Control</option>
-                                                <?php
-                                                } else if ($user_type == 2) { ?>
-                                                    <option value="2" selected>Current: Admin</option>
-                                                    <option value="1">Superadmin</option>
-                                                    <option value="3">Materials Control</option>
-                                                <?php
-                                                } else if ($user_type == 3) { ?>
-                                                    <option value="3" selected>Current: Materials Control</option>
-                                                    <option value="1">Superadmin</option>
-                                                    <option value="2">Admin</option>
-                                                <?php
-                                                }
-                                                ?>
-
-                                            </select>
+                                            <input type="text" name="edit_location" class="form-control validate" id="edit_location" value="<?php echo $location ?>" required>
+                                            <label for="edit_location" data-error="wrong" data-success="right">Location
+                                            </label>
                                         </div>
                                     </div>
                                     <!-- Grid column -->
                                 </div>
                                 <!-- Grid row -->
                                 <div class="text-center">
-                                    <input type="hidden" name="update_account_id" value="<?php echo $manage_account_id ?>">
-                                    <button type="submit" name="edit_user" class="btn btn-primary">Save</button>
+                                    <input type="hidden" name="project_id" value="<?php echo $project_id ?>">
+                                    <button type="submit" name="edit_project" class="btn btn-primary">Save</button>
                                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                                 </div>
                             </form>
@@ -418,10 +382,10 @@ if (isset($_SESSION['id'])) {
                     </div>
                 </div>
             </div>
-            <!-- /.Modal Edit User <?php echo $manage_account_id ?> -->
+            <!-- /.Modal Edit Project / Office <?php echo $project_id ?> -->
 
-            <!-- Modal User Confirm Delete <?php echo $manage_account_id ?> -->
-            <div class="modal fade" id="modalUserConfirmDelete<?php echo $manage_account_id ?>" tabindex="-1" role="dialog" aria-labelledby="modalUserConfirmDelete<?php echo $manage_account_id ?>" aria-hidden="true">
+            <!-- Modal Confirm Delete <?php echo $project_id ?> -->
+            <div class="modal fade" id="modalConfirmDelete<?php echo $project_id ?>" tabindex="-1" role="dialog" aria-labelledby="modalConfirmDelete<?php echo $project_id ?>" aria-hidden="true">
                 <div class="modal-dialog modal-md modal-notify modal-danger" role="document">
                     <!--Content-->
                     <div class="modal-content text-center">
@@ -432,7 +396,7 @@ if (isset($_SESSION['id'])) {
 
                         <!--Body-->
                         <div class="modal-body">
-                            <h4>Do you want to delete <?php echo $username ?>?</h4>
+                            <h4>Do you want to delete Project <?php echo $project_office_name ?>?</h4>
                             <i class="fas fa-times fa-4x animated rotateIn"></i>
 
                         </div>
@@ -440,9 +404,9 @@ if (isset($_SESSION['id'])) {
                         <!--Footer-->
                         <div class="modal-footer flex-center">
                             <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
-                                <input type="hidden" name="username" value="<?php echo $username ?>">
-                                <input type="hidden" name="delete_account_id" value="<?php echo $manage_account_id ?>">
-                                <button type="submit" class="btn btn-danger" name="delete_user">Yes</button>
+                                <input type="hidden" name="project_office_name" value="<?php echo $project_office_name ?>">
+                                <input type="hidden" name="project_id" value="<?php echo $project_id ?>">
+                                <button type="submit" class="btn btn-danger" name="delete_project">Yes</button>
                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
                             </form>
                         </div>
@@ -450,12 +414,11 @@ if (isset($_SESSION['id'])) {
                     <!--/.Content-->
                 </div>
             </div>
-            <!-- Modal User Confirm Delete <?php echo $manage_account_id ?> -->
+            <!-- Modal Confirm Delete <?php echo $project_id ?> -->
     <?php
         }
     }
     ?>
-
 
     <!-- Footer -->
     <footer class="page-footer font-small elegant-color pt-4 mt-3 fixed-bottom">

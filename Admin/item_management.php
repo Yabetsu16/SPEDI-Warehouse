@@ -40,7 +40,7 @@ if (isset($_SESSION['id'])) {
     <nav class="navbar navbar-expand-lg navbar-dark elegant-color">
 
         <!-- Navbar brand -->
-        <a class="navbar-brand" href="index.php">SPEDI Warehouse Control - Materials Control</a>
+        <a class="navbar-brand" href="index.php">SPEDI Warehouse Control - Admin</a>
 
         <!-- Collapse button -->
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#spediNavBar" aria-controls="spediNavBar" aria-expanded="false" aria-label="Toggle navigation">
@@ -149,7 +149,7 @@ if (isset($_SESSION['id'])) {
 
             $query = "INSERT INTO recent_tb (inventory_id, type) VALUES 
                 ((SELECT inventory_id FROM inventory_tb WHERE inventory_id = LAST_INSERT_ID()),
-                2);";
+                1);";
             $stmt = $conn->prepare($query);
             $stmt->execute();
         }
@@ -540,12 +540,12 @@ if (isset($_SESSION['id'])) {
                                     ?>
                                             <tr class="text-center">
                                                 <td>
-                                                    <button type="button" class="btn btn-sm btn-success <?php if ($item_type == 'Admin') {
+                                                    <button type="button" class="btn btn-sm btn-success <?php if ($item_type != 'Admin') {
                                                                                                             echo "disabled";
                                                                                                         } else {
                                                                                                             echo "";
                                                                                                         } ?>" data-toggle="modal" data-target="#editItemModal<?php echo $inventory_id ?>">Edit</button>
-                                                    <button type="button" class="btn btn-sm btn-danger <?php if ($item_type == 'Admin') {
+                                                    <button type="button" class="btn btn-sm btn-danger <?php if ($item_type != 'Admin') {
                                                                                                             echo "disabled";
                                                                                                         } else {
                                                                                                             echo "";
@@ -579,7 +579,7 @@ if (isset($_SESSION['id'])) {
                                                             $date_returned = $row['date_returned'];
                                                             $balance = $row['balance'];
 
-                                                            if ($item_type == 'Materials' || $item_type == 'Tools' || $item_type == 'Safety') { ?>
+                                                            if ($item_type == 'Admin') { ?>
                                                                 <input type="hidden" name="item_name" value="<?php echo $item_name ?>">
                                                                 <input type="hidden" name="inventory_id" value="<?php echo $inventory_id ?>">
                                                                 <input type="hidden" name="count_id" value="<?php echo $count_id ?>">
@@ -746,9 +746,7 @@ if (isset($_SESSION['id'])) {
                                 <div class="md-form mt-0">
                                     <select name="item_type" class="browser-default custom-select" required>
                                         <option value="" selected>Select Item Type</option>
-                                        <option value="Materials">Materials</option>
-                                        <option value="Tools">Tools</option>
-                                        <option value="Safety">Safety</option>
+                                        <option value="Admin">Admin</option>
                                     </select>
                                 </div>
                             </div>
@@ -878,29 +876,8 @@ if (isset($_SESSION['id'])) {
                                             <select name="edit_item_type" class="browser-default custom-select">
                                                 <?php
                                                 $recent_type = $item_type;
-                                                if ($recent_type == "Materials") { ?>
+                                                if ($recent_type == "Admin") { ?>
                                                     <option value="<?php echo $item_type ?>" selected>Recent: <?php echo $item_type ?></option>
-                                                    <option value="Tools">Tools</option>
-                                                    <option value="Safety">Safety</option>
-                                                <?php
-                                                }
-                                                ?>
-
-                                                <?php
-                                                if ($recent_type == "Tools") { ?>
-                                                    <option value="<?php echo $item_type ?>" selected>Recent: <?php echo $item_type ?></option>
-                                                    <option value="Materials">Materials</option>
-                                                    <option value="Safety">Safety</option>
-                                                <?php
-                                                }
-                                                ?>
-
-                                                <?php
-                                                if ($recent_type == "Safety") { ?>
-                                                    <option value="<?php echo $item_type ?>" selected>Recent: <?php echo $item_type ?></option>
-                                                    <option value="Materials">Materials</option>
-                                                    <option value="Tools">Tools</option>
-                                                    <option value="Admin">Admin</option>
                                                 <?php
                                                 }
                                                 ?>
