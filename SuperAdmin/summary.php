@@ -39,7 +39,7 @@ if (isset($_SESSION['id'])) {
     <nav class="navbar navbar-expand-lg navbar-dark elegant-color">
 
         <!-- Navbar brand -->
-        <a class="navbar-brand" href="index.php">SPEDI Warehouse Control - Admin</a>
+        <a class="navbar-brand" href="index.php">SPEDI Warehouse Control - Superadmin</a>
 
         <!-- Collapse button -->
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#spediNavBar" aria-controls="spediNavBar" aria-expanded="false" aria-label="Toggle navigation">
@@ -59,6 +59,9 @@ if (isset($_SESSION['id'])) {
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="item_management.php">Item Management </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="user_management.php">User Management</a>
                 </li>
                 <li class="nav-item active">
                     <a class="nav-link" href="summary.php">Summary
@@ -88,7 +91,15 @@ if (isset($_SESSION['id'])) {
         $item_type = $_POST['item_type'];
         $project_id = $_POST['project_id'];
 
-        if ($item_type == "Admin") {
+        if ($item_type == "All") {
+            header("Location: export_all.php?p=$project_id");
+        } else if ($item_type == "Materials") {
+            header("Location: export_materials.php?p=$project_id");
+        } else if ($item_type == "Tools") {
+            header("Location: export_tools.php?p=$project_id");
+        } else if ($item_type == "Safety") {
+            header("Location: export_safety.php?p=$project_id");
+        } else if ($item_type == "Admin") {
             header("Location: export_admin.php?p=$project_id");
         }
     }
@@ -139,7 +150,6 @@ if (isset($_SESSION['id'])) {
                                     $query = "SELECT * FROM movement_tb 
                                     INNER JOIN inventory_tb ON inventory_tb.inventory_id = movement_tb.inventory_id
                                     INNER JOIN project_office_tb ON project_office_tb.project_id = inventory_tb.project_id
-                                    WHERE inventory_tb.item_type = 'Admin'
                                     ORDER BY inventory_tb.inventory_id;";
                                     $stmt = $conn->prepare($query);
                                     $stmt->execute();
@@ -226,6 +236,10 @@ if (isset($_SESSION['id'])) {
                                 <div class="md-form mt-0">
                                     <select name="item_type" class="browser-default custom-select">
                                         <option selected>Select Type</option>
+                                        <option value="All">All</option>
+                                        <option value="Materials">Materials</option>
+                                        <option value="Tools">Tools</option>
+                                        <option value="Safety">Safety</option>
                                         <option value="Admin">Admin</option>
                                     </select>
                                 </div>

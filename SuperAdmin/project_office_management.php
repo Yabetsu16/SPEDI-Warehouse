@@ -40,7 +40,7 @@ if (isset($_SESSION['id'])) {
     <nav class="navbar navbar-expand-lg navbar-dark elegant-color">
 
         <!-- Navbar brand -->
-        <a class="navbar-brand" href="index.php">SPEDI Warehouse Control - Admin</a>
+        <a class="navbar-brand" href="index.php">SPEDI Warehouse Control - Superadmin</a>
 
         <!-- Collapse button -->
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#spediNavBar" aria-controls="spediNavBar" aria-expanded="false" aria-label="Toggle navigation">
@@ -62,6 +62,9 @@ if (isset($_SESSION['id'])) {
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="item_management.php">Item Management</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="user_management.php">User Management</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="summary.php">Summary</a>
@@ -277,7 +280,7 @@ if (isset($_SESSION['id'])) {
     <br>
     <!-- /.Management -->
 
-    <!-- Modal Add Project / Office -->
+    <!-- Modal Add Item -->
     <div class="modal fade" id="addProjectModal" tabindex="-1" role="dialog" aria-labelledby="addProjectModal" aria-hidden="true">
         <div class="modal-dialog modal-md" role="document">
             <div class="modal-content">
@@ -322,7 +325,7 @@ if (isset($_SESSION['id'])) {
             </div>
         </div>
     </div>
-    <!-- /.Modal Add Project / Office -->
+    <!-- /.Modal Add Item -->
     <?php
     // SELECT all from inventory table
     $query = "SELECT * FROM project_office_tb";
@@ -336,7 +339,7 @@ if (isset($_SESSION['id'])) {
             $project_office_name = $row['project_office_name'];
             $location = $row['location'];
     ?>
-            <!-- Modal Edit Project / Office <?php echo $project_id ?> -->
+            <!-- Modal Edit Item <?php echo $project_id ?> -->
             <div class="modal fade" id="editProjectModal<?php echo $project_id ?>" tabindex="-1" role="dialog" aria-labelledby="editProjectModal<?php echo $project_id ?>" aria-hidden="true">
                 <div class="modal-dialog modal-md" role="document">
                     <div class="modal-content">
@@ -382,7 +385,7 @@ if (isset($_SESSION['id'])) {
                     </div>
                 </div>
             </div>
-            <!-- /.Modal Edit Project / Office <?php echo $project_id ?> -->
+            <!-- /.Modal Edit Item <?php echo $project_id ?> -->
 
             <!-- Modal Confirm Delete <?php echo $project_id ?> -->
             <div class="modal fade" id="modalConfirmDelete<?php echo $project_id ?>" tabindex="-1" role="dialog" aria-labelledby="modalConfirmDelete<?php echo $project_id ?>" aria-hidden="true">

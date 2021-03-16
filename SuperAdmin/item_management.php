@@ -40,7 +40,7 @@ if (isset($_SESSION['id'])) {
     <nav class="navbar navbar-expand-lg navbar-dark elegant-color">
 
         <!-- Navbar brand -->
-        <a class="navbar-brand" href="index.php">SPEDI Warehouse Control - Admin</a>
+        <a class="navbar-brand" href="index.php">SPEDI Warehouse Control - Superadmin</a>
 
         <!-- Collapse button -->
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#spediNavBar" aria-controls="spediNavBar" aria-expanded="false" aria-label="Toggle navigation">
@@ -62,6 +62,9 @@ if (isset($_SESSION['id'])) {
                     <a class="nav-link" href="item_management.php">Item Management
                         <span class="sr-only">(current)</span>
                     </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="user_management.php">User Management</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="summary.php">Summary</a>
@@ -147,9 +150,8 @@ if (isset($_SESSION['id'])) {
             $stmt = $conn->prepare($query);
             $stmt->execute();
 
-            $query = "INSERT INTO recent_tb (inventory_id, type) VALUES 
-                ((SELECT inventory_id FROM inventory_tb WHERE inventory_id = LAST_INSERT_ID()),
-                1);";
+            $query = "INSERT INTO recent_tb (inventory_id) VALUES 
+                ((SELECT inventory_id FROM inventory_tb WHERE inventory_id = LAST_INSERT_ID()));";
             $stmt = $conn->prepare($query);
             $stmt->execute();
         }
@@ -540,16 +542,8 @@ if (isset($_SESSION['id'])) {
                                     ?>
                                             <tr class="text-center">
                                                 <td>
-                                                    <button type="button" class="btn btn-sm btn-success <?php if ($item_type != 'Admin') {
-                                                                                                            echo "disabled";
-                                                                                                        } else {
-                                                                                                            echo "";
-                                                                                                        } ?>" data-toggle="modal" data-target="#editItemModal<?php echo $inventory_id ?>">Edit</button>
-                                                    <button type="button" class="btn btn-sm btn-danger <?php if ($item_type != 'Admin') {
-                                                                                                            echo "disabled";
-                                                                                                        } else {
-                                                                                                            echo "";
-                                                                                                        } ?>" data-toggle="modal" data-target="#modalConfirmDelete<?php echo $inventory_id ?>">Delete</button>
+                                                    <button type="button" class="btn btn-sm btn-success" data-toggle="modal" data-target="#editItemModal<?php echo $inventory_id ?>">Edit</button>
+                                                    <button type="button" class="btn btn-sm btn-danger" data-toggle="modal" data-target="#modalConfirmDelete<?php echo $inventory_id ?>">Delete</button>
                                                     <button type="button" class="btn btn-sm btn-info" data-toggle="modal" data-target="#detailsModal<?php echo $inventory_id ?>">Details</button>
                                                     <button type="button" class="btn btn-sm btn-primary btn-block" data-toggle="modal" data-target="#movementModal<?php echo $inventory_id ?>">Movement</button>
                                                 </td>
@@ -569,7 +563,6 @@ if (isset($_SESSION['id'])) {
                                                         // Display data of each row
                                                         while ($row = mysqli_fetch_assoc($result_count)) {
                                                             $inventory_id = $row['inventory_id'];
-                                                            $item_type = $row['item_type'];
                                                             $count_id = $row['count_id'];
                                                             $date_added = $row['date_added'];
                                                             $quantity = $row['quantity'];
@@ -578,111 +571,59 @@ if (isset($_SESSION['id'])) {
                                                             $returned = $row['returned'];
                                                             $date_returned = $row['date_returned'];
                                                             $balance = $row['balance'];
-
-                                                            if ($item_type == 'Admin') { ?>
-                                                                <input type="hidden" name="item_name" value="<?php echo $item_name ?>">
-                                                                <input type="hidden" name="inventory_id" value="<?php echo $inventory_id ?>">
-                                                                <input type="hidden" name="count_id" value="<?php echo $count_id ?>">
-                                                                <input type="hidden" name="balance" value="<?php echo $balance ?>">
-                                                                <td><?php echo $balance ?></td>
-                                                                <td>
-                                                                    <div class="md-form input-group">
-                                                                        <input type="number" name="quantity" min="0" value="0" class="form-control text-center">
-                                                                        <label for="issued">Qty added to Inventory</label>
-                                                                    </div>
-                                                                    <div class="md-form input-group">
-                                                                        <input type="date" name="date_added" class="form-control text-center" id="date_added_<?= $inventory_id ?>">
-                                                                        <label for="date_added_<?= $inventory_id ?>">Date Added</label>
-                                                                    </div>
-                                                                </td>
-                                                                <td>
-                                                                    <div class="md-form input-group">
-                                                                        <input type="number" name="issued" min="0" value="0" class="form-control text-center">
-                                                                        <select name="to_project_office" class="browser-default custom-select">
-                                                                            <option value="" selected>Issued To Project / Office</option>
-                                                                            <?php
-                                                                            $query_project_office = "SELECT * FROM project_office_tb";
-                                                                            $result_project_office = mysqli_query($conn, $query_project_office);
-                                                                            while ($row_project_office = mysqli_fetch_array($result_project_office)) {
-                                                                                $project_office_name = $row_project_office['project_office_name'];
-                                                                                $location = $row_project_office['location'];
-                                                                            ?>
-                                                                                <option value="<?php echo $project_office_name ?>"><?php echo $project_office_name ?> in <?php echo $location ?></option>
-                                                                            <?php
-                                                                            }
-                                                                            ?>
-                                                                        </select>
-                                                                        <label for="issued">Qty and Project / Office to be issued</label>
-                                                                    </div>
-                                                                    <div class="md-form input-group">
-                                                                        <input type="date" name="date_issued" class="form-control text-center" id="date_issued_<?= $inventory_id ?>">
-                                                                        <label for="date_issued_<?= $inventory_id ?>">Date Issued</label>
-                                                                    </div>
-                                                                </td>
-                                                                <td>
-                                                                    <div class="md-form input-group">
-                                                                        <input type="number" name="returned" min="0" value="0" class="form-control text-center">
-                                                                        <label for="issued">Qty returned to inventory</label>
-                                                                    </div>
-                                                                    <div class="md-form input-group">
-                                                                        <input type="date" name="date_returned" class="form-control text-center" id="date_returned_<?= $inventory_id ?>">
-                                                                        <label for="date_returned_<?= $inventory_id ?>">Date Returned</label>
-                                                                    </div>
-                                                                </td>
-                                                                <td><button type="submit" name="count_submit" class="btn btn-sm btn-primary">Submit</button></td>
-                                                            <?php } else { ?>
-                                                                <td><?php echo $balance ?></td>
-                                                                <td>
-                                                                    <div class="md-form input-group">
-                                                                        <input type="number" name="quantity" min="0" value="0" class="form-control text-center" disabled>
-                                                                        <label for="issued">Qty added to Inventory</label>
-                                                                    </div>
-                                                                    <div class="md-form input-group">
-                                                                        <input type="date" name="date_added" class="form-control text-center" disabled id="date_added_<?= $inventory_id ?>">
-                                                                        <label for="date_added_<?= $inventory_id ?>">Date Added</label>
-                                                                    </div>
-                                                                </td>
-                                                                <td>
-                                                                    <div class="md-form input-group">
-                                                                        <input type="number" name="issued" min="0" value="0" class="form-control text-center" disabled>
-                                                                        <select name="to_project_office" class="browser-default custom-select" disabled>
-                                                                            <option value="" selected>Issued To Project / Office</option>
-                                                                            <?php
-                                                                            $query_project_office = "SELECT * FROM project_office_tb";
-                                                                            $result_project_office = mysqli_query($conn, $query_project_office);
-                                                                            while ($row_project_office = mysqli_fetch_array($result_project_office)) {
-                                                                                $project_office_name = $row_project_office['project_office_name'];
-                                                                                $location = $row_project_office['location'];
-                                                                            ?>
-                                                                                <option value="<?php echo $project_office_name ?>"><?php echo $project_office_name ?> in <?php echo $location ?></option>
-                                                                            <?php
-                                                                            }
-                                                                            ?>
-                                                                        </select>
-                                                                        <label for="issued">Qty and Project / Office to be issued</label>
-                                                                    </div>
-                                                                    <div class="md-form input-group">
-                                                                        <input type="date" name="date_issued" class="form-control text-center" disabled id="date_issued_<?= $inventory_id ?>">
-                                                                        <label for="date_issued_<?= $inventory_id ?>">Date Issued</label>
-                                                                    </div>
-                                                                </td>
-                                                                <td>
-                                                                    <div class="md-form input-group">
-                                                                        <input type="number" name="returned" min="0" value="0" class="form-control text-center" disabled>
-                                                                        <label for="issued">Qty returned to inventory</label>
-                                                                    </div>
-                                                                    <div class="md-form input-group">
-                                                                        <input type="date" name="date_returned" class="form-control text-center" disabled id="date_returned_<?= $inventory_id ?>">
-                                                                        <label for="date_returned_<?= $inventory_id ?>">Date Returned</label>
-                                                                    </div>
-                                                                </td>
-                                                                <td><button type="submit" name="count_submit" class="btn btn-sm btn-primary" disabled>Submit</button></td>
-                                                        <?php
-                                                            }
-                                                        } ?>
-                                                    <?php
-                                                    }
                                                     ?>
+                                                            <input type="hidden" name="item_name" value="<?php echo $item_name ?>">
+                                                            <input type="hidden" name="inventory_id" value="<?php echo $inventory_id ?>">
+                                                            <input type="hidden" name="count_id" value="<?php echo $count_id ?>">
+                                                            <input type="hidden" name="balance" value="<?php echo $balance ?>">
+                                                            <td><?php echo $balance ?></td>
+                                                            <td>
+                                                                <div class="md-form input-group">
+                                                                    <input type="number" name="quantity" min="0" value="0" class="form-control text-center">
+                                                                    <label for="issued">Qty added to Inventory</label>
+                                                                </div>
+                                                                <div class="md-form input-group">
+                                                                    <input type="date" name="date_added" class="form-control text-center" id="date_added">
+                                                                    <label for="date_added">Date Added</label>
+                                                                </div>
+                                                            </td>
+                                                            <td>
+                                                                <div class="md-form input-group">
+                                                                    <input type="number" name="issued" min="0" value="0" class="form-control text-center">
+                                                                    <select name="to_project_office" class="browser-default custom-select">
+                                                                        <option value="" selected>Issued To Project / Office</option>
+                                                                        <?php
+                                                                        $query_project_office = "SELECT * FROM project_office_tb";
+                                                                        $result_project_office = mysqli_query($conn, $query_project_office);
+                                                                        while ($row_project_office = mysqli_fetch_array($result_project_office)) {
+                                                                            $project_office_name = $row_project_office['project_office_name'];
+                                                                            $location = $row_project_office['location'];
+                                                                        ?>
+                                                                            <option value="<?php echo $project_office_name ?>"><?php echo $project_office_name ?> in <?php echo $location ?></option>
+                                                                        <?php
+                                                                        }
+                                                                        ?>
+                                                                    </select>
+                                                                    <label for="issued">Qty and Project / Office to be issued</label>
+                                                                </div>
+                                                                <div class="md-form input-group">
+                                                                    <input type="date" name="date_issued" class="form-control text-center" id="date_issued">
+                                                                    <label for="date_issued">Date Issued</label>
+                                                                </div>
+                                                            </td>
+                                                            <td>
+                                                                <div class="md-form input-group">
+                                                                    <input type="number" name="returned" min="0" value="0" class="form-control text-center">
+                                                                    <label for="issued">Qty returned to inventory</label>
+                                                                </div>
+                                                                <div class="md-form input-group">
+                                                                    <input type="date" name="date_returned" class="form-control text-center" id="date_returned">
+                                                                    <label for="date_returned">Date Returned</label>
+                                                                </div>
+                                                            </td>
+                                                            <td><button type="submit" name="count_submit" class="btn btn-sm btn-primary">Submit</button></td>
+                                                    <?php }
+                                                    } ?>
                                                 </form>
                                             </tr>
                                     <?php
@@ -746,6 +687,9 @@ if (isset($_SESSION['id'])) {
                                 <div class="md-form mt-0">
                                     <select name="item_type" class="browser-default custom-select" required>
                                         <option value="" selected>Select Item Type</option>
+                                        <option value="Materials">Materials</option>
+                                        <option value="Tools">Tools</option>
+                                        <option value="Safety">Safety</option>
                                         <option value="Admin">Admin</option>
                                     </select>
                                 </div>
@@ -876,8 +820,41 @@ if (isset($_SESSION['id'])) {
                                             <select name="edit_item_type" class="browser-default custom-select">
                                                 <?php
                                                 $recent_type = $item_type;
+                                                if ($recent_type == "Materials") { ?>
+                                                    <option value="<?php echo $item_type ?>" selected>Recent: <?php echo $item_type ?></option>
+                                                    <option value="Tools">Tools</option>
+                                                    <option value="Safety">Safety</option>
+                                                    <option value="Admin">Admin</option>
+                                                <?php
+                                                }
+                                                ?>
+
+                                                <?php
+                                                if ($recent_type == "Tools") { ?>
+                                                    <option value="<?php echo $item_type ?>" selected>Recent: <?php echo $item_type ?></option>
+                                                    <option value="Materials">Materials</option>
+                                                    <option value="Safety">Safety</option>
+                                                    <option value="Admin">Admin</option>
+                                                <?php
+                                                }
+                                                ?>
+
+                                                <?php
+                                                if ($recent_type == "Safety") { ?>
+                                                    <option value="<?php echo $item_type ?>" selected>Recent: <?php echo $item_type ?></option>
+                                                    <option value="Materials">Materials</option>
+                                                    <option value="Tools">Tools</option>
+                                                    <option value="Admin">Admin</option>
+                                                <?php
+                                                }
+                                                ?>
+
+                                                <?php
                                                 if ($recent_type == "Admin") { ?>
                                                     <option value="<?php echo $item_type ?>" selected>Recent: <?php echo $item_type ?></option>
+                                                    <option value="Materials">Materials</option>
+                                                    <option value="Tools">Tools</option>
+                                                    <option value="Safety">Safety</option>
                                                 <?php
                                                 }
                                                 ?>

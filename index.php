@@ -1,8 +1,12 @@
 <?php require "config/connectdb.php";
 session_start();
 
-if (isset($_SESSION['id'])) {
+if (isset($_SESSION['user_type']) == 1) {
+    header('Location: Superadmin/ ');
+} else if (isset($_SESSION['user_type']) == 2) {
     header('Location: Admin/ ');
+} else if (isset($_SESSION['user_type']) == 3) {
+    header('Location: Material_Control/ ');
 }
 ?>
 <!DOCTYPE html>
@@ -39,8 +43,8 @@ if (isset($_SESSION['id'])) {
         <br>
 
         <div class="row">
-            <div class="col-4"></div>
-            <div class="col-4">
+            <div class="col-lg-4"></div>
+            <div class="col-lg-4">
                 <?php
                 if (isset($_POST['login'])) {
                     $username = $_POST['username'];
@@ -81,10 +85,21 @@ if (isset($_SESSION['id'])) {
                             while ($row = $result->fetch_assoc()) {
                                 $account_id = $row['account_id'];
                                 $username = $row['username'];
+                                $user_type = $row['user_type'];
                                 session_start();
                                 $_SESSION['id'] = $account_id;
                                 $_SESSION['username'] = $username;
-                                header("Location: Admin/");
+                                $_SESSION['user_type'] = $user_type;
+
+                                if ($user_type == 1) {
+                                    header("Location: Superadmin/");
+                                }
+                                else if ($user_type == 2) {
+                                    header("Location: Admin/");
+                                }
+                                else if ($user_type == 3) {
+                                    header("Location: Material_Control/");
+                                }
                             }
                         } else { ?>
                             <div class="alert alert-warning alert-dismissible fade show text-center" role="alert">
@@ -118,7 +133,7 @@ if (isset($_SESSION['id'])) {
                     <button class="btn btn-info btn-block my-4" type="submit" name="login">Login</button>
                 </form>
             </div>
-            <div class="col-4"></div>
+            <div class="col-lg-4"></div>
         </div>
     </div>
 
