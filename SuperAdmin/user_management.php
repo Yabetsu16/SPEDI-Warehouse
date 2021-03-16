@@ -35,6 +35,7 @@ if (isset($_SESSION['id'])) {
 </head>
 
 <body>
+
     <!--Navbar-->
     <nav class="navbar navbar-expand-lg navbar-dark elegant-color">
 
@@ -55,15 +56,18 @@ if (isset($_SESSION['id'])) {
                     <a class="nav-link" href="index.php">Dashboard</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="project_office_management.php">Project / Office Management</a>
+                    <a class="nav-link" href="project_office_management.php">Project / Office Management
+                    </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="item_management.php">Item Management </a>
+                    <a class="nav-link" href="item_management.php">Item Management</a>
                 </li>
                 <li class="nav-item active">
-                    <a class="nav-link" href="summary.php">Summary
-                        <span class="sr-only">(current)</span>
-                    </a>
+                    <a class="nav-link" href="user_management.php">User Management</a>
+                    <span class="sr-only">(current)</span>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="summary.php">Summary</a>
                 </li>
             </ul>
             <!-- Links -->
@@ -74,7 +78,6 @@ if (isset($_SESSION['id'])) {
                         <?php echo $username ?> <i class="fas fa-user"></i>
                     </a>
                     <div class="dropdown-menu dropdown-menu-right dropdown-default" aria-labelledby="navbarDropdownMenuLink-333">
-                        <a class="dropdown-item" data-toggle="modal" data-target="#userModal">User Managerment</a>
                         <a class="dropdown-item" href="logout.php">Logout</a>
                     </div>
                 </li>
@@ -85,32 +88,14 @@ if (isset($_SESSION['id'])) {
     <!--/.Navbar-->
 
     <?php
-    if (isset($_POST['export_type'])) {
-        $item_type = $_POST['item_type'];
-        $project_id = $_POST['project_id'];
-
-        if ($item_type == "All") {
-            header("Location: export_all.php?p=$project_id");
-        } else if ($item_type == "Materials") {
-            header("Location: export_materials.php?p=$project_id");
-        } else if ($item_type == "Tools") {
-            header("Location: export_tools.php?p=$project_id");
-        } else if ($item_type == "Safety") {
-            header("Location: export_safety.php?p=$project_id");
-        } else if ($item_type == "Admin") {
-            header("Location: export_admin.php?p=$project_id");
-        }
-    }
-    ?>
-
-    <?php
     if (isset($_POST['add_user'])) {
         $username = $_POST['username'];
         $password = $_POST['password'];
+        $user_type = $_POST['user_type'];
 
-        $query = "SELECT * FROM account_tb WHERE username = ? AND password = ?";
+        $query = "SELECT * FROM account_tb WHERE username = ? AND password = ? AND user_type = ?";
         $stmt = $conn->prepare($query);
-        $stmt->bind_param("ss", $username, $password);
+        $stmt->bind_param("ssi", $username, $password, $user_type);
         $stmt->execute();
         $result = $stmt->get_result();
         if (mysqli_num_rows($result) > 0) { ?>
@@ -122,9 +107,9 @@ if (isset($_SESSION['id'])) {
             </div>
             <?php
         } else {
-            $query = "INSERT INTO account_tb (username, password) VALUES (?, ?)";
+            $query = "INSERT INTO account_tb (username, password, user_type) VALUES (?, ?, ?)";
             $stmt = $conn->prepare($query);
-            $stmt->bind_param("ss", $username, $password);
+            $stmt->bind_param("ssi", $username, $password, $user_type);
             if ($stmt->execute()) { ?>
                 <div class="alert alert-success alert-dismissible fade show" role="alert">
                     User <?php echo $username ?> added.
@@ -143,10 +128,11 @@ if (isset($_SESSION['id'])) {
         $username = $_POST['username'];
         $password = $_POST['password'];
         $update_account_id = $_POST['update_account_id'];
+        $user_type = $_POST['user_type'];
 
-        $query = "UPDATE account_tb SET username = ?, password = ? WHERE account_id = $update_account_id";
+        $query = "UPDATE account_tb SET username = ?, password = ?, user_type = ? WHERE account_id = $update_account_id";
         $stmt = $conn->prepare($query);
-        $stmt->bind_param("ss", $username, $password);
+        $stmt->bind_param("ssi", $username, $password, $user_type);
         if ($stmt->execute()) { ?>
             <div class="alert alert-success alert-dismissible fade show" role="alert">
                 User <?php echo $username ?> updated.
@@ -178,200 +164,23 @@ if (isset($_SESSION['id'])) {
     }
     ?>
 
-    <!-- Summary -->
-    <section id="summary" class="mt-3">
+    <!-- Management -->
+    <section id="management" class="mt-3">
         <div class="container-fluid">
             <div class="row">
                 <div class="col-12">
                     <div class="card">
                         <div class="card-header elegant-color text-white text-center">
-                            <h1 class="h1-responsive">Summary</h1>
+                            <h1 class="h1-responsive">User Management</h1>
                         </div>
-                        <div class="card-body">
-                            <div class="float-right">
-                                <br>
-                                <button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#exportModal">Export to Excel</button>
-                            </div>
-                            <br>
-                            <table id="dtBasicExample" class="table table-striped table-responsive-md btn-table" cellspacing="0" width="100%" data-ordering="false">
-                                <thead>
-                                    <tr class="text-center">
-                                        <th class="th-sm">Timestamp
-                                        </th>
-                                        <th class="th-sm">Project / Office
-                                        </th>
-                                        <th class="th-sm">Item Type
-                                        </th>
-                                        <th class="th-sm">Item Name
-                                        </th>
-                                        <th class="th-sm">Unit
-                                        </th>
-                                        <th class="th-sm">Quantity
-                                        </th>
-                                        <th class="th-sm">Issued
-                                        </th>
-                                        <th class="th-sm">Issued to Project / Office
-                                        </th>
-                                        <th class="th-sm">Returned
-                                        </th>
-                                        <th class="th-sm">Balance
-                                        </th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <?php
-                                    $query = "SELECT * FROM movement_tb 
-                                    INNER JOIN inventory_tb ON inventory_tb.inventory_id = movement_tb.inventory_id
-                                    INNER JOIN project_office_tb ON project_office_tb.project_id = inventory_tb.project_id
-                                    ORDER BY inventory_tb.inventory_id;";
-                                    $stmt = $conn->prepare($query);
-                                    $stmt->execute();
-                                    $result = $stmt->get_result();
-                                    while ($row = $result->fetch_assoc()) {
-                                        $project_office_name = $row['project_office_name'];
-                                        $item_type = $row['item_type'];
-                                        $item_name = $row['item_name'];
-                                        $unit = $row['unit'];
-                                        $quantity = $row['quantity'];
-                                        $issued = $row['issued'];
-                                        $returned = $row['returned'];
-                                        $balance = $row['balance'];
-                                        $date_movement = $row['date_movement'];
-                                        $converted_date_movement = date_create($date_movement);
-                                        $to_project_office = $row['to_project_office'];
-                                    ?>
-                                        <tr class="text-center">
-                                            <td><?php echo date_format($converted_date_movement, "Y-m-d h:i A") ?></td>
-                                            <td><?php echo $project_office_name ?></td>
-                                            <td><?php echo $item_type ?></td>
-                                            <td><?php echo $item_name ?></td>
-                                            <td><?php echo $unit ?></td>
-                                            <td><?php echo $quantity ?></td>
-                                            <td><?php echo $issued ?></td>
-                                            <td><?php echo $to_project_office ?></td>
-                                            <td><?php echo $returned ?></td>
-                                            <td><?php echo $balance ?></td>
-                                        </tr>
-                                    <?php
-                                    }
-                                    ?>
-                                </tbody>
-                                <tfoot>
-                                    <tr class="text-center">
-                                        <th class="th-sm">Timestamp
-                                        </th>
-                                        <th class="th-sm">Project / Office
-                                        </th>
-                                        <th class="th-sm">Item Type
-                                        </th>
-                                        <th class="th-sm">Item Name
-                                        </th>
-                                        <th class="th-sm">Unit
-                                        </th>
-                                        <th class="th-sm">Quantity
-                                        </th>
-                                        <th class="th-sm">Issued
-                                        </th>
-                                        <th class="th-sm">Returned
-                                        </th>
-                                        <th class="th-sm">Balance
-                                        </th>
-                                    </tr>
-                                </tfoot>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-    <br>
-    <br>
-    <br>
-    <br>
-    <!-- /.Summary -->
-
-    <!-- Export Modal -->
-    <div class="modal fade" id="exportModal" tabindex="-1" role="dialog" aria-labelledby="exportModal" aria-hidden="true">
-        <div class="modal-dialog modal-md" role="document">
-            <div class="modal-content">
-                <div class="modal-header elegant-color text-white d-flex justify-content-center">
-                    <h3 class="modal-title h4-responsive">Select Project / Office and Item Type</h4>
-                </div>
-                <div class="modal-body">
-                    <!-- Material form grid -->
-                    <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
-                        <!-- Grid row -->
-                        <div class="row">
-                            <!-- Grid column -->
-                            <div class="col-12">
-                                <!-- Material input -->
-                                <div class="md-form mt-0">
-                                    <select name="item_type" class="browser-default custom-select">
-                                        <option selected>Select Type</option>
-                                        <option value="All">All</option>
-                                        <option value="Materials">Materials</option>
-                                        <option value="Tools">Tools</option>
-                                        <option value="Safety">Safety</option>
-                                        <option value="Admin">Admin</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <!-- Grid column -->
-                            <!-- Grid column -->
-                            <div class="col-12">
-                                <!-- Material input -->
-                                <div class="md-form mt-0">
-                                    <select name="project_id" class="browser-default custom-select">
-                                        <option value="" selected>Select Project / Office</option>
-                                        <option value="All">All</option>
-                                        <?php
-                                        $query = "SELECT * FROM project_office_tb";
-                                        $result = mysqli_query($conn, $query);
-                                        while ($row = mysqli_fetch_array($result)) {
-                                            $project_id = $row['project_id'];
-                                            $project_office_name = $row['project_office_name'];
-                                            $location = $row['location'];
-                                        ?>
-                                            <option value="<?php echo $project_id ?>"><?php echo $project_office_name ?> in <?php echo $location ?></option>
-                                        <?php
-                                        }
-                                        ?>
-                                    </select>
-                                </div>
-                            </div>
-                            <!-- Grid column -->
-                        </div>
-                        <!-- Grid row -->
-                        <div class="text-center">
-                            <button type="submit" name="export_type" class="btn btn-primary">Export</button>
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        </div>
-                    </form>
-                    <!-- Material form grid -->
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- /.Export Modal -->
-
-    <!-- User Modal -->
-    <div class="modal fade" id="userModal" tabindex="-1" role="dialog" aria-labelledby="userModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-fluid" role="document">
-            <div class="modal-content">
-                <div class="modal-header elegant-color text-white d-flex justify-content-center">
-                    <h1 class="modal-title">User Management</h1>
-                </div>
-                <div class="modal-body">
-                    <div class="card">
                         <div class="card-body">
                             <div class="float-right">
                                 <br>
                                 <button class="btn btn-sm btn-primary" data-toggle="modal" data-target="#addUserModal">Add
-                                    user</button>
+                                    User</button>
                             </div>
                             <br>
-                            <table id="dtUserManagement" class="table table-striped table-responsive-lg btn-table" cellspacing="0" width="100%">
+                            <table id="dtBasicExample" class="table table-striped table-responsive-sm btn-table" cellspacing="0" width="100%">
                                 <thead>
                                     <tr class="text-center">
                                         <th class="th-sm">Actions
@@ -379,6 +188,8 @@ if (isset($_SESSION['id'])) {
                                         <th class="th-sm">Username
                                         </th>
                                         <th class="th-sm">Password
+                                        </th>
+                                        <th class="th-sm">Type
                                         </th>
                                     </tr>
                                 </thead>
@@ -392,18 +203,27 @@ if (isset($_SESSION['id'])) {
                                     if (mysqli_num_rows($result) > 0) {
                                         // Display data of each row
                                         while ($row = mysqli_fetch_assoc($result)) {
-                                            $accont_id = $row['account_id'];
+                                            $account_id = $row['account_id'];
                                             $username = $row['username'];
                                             $password = $row['password'];
-                                            //$password = str_repeat("*", strlen($password));
+                                            $user_type = $row['user_type'];
+
+                                            if ($user_type == 1) {
+                                                $user_type = "Superadmin";
+                                            } else if ($user_type == 2) {
+                                                $user_type = "Admin";
+                                            } else if ($user_type == 3) {
+                                                $user_type = "Materials Control";
+                                            }
                                     ?>
                                             <tr class="text-center">
                                                 <td>
-                                                    <button type="button" class="btn btn-sm btn-success" data-toggle="modal" data-target="#editUserModal<?php echo $accont_id ?>">Edit</button>
-                                                    <button type="button" class="btn btn-sm btn-danger" data-toggle="modal" data-target="#modalUserConfirmDelete<?php echo $accont_id ?>">Delete</button>
+                                                    <button type="button" class="btn btn-sm btn-success" data-toggle="modal" data-target="#editUserModal<?= $account_id ?>">Edit</button>
+                                                    <button type="button" class="btn btn-sm btn-danger" data-toggle="modal" data-target="#modalUserConfirmDelete<?= $account_id ?>">Delete</button>
                                                 </td>
-                                                <td><?php echo $username ?></td>
-                                                <td><?php echo $password ?></td>
+                                                <td><?= $username ?></td>
+                                                <td><?= $password ?></td>
+                                                <td><?= $user_type ?></td>
                                             </tr>
                                     <?php
                                         }
@@ -418,28 +238,32 @@ if (isset($_SESSION['id'])) {
                                         </th>
                                         <th class="th-sm">Password
                                         </th>
+                                        <th class="th-sm">Type
+                                        </th>
                                     </tr>
                                 </tfoot>
                             </table>
                         </div>
                     </div>
                 </div>
-                <div class="text-center mb-3">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                </div>
             </div>
         </div>
-    </div>
-    <!-- User Modal -->
+    </section>
+    <br>
+    <br>
+    <br>
+    <br>
+    <!-- /.Management -->
+
 
     <!-- Modal Add User -->
     <div class="modal fade" id="addUserModal" tabindex="-1" role="dialog" aria-labelledby="addItemModal" aria-hidden="true">
-        <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header elegant-color text-white d-flex justify-content-center">
                     <h1 class="modal-title">Add User</h1>
                 </div>
-                <div class="modal-body">
+                <div class="modal-body mt-3">
                     <!-- Material form grid -->
                     <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
                         <!-- Grid row -->
@@ -460,6 +284,20 @@ if (isset($_SESSION['id'])) {
                                 <div class="md-form mt-0">
                                     <input type="password" name="password" class="form-control validate" id="password" required>
                                     <label for="password" data-error="wrong" data-success="right">Password</label>
+                                </div>
+                            </div>
+                            <!-- Grid column -->
+
+                            <!-- Grid column -->
+                            <div class="col-12">
+                                <!-- Material input -->
+                                <div class="md-form mt-0">
+                                    <select id="user_type" name="user_type" class="browser-default custom-select">
+                                        <option selected>Select User Type</option>
+                                        <option value="1">Superadmin</option>
+                                        <option value="2">Admin</option>
+                                        <option value="3">Materials Control</option>
+                                    </select>
                                 </div>
                             </div>
                             <!-- Grid column -->
@@ -489,11 +327,12 @@ if (isset($_SESSION['id'])) {
             $manage_account_id = $row['account_id'];
             $username = $row['username'];
             $password = $row['password'];
+            $user_type = $row['user_type'];
             //$password = str_repeat("*", strlen($password));
     ?>
             <!-- Modal Edit User <?php echo $manage_account_id ?> -->
             <div class="modal fade" id="editUserModal<?php echo $manage_account_id ?>" tabindex="-1" role="dialog" aria-labelledby="editItemModal<?php echo $manage_account_id ?>" aria-hidden="true">
-                <div class="modal-dialog modal-sm" role="document">
+                <div class="modal-dialog" role="document">
                     <div class="modal-content">
                         <div class="modal-header elegant-color text-white d-flex justify-content-center text-center">
                             <h1 class="modal-title">Edit <?php echo $username ?> User</h1>
@@ -519,6 +358,35 @@ if (isset($_SESSION['id'])) {
                                         <div class="md-form mt-0">
                                             <input type="password" name="password" class="form-control validate" id="password" value="<?php echo $password ?>" required>
                                             <label for="password" data-error="wrong" data-success="right">Password</label>
+                                        </div>
+                                    </div>
+                                    <!-- Grid column -->
+
+                                    <!-- Grid column -->
+                                    <div class="col-12">
+                                        <!-- Material input -->
+                                        <div class="md-form mt-0">
+                                            <select id="user_type" name="user_type" class="browser-default custom-select">
+                                                <?php
+                                                if ($user_type == 1) { ?>
+                                                    <option value="1" selected>Current: Superadmin</option>
+                                                    <option value="2">Admin</option>
+                                                    <option value="3">Materials Control</option>
+                                                <?php
+                                                } else if ($user_type == 2) { ?>
+                                                    <option value="2" selected>Current: Admin</option>
+                                                    <option value="1">Superadmin</option>
+                                                    <option value="3">Materials Control</option>
+                                                <?php
+                                                } else if ($user_type == 3) { ?>
+                                                    <option value="3" selected>Current: Materials Control</option>
+                                                    <option value="1">Superadmin</option>
+                                                    <option value="2">Admin</option>
+                                                <?php
+                                                }
+                                                ?>
+
+                                            </select>
                                         </div>
                                     </div>
                                     <!-- Grid column -->
@@ -573,6 +441,7 @@ if (isset($_SESSION['id'])) {
     }
     ?>
 
+
     <!-- Footer -->
     <footer class="page-footer font-small elegant-color pt-4 mt-3 fixed-bottom">
 
@@ -607,7 +476,6 @@ if (isset($_SESSION['id'])) {
             $('.dataTables_length').addClass('bs-select');
         });
     </script>
-
     <script type="text/javascript">
         $(document).ready(function() {
             $('#dtUserManagement').DataTable({
@@ -619,6 +487,7 @@ if (isset($_SESSION['id'])) {
             $('.dataTables_length').addClass('bs-select');
         });
     </script>
+
 </body>
 
 </html>

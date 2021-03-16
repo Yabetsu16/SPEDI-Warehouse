@@ -64,6 +64,9 @@ if (isset($_SESSION['id'])) {
           <a class="nav-link" href="item_management.php">Item Management</a>
         </li>
         <li class="nav-item">
+          <a class="nav-link" href="user_management.php">User Management</a>
+        </li>
+        <li class="nav-item">
           <a class="nav-link" href="summary.php">Summary</a>
         </li>
       </ul>
@@ -75,7 +78,6 @@ if (isset($_SESSION['id'])) {
             <?php echo $username ?> <i class="fas fa-user"></i>
           </a>
           <div class="dropdown-menu dropdown-menu-right dropdown-default" aria-labelledby="navbarDropDown">
-            <a class="dropdown-item" data-toggle="modal" data-target="#userModal">User Managerment</a>
             <a class="dropdown-item" href="logout.php">Logout</a>
           </div>
         </li>

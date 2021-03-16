@@ -84,7 +84,7 @@ if (isset($_SESSION['id'])) {
                                 session_start();
                                 $_SESSION['id'] = $account_id;
                                 $_SESSION['username'] = $username;
-                                header("Location: Admin/");
+                                header("Location: Superadmin/");
                             }
                         } else { ?>
                             <div class="alert alert-warning alert-dismissible fade show text-center" role="alert">
